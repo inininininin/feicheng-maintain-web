@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>飞橙-运维-医护管理</title>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
+
+    <script src="https://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://lib.sinaapp.com/js/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script src="./layui-v2.5.5/layui.all.js"></script>
+    <link rel="stylesheet" href="./layui-v2.5.5/css/layui.css" />
+
+    <script src="./zTree_v3/js/jquery.ztree.all.js"></script>
+    <link rel="stylesheet" href="./zTree_v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
+
+    <link rel="stylesheet" type="text/css" href="./jquery-easyui-1.8.7/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="./jquery-easyui-1.8.7/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="./jquery-easyui-1.8.7/demo/demo.css">
+    <script type="text/javascript" src="./jquery-easyui-1.8.7/jquery.easyui.min.js"></script>
+
+    <link rel="stylesheet" href="./jQueryViewer20160329/css/viewer.min.css">
+    <script src="./jQueryViewer20160329/js/viewer.min.js"></script>
+    <script src="./jQueryViewer20160329/js/viewer-jquery.min.js"></script>
+
+    <script src="./js/moment.js"></script>
+    <script src="./js/common.js"></script>
+    <script src="./js/jquery.oneall.js"></script>
+
+
+
+    <style>
+
+    </style>
+
+    <script>
+        var queryStringObject = common.queryStringObject();
+       
+        var queryParam = {}, currentRows = [], sum = {}
+
+        $(document).ready(function () {
+
+            $('#datagrid').datagrid({
+            columns: [[
+                {
+                    field: 'cover', title: '封面', width: 60, align: 'center', halign: 'center', formatter: function (value, row, index) {
+                        return value ? `<span class="image-previewer"><img src='${value}' style='width:50px;cursor:pointer;' data-original='${value}'/></span>` : value
+                    }
+                },
+                 { field: 'hospitalName', title: '医院', width: 200, align: 'left', halign: 'center' },
+
+                
+                { field: 'remark', title: '备注', width: 200, align: 'left', halign: 'center' },
+                {
+                    field: 'frozen', title: '冻结', width: 50, align: 'center', halign: 'center', formatter: function (value, row, index) {
+                        return value == 1 ? '是' : '否';
+                    }
+                },
+                { field: 'orderNo', title: '排序号', width: 70, align: 'right', sortable: true, halign: 'center' },
+                {
+                    field: 'createTime', title: '创建时间', width: 165, align: 'left', sortable: true, halign: 'center', formatter: function (value, row, index) {
+                        return value ? moment(value).format('YYYY-MM-DD HH:mm:ss') : value;
+                    }
+                }
+            ]],
+            frozenColumns: [[
+                { field: 'ck', align: 'left', checkbox: true },
+                {
+                    field: 'name', title: '名称', width: 250, align: 'left', halign: 'center', formatter: function (value, row, index) {
+                      
+                        return `<a href="JavaScript:void(0)" style="width:100%;display:inline-block;" title="${value || ''}" onclick="common.newTab('医护:${row.name.substring(0, 10) + '...'}','/maintain-user/nurse.html?nurseId=${row.nurseId}')">${value}</a>`;
+                    }, styler: function (value, row, index) {
+                        return ``
+                    }
+                }
+            ]],
+            idField: 'nurseId',
+            toolbar: `#datagridToolBar`,
+            footer: `#datagridFoot`,
+            pagination: true,
+            rownumbers: true,
+            emptyMsg: '无数据',
+            singleSelect: false,
+            ctrlSelect: true,
+            checkOnSelect: true,
+            selectOnCheck: true,
+            multiSort: true,
+            autoRowHeight: false,
+            rowStyler: function (index, row) {
+
+            },
+            loader: function (param, success, error) {
+                debugger
+                queryParam.ps = param.rows;
+                queryParam.pn = param.page;
+                $.ajaxSettings.async=false
+                $.get('/maintain-user/nurses', queryParam, function (data) {
+                    if (data.codeMsg)
+                        layer.alert(data.codeMsg);
+                    if (data.code == 0) {
+                        currentRows = data.data.rows;
+                        $.get('/maintain-user/nurses-sum', queryParam, function (data) {
+                            if (data.codeMsg)
+                                layer.alert(data.codeMsg);
+                            if (data.code == 0) {
+                                sum = data.data;
+                            }
+                        })
+                        success({rows:currentRows,total:sum.rowCount});
+                    } else {
+
+                    }
+                })
+                $.ajaxSettings.async=true
+            }, onLoadSuccess: function () {
+                $('.image-previewer').viewer({
+                    url: 'data-original',
+                })
+            }
+        });
+        });
+
+
+
+        $.parser.onComplete = function () {
+            $("#loading").remove();
+        }
+
+
+
+    </script>
+</head>
+
+<style>
+
+</style>
+
+<body style="margin:0;padding:0;">
+    <div id="loading" class='' style="position: absolute; z-index: 1000; top: 0px; left: 0px; 
+    width: 100%; height: 100%; background: white; text-align: center;padding:5px 10px">
+        <font>loading···</font>
+    </div>
+
+
+   
+    <div id="datagridToolBar" style="padding:2px 5px;">
+        <a href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-search"
+        onclick="$('#datagrid').datagrid('load').datagrid('clearChecked');">查询</a>
+            
+            <input id="queryParam.kw" class="easyui-textbox" label="关键字:" labelPosition="left" labelAlign="right" data-options="
+        iconWidth:20,
+        icons:[{
+            iconCls:'icon-clear',
+            handler: function(e){
+                $(e.data.target).textbox('setValue','');
+            }
+        }],
+        onChange:function(newValue, oldValue){
+            debugger
+            queryParam.kw=newValue
+        }" style="width:300px" />
+
+        <input class="easyui-combobox" name="hospitalId" label="医院:" labelPosition="left" labelAlign="right" style="width:300px;" data-options="
+        valueField:'hospitalId',
+        textField:'name',
+        panelHeight:'auto',
+        mode:'remote',
+        onShowPanel:function(){
+            $(this).combobox('reload')
+        },
+        loader: function (param, success, error) {
+            debugger
+            param.kw=param.q;
+            param.ps = param.rows;
+            param.pn = param.page;
+            $.ajax({
+                url: '/maintain-user/hospitals',
+                type: 'get',
+                data: param,
+                success: function (data) {
+                    if (data.code != 0) {
+                        return false;
+                    } else {
+                        success(data.data);
+                    }
+
+                }
+            })
+        },
+        onChange:function(newValue, oldValue){
+            queryParam.hospitalId=newValue
+        },
+        loadFilter: function (data) {
+            debugger
+            return data.rows;
+        },
+        iconWidth:20,
+        icons:[{
+            iconCls:'icon-clear',
+            handler: function(e){
+                $(e.data.target).combobox('setValue','');
+            }
+        }]
+        ">
+            <input id="queryParam.createTimeFrom" class="easyui-datebox" label="创建时间:" labelPosition="left" labelAlign="right" style="width:300px" data-options="
+        editable:false,
+        icons:[{
+            iconCls:'icon-clear',
+            handler: function(e){
+                $(e.data.target).datebox('setValue','');
+            }
+        }],
+    onChange:function(newValue, oldValue){
+        debugger
+        queryParam.createTimeFrom=newValue
+    }">
+
+    <input id="queryParam.createTimeTo" class="easyui-datebox" label="To:" labelPosition="left" labelAlign="right" style="width:300px" data-options="
+    editable:false,
+    icons:[{
+        iconCls:'icon-clear',
+        handler: function(e){
+            $(e.data.target).datebox('setValue','');
+        }
+    }],
+onChange:function(newValue, oldValue){
+    debugger
+    queryParam.createTimeTo=newValue
+}">
+
+            <input id="queryParam.frozen" class="easyui-combobox" label="冻结:" labelPosition="left" labelAlign="right" style="width:300px" data-options="editable:false,panelHeight:'auto',value:'',data:[
+   {
+                                 text: '否',
+                                 value: '0'
+                             },{
+                                 text: '是',
+                                 value: '1'
+                             }],
+    iconWidth:20,
+    icons:[{
+        iconCls:'icon-clear',
+        handler: function(e){
+            $(e.data.target).combobox('setValue','');
+        }
+    }],
+    onChange:function(newValue, oldValue){
+        debugger
+        this
+        queryParam.frozen=newValue
+    }" />
+</div>
+            <table id="datagrid" class="easyui-datagrid" style="width:100%;min-height:420px">
+            </table>
+            <div id="datagridFoot" style="padding:2px 5px;">
+                <a href="JavaScript:void(0)" class="easyui-linkbutton" title="创建" iconCls="icon-add" plain="true"
+                    onclick=" common.newTab('创建医护','create-nurse.html')">创建</a>
+                <a href="JavaScript:void(0)" class="easyui-linkbutton" title="全部删除" iconCls="icon-edit" plain="true"
+                    onclick="
+                        var ids = $($('#datagrid').datagrid('getChecked')).oneall('attrs','nurseId');
+                         ids = ids==null?[]:ids;
+                         layer.open({
+                        type: 2,
+                        title: '批量修改',
+                        shadeClose: false,
+                        area:['60%','90%'],
+                        shade: 0.5,
+                        content: './update-nurses.html?'+$.param($.extend({},queryParam,{nurseId:ids.length==0?null:ids.join(),expectedRowCount:ids.length==0?sum.rowCount:ids.length}))
+                      }); ">批量修改</a>
+                <a href="JavaScript:void(0)" class="easyui-linkbutton" title="删除" iconCls="icon-remove" plain="true"
+                    onclick="
+                        debugger
+                        var ids = $($('#datagrid').datagrid('getChecked')).oneall('attrs','nurseId')
+                         ids = ids==null?[]:ids;
+                            layer.confirm(ids.length==0?'未选择任何记录, 将删除所有已查出的 '+ sum.rowCount +' 条记录, 确认删除吗?':('已选择 '+ids.length+' 条记录, 确认删除吗?'),function(){
+                                        $.ajax({
+                                    type: 'post',
+                                    url: '/maintain-user/update-nurses',
+                                    data: $.extend({},queryParam,{nurseId:ids.length==0?null:ids.join(),delNew:1,expectedRowCount:ids.length==0?sum.rowCount:ids.length}),
+                                    beforeSend:function(){
+                                        this.layerIndex=layer.load(2)
+                                    },
+                                    success: function (res) {
+                                        debugger
+                                        if (res.codeMsg)
+                                            layer.alert(res.codeMsg)
+                                        if (res.code == 0) {
+                                            if (!res.codeMsg)
+                                                layer.alert('操作成功')
+                                        } 
+                                    },
+                                    complete:function(){
+                                        layer.close(this.layerIndex)
+                                    }
+                                })
+                            })">删除</a>
+            </div>
+         
+</body>
+
+
+</html>

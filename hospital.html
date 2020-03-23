@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>飞橙-运维-医院详情</title>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
+
+
+
+    <script src="https://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://lib.sinaapp.com/js/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script src="./layui-v2.5.5/layui.all.js"></script>
+    <link rel="stylesheet" href="./layui-v2.5.5/css/layui.css" />
+
+    <script src="./zTree_v3/js/jquery.ztree.all.js"></script>
+    <link rel="stylesheet" href="./zTree_v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
+
+    <link rel="stylesheet" type="text/css" href="./jquery-easyui-1.8.7/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="./jquery-easyui-1.8.7/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="./jquery-easyui-1.8.7/demo/demo.css">
+    <script type="text/javascript" src="./jquery-easyui-1.8.7/jquery.easyui.min.js"></script>
+
+    <link rel="stylesheet" href="./jQueryViewer20160329/css/viewer.min.css">
+    <script src="./jQueryViewer20160329/js/viewer.min.js"></script>
+    <script src="./jQueryViewer20160329/js/viewer-jquery.min.js"></script>
+
+
+    <link rel="stylesheet" href="./kindeditor/themes/default/default.css" />
+    <link rel="stylesheet" href="./kindeditor/plugins/code/prettify.css" />
+    <script charset="utf-8" src="./kindeditor/kindeditor-all.js"></script>
+    <script charset="utf-8" src="./kindeditor/lang/zh-CN.js"></script>
+    <script charset="utf-8" src="./kindeditor/plugins/code/prettify.js"></script>
+
+    <script src="./js/moment.js"></script>
+    <script src="./js/common.js"></script>
+
+</head>
+
+<style>
+
+</style>
+
+<script>
+
+    var queryStringObject = common.queryStringObject();
+    var hospital = {},contentKindEditor
+
+    
+    $.ajax({
+        type: 'get',
+        url: `/maintain-user/hospital-${queryStringObject.hospitalId}`,
+        async: false,
+        success: function (data) {
+            debugger
+            if (data.codeMsg)
+                layer.alert(data.codeMsg);
+            if (data.code == 0) {
+                hospital = data.data;
+            }
+        }
+    })
+
+
+    // var a = layer.load(2);
+    // setTimeout(function(){
+    //     layer.close(a)
+    // },500)
+
+    $.parser.onComplete = function () {
+        debugger
+    }
+
+
+    $(document).ready(function(){
+        debugger
+       
+      
+         
+      
+        contentKindEditor = KindEditor.create('#content', {
+                cssPath: './kindeditor/plugins/code/prettify.css',
+                uploadJson: '/kindeditor/upload_json.jsp',
+                fileManagerJson: '/kindeditor/file_manager_json.jsp',
+                allowFileManager: true,
+                afterCreate: function () {
+                    var self = this;
+                    KindEditor.ctrl(document, 13, function () {
+                        self.sync();
+                        document.forms['example'].submit();
+                    });
+                    KindEditor.ctrl(self.edit.doc, 13, function () {
+                        self.sync();
+                        document.forms['example'].submit();
+                    });
+
+                    debugger
+                    if (hospital.contentUrl)
+                        $.get(`${hospital.contentUrl}?rand=${Math.random()}`, function (data) {
+                            self.html(data)
+                        })
+                }
+            })
+
+        $("#loading").remove();
+
+        if(hospital.cover)
+            $('#cover .value').attr("src",hospital.cover).show().parent().viewer({
+                                    url: "src",
+                                });
+        if(hospital.video)
+            $('#video .value').attr("src",hospital.video).show()
+    })
+
+
+function updateConfirm(){
+    debugger
+    layer.confirm('确认修改吗?',function(){
+       
+        $.ajax({
+                type: 'post',
+                contentType:"text/plain",
+                url: '/upload-alive-stream?'+$.param({'originalUrl':hospital.contentUrl,ext:'html'}),
+                data: contentKindEditor.html(),
+                beforeSend:function(){
+                                this.layerIndex=layer.load(2)
+                            },
+                success: function (res) {
+                    debugger
+                    if (res.codeMsg)
+                        layer.alert(res.codeMsg)
+                    if (res.code == 0) {
+                        hospital.contentUrl=res.data.url
+                         $.ajax({
+                            type: 'post',
+                            url: '/maintain-user/update-hospital',
+                            data: hospital,
+                            beforeSend:function(){
+                                this.layerIndex=layer.load(2)
+                            },
+                            success: function (res) {
+                                debugger
+                                if (res.codeMsg)
+                                    layer.alert(res.codeMsg)
+                                if (res.code == 0) {
+                                    if (!res.codeMsg)
+                                        layer.alert('操作成功',function(){
+                                            location.reload()
+                                        })
+                                } 
+                            },
+                                        complete:function(){
+                                            layer.close(this.layerIndex)
+                                        }
+                        })
+                    } 
+                },
+                                        complete:function(){
+                                            layer.close(this.layerIndex)
+                                        }
+            })
+    })
+    
+}
+        
+
+
+             
+function remove(){
+    debugger
+    layer.confirm('确认删除吗？', function(){
+        
+        $.ajax({
+                            type: 'post',
+                            url: '/maintain-user/update-hospital',
+                            data: {hospitalId:hospital.hospitalId,del:1},
+                            beforeSend:function(){
+                                this.layerIndex=layer.load(2)
+                            },
+                            success: function (res) {
+                                debugger
+                                if (res.codeMsg)
+                                    layer.alert(res.codeMsg)
+                                if (res.code == 0) {
+                                    if (!res.codeMsg)
+                                    layer.alert('操作成功',function(){
+                                            location.reload()
+                                        })
+                                } 
+                            },
+                                        complete:function(){
+                                            layer.close( this.layerIndex)
+                                        }
+                        })
+        });
+
+
+                         
+}
+
+    // var rowPad = {
+    //     selector: "#rowPad",
+    //     param: { token: null, hospitalArticleId: null },
+    //     row: {
+
+    //     }, contentKindEditor: null,
+    //     beforePage: function () {
+    //         rowPad.param.hospitalArticleId = queryStringObject.hospitalArticleId
+
+    //         $.ajax({
+    //             type: 'get',
+    //             url: `/maintain-user/hospital-article/${rowPad.param.hospitalArticleId}`,
+    //             async: false,
+    //             data: { token: rowPad.param.token },
+    //             success: function (data) {
+    //                 if (data.codeMsg)
+    //                     alert(data.codeMsg)
+    //                 if (data.code == 0) {
+    //                     rowPad.row = data.data;
+    //                 } else {
+    //                     maintainCommon.breakCodeProcess(data.code, data.codeMsg)
+    //                 }
+    //             }
+    //         })
+    //     },
+    //     afterPage: function () {
+    //         $(rowPad.selector).find('[name=dg]').datagrid()
+
+
+    //     },
+    //     rowAlter: function () {
+    //         $.ajax({
+    //             type: 'post',
+    //             url: '/maintain-user/hospital-article-alter',
+    //             data: Object.assign({ token: rowPad.param.token, hospitalArticleId: rowPad.param.hospitalArticleId, content: rowPad.contentKindEditor.html() }, rowPad.row),
+    //             success: function (data) {
+    //                 if (data.codeMsg)
+    //                     alert(data.codeMsg)
+    //                 if (data.code == 0) {
+    //                     if (!data.codeMsg)
+    //                         alert('操作成功')
+    //                     location.reload()
+    //                 } else {
+    //                     maintainCommon.breakCodeProcess(data.code, data.codeMsg)
+    //                 }
+    //             }
+    //         })
+    //     }
+    // }
+
+    // rowPad.beforePage()
+
+   
+
+</script>
+
+<body style="margin:0;padding:0;">
+    <div id="loading" class='' style="position: absolute; z-index: 1000; top: 0px; left: 0px; 
+    width: 100%; height: 100%; background: white; text-align: center;padding:5px 10px">
+        <font>loading···</font>
+    </div>
+
+        <table id="datagrid"  data-options="singleSelect:true,height:'700px'">
+            <thead>
+                <tr>
+                    <th data-options="field:'name',width:200,align:'right'">属性&nbsp;</th>
+                    <th data-options="field:'value',width:500">值</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>医院名称&nbsp;</td>
+                    <td><input id="name" class="easyui-textbox" style="width:100%" data-options="
+                        value:hospital.name,
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                debugger
+                                $(e.data.target).textbox('setValue','');
+                            }
+                        }],
+                        onChange:function(newValue, oldValue){
+                            hospital.name=newValue
+                        }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>封面&nbsp;</td>
+                    <td>
+                        <div id="cover">
+                            <img class="value" style="height:30px;cursor:pointer;vertical-align: baseline;display:none;" onerror='debugger;$(this).attr("src","./image/image-error.png");' />
+                            <input type="file" style="display:none;" onchange="
+                                javascript:
+                                var target = this;
+                                if(this.files.length>0){
+                                    var file = this.files[0];
+                                    var fd = new FormData()
+                                    fd.append('file', file);
+                                    $.ajax({
+                                        url: '/upload-static-file?' + $.param({ quality: 0.8 }),
+                                        type: 'POST',
+                                        data: fd,
+                                        cache: false,
+                                        processData: false,
+                                        contentType: false,
+                                        async: true,
+                                        beforeSend:function(){
+                                            this.layerIndex=layer.load(2)
+                                        },
+                                        success: function (res) {
+                                            if (res.codeMsg)
+                                                layer.alert(res.codeMsg)
+                                            if (res.code == 0) {
+                                                hospital.cover=res.data.url 
+                                                $(target).prev().attr('src',hospital.cover).show()
+                                             target.value=null
+                                            }
+                                        },
+                                        complete:function(){
+                                            layer.close(this.layerIndex)
+                                        }
+                                    })
+                                }
+                            " />
+                            <a title="删除" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-clear" plain="true"
+                                style="vertical-align: text-bottom;"
+                                onclick="$(this).prev().prev().attr('src',null).hide();hospital.cover='';"></a>
+
+                            <a title="选择" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-choose" plain="true"
+                                style="vertical-align: text-bottom;" onclick="$(this).prev().prev().click()"></a>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>视频&nbsp;</td>
+                    <td>
+                        <div id="video">
+                            <video class="value" style="width: 200px;height: 200px;display:none;" controls="controls" ></video>
+                            <input type="file" style="display:none;" onchange="
+                            javascript:
+                            debugger
+                           
+                            var target = this;
+                                if(this.files.length>0){
+                                    var file = this.files[0];
+                                    var fd = new FormData()
+                                    fd.append('file', file);
+                                    $.ajax({
+                                        url: '/upload-static-file?' + $.param({ quality: 0.8 }),
+                                        type: 'POST',
+                                        data: fd,
+                                        cache: false,
+                                        processData: false,
+                                        contentType: false,
+                                        async: true,
+                                        beforeSend:function(){
+                                            this.layerIndex=layer.load(2)
+                                        },
+                                        success: function (res) {
+                                            if (res.codeMsg)
+                                                layer.alert(res.codeMsg)
+                                            if (res.code == 0) {
+                                                hospital.video=res.data.url 
+                                                $(target).prev().attr('src',hospital.video).show()
+                                            }
+                                            target.value=null
+                                            
+                                        },
+                                        complete:function(){
+                                            layer.close(this.layerIndex)
+                                        }
+                                    })
+                                }
+                        " />
+                            <a title="删除" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-clear" plain="true"
+                                style="vertical-align: text-bottom;"
+                                onclick="$(this).prev().prev().attr('src',null).hide();hospital.video='';"></a>
+
+                            <a title="选择" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-choose" plain="true"
+                                style="vertical-align: text-bottom;" onclick="debugger;$(this).prev().prev().click()"></a>
+                        </div>
+                    </td>
+                </tr>
+                
+       
+                <tr>
+                    <td>VR&nbsp;</td>
+                    <td><input id="panoramaVrUrl" class="easyui-textbox" style="width:100%" data-options="
+                        validType:'url',
+                        value:hospital.panoramaVrUrl,
+                        prompt:'http://www.xxxx.com/xx',
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                debugger
+                                $(e.data.target).textbox('setValue','');
+                            }
+                        }],
+                        onChange:function(newValue, oldValue){
+                            hospital.panoramaVrUrl=newValue
+                        }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>标签&nbsp;</td>
+                    <td><input id="tag" class="easyui-textbox" style="width:100%" data-options="
+                        value:hospital.tag,
+                        prompt:'英文逗号间隔, 如: 标签1,标签2,标签3',
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                debugger
+                                $(e.data.target).textbox('setValue','');
+                            }
+                        }],
+                        onChange:function(newValue, oldValue){
+                            hospital.tag=newValue
+                        }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>简介&nbsp;</td>
+                    <td><input id="intro" class="easyui-textbox" style="width:100%;height:200px;" data-options="
+                            value:hospital.intro,
+                            multiline:true,
+                            onChange:function(newValue, oldValue){
+                                hospital.intro=newValue
+                            }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>详情&nbsp;</td>
+                    <td><textarea id="content" style="width: 100%;height: 30px;padding:1px 4px"></textarea></td>
+                </tr>
+                <tr>
+                    <td>备注&nbsp;</td>
+                    <td><input id="remark" class="easyui-textbox" style="width:100%;height:200px;" data-options="
+                            value:hospital.remark,
+                            multiline:true,
+                            onChange:function(newValue, oldValue){
+                                hospital.remark=newValue
+                            }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>冻结&nbsp;</td>
+                    <td><input id="frozen" class="easyui-combobox" style="width:100%" data-options="
+                                    value:hospital.frozen,
+                                    editable:false,panelHeight:'auto',
+                                    data:[
+                                    {
+                                         text: '否',
+                                         value: '0'
+                                     },{
+                                         text: '是',
+                                         value: '1'
+                                     }],
+                                     iconWidth:20,
+                                     icons:[{
+                                         iconCls:'icon-clear',
+                                         handler: function(e){
+                                             $(e.data.target).combobox('setValue','');
+                                         }
+                                     }],
+                                     onChange:function(newValue, oldValue){
+                                        hospital.frozen=newValue
+                                     }" /></td>
+                </tr>
+                <tr>
+                    <td>冻结原因&nbsp;</td>
+                    <td><input id="frozenReason" class="easyui-textbox" style="width:100%;height:200px;" data-options="
+                            value:hospital.frozenReason,
+                            multiline:true,
+                            onChange:function(newValue, oldValue){
+                                hospital.frozenReason=newValue
+                            }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>排序号&nbsp;</td>
+                    <td><input id="orderNo" class="easyui-numberbox" style="width:100%" data-options="
+                                    value:hospital.orderNo,
+                                    precision:2,
+                                    iconWidth:20,
+                                    icons:[{
+                                        iconCls:'icon-clear',
+                                        handler: function(e){
+                                            $(e.data.target).textbox('setValue','');
+                                        }
+                                    }],
+                                    onChange:function(newValue, oldValue){
+                                        hospital.orderNo=newValue
+                                    }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>创建时间&nbsp;</td>
+                    <td><input id="createTime" class="easyui-datetimebox" style="width:100%" data-options="
+                                        value:moment(hospital.createTime).format('YYYY-MM-DD H:mm:ss'),
+                                        editable:false,
+                                        icons:[{
+                                            iconCls:'icon-clear',
+                                            handler: function(e){
+                                                $(e.data.target).datetimebox('setValue','');
+                                            }
+                                        }],
+                                        onChange:function(newValue, oldValue){
+                                            hospital.createTime=newValue
+                                        }"></td>
+                </tr>
+                <tr>
+                    <td>更新时间&nbsp;</td>
+                    <td><input id="updateTime" class="easyui-datetimebox" style="width:100%" data-options="
+                                            value:moment(hospital.updateTime).format('YYYY-MM-DD H:mm:ss'),
+                                            editable:false,
+                                            icons:[{
+                                                iconCls:'icon-clear',
+                                                handler: function(e){
+                                                    $(e.data.target).datetimebox('setValue','');
+                                                }
+                                            }],
+                                            onChange:function(newValue, oldValue){
+                                                hospital.updateTime=newValue
+                                            }"></td>
+                </tr>
+
+            </tbody>
+        </table>
+        
+        <div style="margin-left:5px;margin-top:5px;">
+            <a id="update" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-edit"
+                onclick="$('#update,#remove,#reload').hide();$('#updateConfirm,#updateCancel').show()">修改</a>
+            <a id="remove" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-remove"
+                onclick="remove()">删除</a>
+            <a id="reload" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-reload"
+                onclick="layer.confirm('已编辑的数据将丢失, 确认继续吗?',function(){location.reload()})">刷新</a>
+            <a id="updateConfirm" href="JavaScript:void(0)" class="easyui-linkbutton" style="display:none;" iconCls="icon-save"
+                onclick="updateConfirm()">确认</a>
+            <a id="updateCancel" href="JavaScript:void(0)" class="easyui-linkbutton" style="display:none;" iconCls="icon-cancel"
+                onclick="$('#update,#remove,#reload').show();$('#updateConfirm,#updateCancel').hide()">取消</a>
+        </div>
+</body>
+<script>
+        $('#datagrid').datagrid()
+</script>
+
+</html>

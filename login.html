@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="https://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://lib.sinaapp.com/js/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script src="./layui-v2.5.5/layui.all.js"></script>
+    <link rel="stylesheet" href="./layui-v2.5.5/css/layui.css" />
+
+
+    <style>
+        .logo img {
+            width: 41px;
+            height: 33px;
+            display: inline-block;
+        }
+
+        .logo h2 {
+            vertical-align: middle;
+            line-height: 33px;
+            font-size: 33px;
+            font-family: PingFangSC-Regular;
+            color: rgba(0, 0, 0, 0.85);
+            display: inline-block;
+            margin: 0;
+        }
+
+        .number {
+            margin: 0 auto;
+            width: 368px;
+            height: 40px;
+            border: 1px solid #d9d9d9;
+            position: relative;
+        }
+
+        .number input {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            outline: none;
+            padding-left: 80px;
+            padding-right: 10px;
+            color: #000;
+        }
+
+        .number>div {
+            width: 80px;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            line-height: 40px;
+            color: rgba(0, 0, 0, 0.25);
+        }
+
+        .number>div img {
+            width: 16px;
+            height: 16px;
+            float: left;
+            margin-top: 12px;
+            margin-left: 12px;
+            margin-right: 10px;
+        }
+
+        .zdlogin {
+            width: 368px;
+            height: 16px;
+            margin: 27px auto;
+            color: rgba(0, 0, 0, 0.65);
+            line-height: 16px;
+        }
+
+        .zdlogin div input {
+            width: 16px;
+            height: 16px;
+            margin-right: 10px;
+            margin-top: 0;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+
+        .zdlogin span {
+            display: inline-block;
+            font-size: 14px;
+        }
+
+        .forgetpwd {
+            color: #1890ff;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .loginbtn {
+            width: 368px;
+            height: 40px;
+            margin: 0 auto;
+            border-radius: 4px;
+        }
+
+        .loginbtn button {
+            width: 100%;
+            height: 100%;
+            border-radius: 4px;
+            background: #1890ff;
+            color: #fff;
+            border: 0;
+        }
+    </style>
+
+    <script>
+        var maintainUserName, password, param,serverConfig,projectConfig;
+
+        $(document).ready(function () {
+            debugger
+            $.get('/oss/alive/config.json', function (res) {
+                debugger
+                serverConfig = res;
+                $('#serverConfig-projectName').text((serverConfig.entityName||'')+(serverConfig.projectName||''))
+                $('title').text((serverConfig.entityName||'')+(serverConfig.projectName||'') + ' - 运维 - 登录')
+            })
+
+            $.get('./config.json', function (res) {
+                debugger
+                projectConfig = res;
+                $('#version .value').text(projectConfig.version).click(function(){
+                    layer.alert(projectConfig.versionIntro)
+                })
+            })
+        });
+
+
+        $(document).keydown(function (event) {
+            if (event.keyCode == 13) {
+                $("#enterClick").click();
+            }
+        });
+
+        $.post('/maintain-user/login-refresh', function (data) {
+            if (data.code == 0) {
+                layer.msg('已登录, 跳转中...');
+                localStorage.setItem('maintainLogin', data.data)
+                location.href = './index.html';
+            }
+        })
+
+
+
+
+    </script>
+</head>
+
+<body style="width: 100%;height: 100%;background: url('./page/login/image/background.png');background-size: cover;">
+    <div style="margin-bottom:5%;"></div>
+    <div class="logo smargin"
+        style="text-align: center;margin-top: 1.67rem;margin-bottom: 0.91rem;">
+        <div><img src='./favicon.ico'></div>
+        <h2 id="serverConfig-projectName" style="margin-top:10px;"></h2>
+    </div>
+    <h3 style="margin-top:10px;text-align: center;">运维</h3>
+
+    <div id="loginPad" style="margin-top:10px;">
+        <div class="number phone">
+            <input type="text" oninput="javascript:maintainUserName=this.value" />
+            <div>
+                <img src="./page/login/image/zhanghu.png" alt="" />
+                <span>账户</span>
+            </div>
+        </div>
+        <div class="number password" style="margin-top: 24px">
+            <input type="password" oninput="password=this.value" />
+            <div>
+                <img src="./page/login/image/mima.png" alt="" />
+                <span>密码</span>
+            </div>
+        </div>
+        <div class="zdlogin" style="display:none;">
+            <div class="lf">
+                <input class="lf" type="checkbox" name="vehicle" value="Car" checked="checked" />
+                <span class="lf">自动登录</span>
+            </div>
+            <div class="rt forgetpassword">忘记密码</div>
+        </div>
+        <div class="loginbtn" style="margin-top:20px;">
+            <button id="enterClick" onclick=" 
+
+            $.ajax({
+                url:'/maintain-user/login',
+                type:'post',
+                data:{ name: maintainUserName, password: password },
+                beforeSend:function(){
+                                            this.layerIndex=layer.load(2)
+                                        },
+                 success:function(data){
+                    if (data.codeMsg)
+                        layer.alert(data.codeMsg);
+                    if (data.code == 0) {
+                        $.ajax(
+                            {url:'/maintain-user/login-refresh',
+                            type:'post',
+                            beforeSend:function(){
+                                            this.layerIndex=layer.load(2)
+                                        },
+                            success:function(data){
+                            if(data.codeMsg)
+                                    layer.alert(data.codeMsg);
+                                if (data.code == 0) {
+                                    layer.msg('登录成功');
+                                    localStorage.setItem('maintainLogin',data.data)
+                                    location.href = './index.html';
+                                }
+                            },
+                                complete:function(){
+                                    layer.close(this.layerIndex)
+                                }
+                    })
+                }
+                },
+                    complete:function(){
+                        layer.close(this.layerIndex)
+                    }
+            })">登录</button>
+             <div style="text-align: right;">
+                <a href="/entrance.html">选择入口</a>
+            </div> 
+        </div>
+    </div>
+    <div class="zdlogin">
+        <!--<div class="registernow rt" style="color: #1890ff;cursor: pointer;">注册账户</div>-->
+    </div>
+
+        <div id="version"  style="color:gray;position: fixed;bottom:10px;left:50%;transform:  translateX(-50%);">
+            version: <a class="value" href="javascript:(0)"  style="color:gray"></a>
+        </div>
+</body>
+<script>
+
+</script>
+
+</html>

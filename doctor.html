@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>飞橙-运维-医生详情</title>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
+
+
+
+    <script src="https://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://lib.sinaapp.com/js/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script src="./layui-v2.5.5/layui.all.js"></script>
+    <link rel="stylesheet" href="./layui-v2.5.5/css/layui.css" />
+
+    <script src="./zTree_v3/js/jquery.ztree.all.js"></script>
+    <link rel="stylesheet" href="./zTree_v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
+
+    <link rel="stylesheet" type="text/css" href="./jquery-easyui-1.8.7/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="./jquery-easyui-1.8.7/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="./jquery-easyui-1.8.7/demo/demo.css">
+    <script type="text/javascript" src="./jquery-easyui-1.8.7/jquery.easyui.min.js"></script>
+
+    <link rel="stylesheet" href="./jQueryViewer20160329/css/viewer.min.css">
+    <script src="./jQueryViewer20160329/js/viewer.min.js"></script>
+    <script src="./jQueryViewer20160329/js/viewer-jquery.min.js"></script>
+
+
+    <link rel="stylesheet" href="./kindeditor/themes/default/default.css" />
+    <link rel="stylesheet" href="./kindeditor/plugins/code/prettify.css" />
+    <script charset="utf-8" src="./kindeditor/kindeditor-all.js"></script>
+    <script charset="utf-8" src="./kindeditor/lang/zh-CN.js"></script>
+    <script charset="utf-8" src="./kindeditor/plugins/code/prettify.js"></script>
+
+    <script src="./js/moment.js"></script>
+    <script src="./js/common.js"></script>
+
+</head>
+
+<style>
+
+</style>
+
+<script>
+
+    var queryStringObject = common.queryStringObject();
+    var doctor = {}
+
+    
+    $.ajax({
+        type: 'get',
+        url: `/maintain-user/doctor-${queryStringObject.doctorId}`,
+        async: false,
+        success: function (data) {
+            debugger
+            if (data.codeMsg)
+                layer.alert(data.codeMsg);
+            if (data.code == 0) {
+                doctor = data.data;
+            }
+        }
+    })
+
+
+    // var a = layer.load(2);
+    // setTimeout(function(){
+    //     layer.close(a)
+    // },500)
+
+    $.parser.onComplete = function () {
+        debugger
+    }
+
+
+    $(document).ready(function(){
+        debugger
+       
+      
+        $("#loading").remove();
+
+        if(doctor.cover)
+            $('#cover .value').attr("src",doctor.cover).show().parent().viewer({
+                                    url: "src",
+                                });
+        if(doctor.video)
+            $('#video .value').attr("src",doctor.video).show()
+    })
+
+
+function updateConfirm(){
+    debugger
+    layer.confirm('确认修改吗?',function(){
+       
+        $.ajax({
+                            type: 'post',
+                            url: '/maintain-user/update-doctor',
+                            data: doctor,
+                            beforeSend:function(){
+                                this.layerIndex=layer.load(2)
+                            },
+                            success: function (res) {
+                                debugger
+                                if (res.codeMsg)
+                                    layer.alert(res.codeMsg)
+                                if (res.code == 0) {
+                                    if (!res.codeMsg)
+                                        layer.alert('操作成功',function(){
+                                            location.reload()
+                                        })
+                                } 
+                            },
+                                        complete:function(){
+                                            layer.close(this.layerIndex)
+                                        }
+                        })
+    })
+    
+}
+        
+
+
+             
+function remove(){
+    debugger
+    layer.confirm('确认删除吗？', function(){
+        
+        $.ajax({
+                            type: 'post',
+                            url: '/maintain-user/update-doctor',
+                            data: {doctorId:doctor.doctorId,del:1},
+                            beforeSend:function(){
+                                this.layerIndex=layer.load(2)
+                            },
+                            success: function (res) {
+                                debugger
+                                if (res.codeMsg)
+                                    layer.alert(res.codeMsg)
+                                if (res.code == 0) {
+                                    if (!res.codeMsg)
+                                    layer.alert('操作成功',function(){
+                                            location.reload()
+                                        })
+                                } 
+                            },
+                                        complete:function(){
+                                            layer.close( this.layerIndex)
+                                        }
+                        })
+        });
+
+
+                         
+}
+
+    // var rowPad = {
+    //     selector: "#rowPad",
+    //     param: { token: null, doctorArticleId: null },
+    //     row: {
+
+    //     }, contentKindEditor: null,
+    //     beforePage: function () {
+    //         rowPad.param.doctorArticleId = queryStringObject.doctorArticleId
+
+    //         $.ajax({
+    //             type: 'get',
+    //             url: `/maintain-user/doctor-article/${rowPad.param.doctorArticleId}`,
+    //             async: false,
+    //             data: { token: rowPad.param.token },
+    //             success: function (data) {
+    //                 if (data.codeMsg)
+    //                     alert(data.codeMsg)
+    //                 if (data.code == 0) {
+    //                     rowPad.row = data.data;
+    //                 } else {
+    //                     maintainCommon.breakCodeProcess(data.code, data.codeMsg)
+    //                 }
+    //             }
+    //         })
+    //     },
+    //     afterPage: function () {
+    //         $(rowPad.selector).find('[name=dg]').datagrid()
+
+
+    //     },
+    //     rowAlter: function () {
+    //         $.ajax({
+    //             type: 'post',
+    //             url: '/maintain-user/doctor-article-alter',
+    //             data: Object.assign({ token: rowPad.param.token, doctorArticleId: rowPad.param.doctorArticleId, content: rowPad.contentKindEditor.html() }, rowPad.row),
+    //             success: function (data) {
+    //                 if (data.codeMsg)
+    //                     alert(data.codeMsg)
+    //                 if (data.code == 0) {
+    //                     if (!data.codeMsg)
+    //                         alert('操作成功')
+    //                     location.reload()
+    //                 } else {
+    //                     maintainCommon.breakCodeProcess(data.code, data.codeMsg)
+    //                 }
+    //             }
+    //         })
+    //     }
+    // }
+
+    // rowPad.beforePage()
+
+   
+
+</script>
+
+<body style="margin:0;padding:0;">
+    <div id="loading" class='' style="position: absolute; z-index: 1000; top: 0px; left: 0px; 
+    width: 100%; height: 100%; background: white; text-align: center;padding:5px 10px">
+        <font>loading···</font>
+    </div>
+
+        <table id="datagrid"  data-options="singleSelect:true,height:'700px'">
+            <thead>
+                <tr>
+                    <th data-options="field:'name',width:200,align:'right'">属性&nbsp;</th>
+                    <th data-options="field:'value',width:500">值</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>医生名称&nbsp;</td>
+                    <td><input id="name" class="easyui-textbox" style="width:100%" data-options="
+                        value:doctor.name,
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                debugger
+                                $(e.data.target).textbox('setValue','');
+                            }
+                        }],
+                        onChange:function(newValue, oldValue){
+                            doctor.name=newValue
+                        }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>封面&nbsp;</td>
+                    <td>
+                        <div id="cover">
+                            <img class="value" style="height:30px;cursor:pointer;vertical-align: baseline;display:none;" onerror='debugger;$(this).attr("src","./image/image-error.png");' />
+                            <input type="file" style="display:none;" onchange="
+                                javascript:
+                                var target = this;
+                                if(this.files.length>0){
+                                    var file = this.files[0];
+                                    var fd = new FormData()
+                                    fd.append('file', file);
+                                    $.ajax({
+                                        url: '/upload-static-file?' + $.param({ quality: 0.8 }),
+                                        type: 'POST',
+                                        data: fd,
+                                        cache: false,
+                                        processData: false,
+                                        contentType: false,
+                                        async: true,
+                                        beforeSend:function(){
+                                            this.layerIndex=layer.load(2)
+                                        },
+                                        success: function (res) {
+                                            if (res.codeMsg)
+                                                layer.alert(res.codeMsg)
+                                            if (res.code == 0) {
+                                                doctor.cover=res.data.url 
+                                                $(target).prev().attr('src',doctor.cover).show()
+                                             target.value=null
+                                            }
+                                        },
+                                        complete:function(){
+                                            layer.close(this.layerIndex)
+                                        }
+                                    })
+                                }
+                            " />
+                            <a title="删除" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-clear" plain="true"
+                                style="vertical-align: text-bottom;"
+                                onclick="$(this).prev().prev().attr('src',null).hide();doctor.cover='';"></a>
+
+                            <a title="选择" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-choose" plain="true"
+                                style="vertical-align: text-bottom;" onclick="$(this).prev().prev().click()"></a>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>视频&nbsp;</td>
+                    <td>
+                        <div id="video">
+                            <video class="value" style="width: 200px;height: 200px;display:none;" controls="controls" ></video>
+                            <input type="file" style="display:none;" onchange="
+                            javascript:
+                            debugger
+                           
+                            var target = this;
+                                if(this.files.length>0){
+                                    var file = this.files[0];
+                                    var fd = new FormData()
+                                    fd.append('file', file);
+                                    $.ajax({
+                                        url: '/upload-static-file?' + $.param({ quality: 0.8 }),
+                                        type: 'POST',
+                                        data: fd,
+                                        cache: false,
+                                        processData: false,
+                                        contentType: false,
+                                        async: true,
+                                        beforeSend:function(){
+                                            this.layerIndex=layer.load(2)
+                                        },
+                                        success: function (res) {
+                                            if (res.codeMsg)
+                                                layer.alert(res.codeMsg)
+                                            if (res.code == 0) {
+                                                doctor.video=res.data.url 
+                                                $(target).prev().attr('src',doctor.video).show()
+                                            }
+                                            target.value=null
+                                            
+                                        },
+                                        complete:function(){
+                                            layer.close(this.layerIndex)
+                                        }
+                                    })
+                                }
+                        " />
+                            <a title="删除" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-clear" plain="true"
+                                style="vertical-align: text-bottom;"
+                                onclick="$(this).prev().prev().attr('src',null).hide();doctor.video='';"></a>
+
+                            <a title="选择" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-choose" plain="true"
+                                style="vertical-align: text-bottom;" onclick="debugger;$(this).prev().prev().click()"></a>
+                        </div>
+                    </td>
+                </tr>
+                
+       
+                <tr>
+                    <td>标签&nbsp;</td>
+                    <td><input id="tag" class="easyui-textbox" style="width:100%" data-options="
+                        value:doctor.tag,
+                        prompt:'英文逗号间隔, 如: 标签1,标签2,标签3',
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                debugger
+                                $(e.data.target).textbox('setValue','');
+                            }
+                        }],
+                        onChange:function(newValue, oldValue){
+                            doctor.tag=newValue
+                        }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>简介&nbsp;</td>
+                    <td><input id="intro" class="easyui-textbox" style="width:100%;height:200px;" data-options="
+                            value:doctor.intro,
+                            multiline:true,
+                            onChange:function(newValue, oldValue){
+                                doctor.intro=newValue
+                            }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>医院&nbsp;</td>
+                    <td><input id="hospitalId" class="easyui-combobox"  style="width:100%;" data-options="
+                        text:doctor.hospitalName,
+                        value:doctor.hospitalId,
+                        valueField:'hospitalId',
+                        textField:'name',
+                        panelHeight:'auto',
+                        mode:'remote',
+                        onShowPanel:function(){
+                            $(this).combobox('reload')
+                        },
+                        loader: function (param, success, error) {
+                            debugger
+                            param.kw=param.q;
+                            param.ps = param.rows;
+                            param.pn = param.page;
+                            $.ajax({
+                                url: '/maintain-user/hospitals',
+                                type: 'get',
+                                data: param,
+                                success: function (data) {
+                                    if (data.code != 0) {
+                                        return false;
+                                    } else {
+                                        success(data.data);
+                                    }
+                
+                                }
+                            })
+                        },
+                        onChange:function(newValue, oldValue){
+                           doctor.hospitalId=newValue
+                           doctor.officeId=null
+                        },
+                        loadFilter: function (data) {
+                            debugger
+                            return data.rows;
+                        },
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                $(e.data.target).combobox('setValue','');
+                            }
+                        },{
+                            iconCls:'icon-eye',
+                            handler: function(e){
+                                $(e.data.target).combobox('setValue','');
+                            }
+                        }]
+                        "></td>
+                </tr>
+                <tr>
+                    <td>科室&nbsp;</td>
+                    <td><input id="officeId" class="easyui-combobox"  style="width:100%;" data-options="
+                        text:doctor.officeName,
+                        value:doctor.officeId,
+                        valueField:'officeId',
+                        textField:'name',
+                        panelHeight:'auto',
+                        mode:'remote',
+                        onShowPanel:function(){
+                            $(this).combobox('reload')
+                        },
+                        loader: function (param, success, error) {
+                            debugger
+                            if(!doctor.hospitalId)
+                                return;
+                            param.kw=param.q;
+                            param.hospitalId=doctor.hospitalId
+                            param.ps = param.rows;
+                            param.pn = param.page;
+                            $.ajax({
+                                url: '/maintain-user/offices',
+                                type: 'get',
+                                data: param,
+                                success: function (data) {
+                                    if (data.code != 0) {
+                                        return false;
+                                    } else {
+                                        success(data.data);
+                                    }
+                
+                                }
+                            })
+                        },
+                        onChange:function(newValue, oldValue){
+                           doctor.officeId=newValue
+                        },
+                        loadFilter: function (data) {
+                            debugger
+                            return data.rows;
+                        },
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                $(e.data.target).combobox('setValue','');
+                            }
+                        },{
+                            iconCls:'icon-eye',
+                            handler: function(e){
+                                $(e.data.target).combobox('setValue','');
+                            }
+                        }]
+                        "></td>
+                </tr>
+                <tr>
+                    <td>备注&nbsp;</td>
+                    <td><input id="remark" class="easyui-textbox" style="width:100%;height:200px;" data-options="
+                            value:doctor.remark,
+                            multiline:true,
+                            onChange:function(newValue, oldValue){
+                                doctor.remark=newValue
+                            }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>冻结&nbsp;</td>
+                    <td><input id="frozen" class="easyui-combobox" style="width:100%" data-options="
+                                    value:doctor.frozen,
+                                    editable:false,panelHeight:'auto',
+                                    data:[
+                                    {
+                                         text: '否',
+                                         value: '0'
+                                     },{
+                                         text: '是',
+                                         value: '1'
+                                     }],
+                                     iconWidth:20,
+                                     icons:[{
+                                         iconCls:'icon-clear',
+                                         handler: function(e){
+                                             $(e.data.target).combobox('setValue','');
+                                         }
+                                     }],
+                                     onChange:function(newValue, oldValue){
+                                        doctor.frozen=newValue
+                                     }" /></td>
+                </tr>
+                <tr>
+                    <td>冻结原因&nbsp;</td>
+                    <td><input id="frozenReason" class="easyui-textbox" style="width:100%;height:200px;" data-options="
+                            value:doctor.frozenReason,
+                            multiline:true,
+                            onChange:function(newValue, oldValue){
+                                doctor.frozenReason=newValue
+                            }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>排序号&nbsp;</td>
+                    <td><input id="orderNo" class="easyui-numberbox" style="width:100%" data-options="
+                                    value:doctor.orderNo,
+                                    precision:2,
+                                    iconWidth:20,
+                                    icons:[{
+                                        iconCls:'icon-clear',
+                                        handler: function(e){
+                                            $(e.data.target).textbox('setValue','');
+                                        }
+                                    }],
+                                    onChange:function(newValue, oldValue){
+                                        doctor.orderNo=newValue
+                                    }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>创建时间&nbsp;</td>
+                    <td><input id="createTime" class="easyui-datetimebox" style="width:100%" data-options="
+                                        value:moment(doctor.createTime).format('YYYY-MM-DD H:mm:ss'),
+                                        editable:false,
+                                        icons:[{
+                                            iconCls:'icon-clear',
+                                            handler: function(e){
+                                                $(e.data.target).datetimebox('setValue','');
+                                            }
+                                        }],
+                                        onChange:function(newValue, oldValue){
+                                            doctor.createTime=newValue
+                                        }"></td>
+                </tr>
+                <tr>
+                    <td>更新时间&nbsp;</td>
+                    <td><input id="updateTime" class="easyui-datetimebox" style="width:100%" data-options="
+                                            value:moment(doctor.updateTime).format('YYYY-MM-DD H:mm:ss'),
+                                            editable:false,
+                                            icons:[{
+                                                iconCls:'icon-clear',
+                                                handler: function(e){
+                                                    $(e.data.target).datetimebox('setValue','');
+                                                }
+                                            }],
+                                            onChange:function(newValue, oldValue){
+                                                doctor.updateTime=newValue
+                                            }"></td>
+                </tr>
+
+            </tbody>
+        </table>
+        
+        <div style="margin-left:5px;margin-top:5px;">
+            <a id="update" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-edit"
+                onclick="$('#update,#remove,#reload').hide();$('#updateConfirm,#updateCancel').show()">修改</a>
+            <a id="remove" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-remove"
+                onclick="remove()">删除</a>
+            <a id="reload" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-reload"
+                onclick="layer.confirm('已编辑的数据将丢失, 确认继续吗?',function(){location.reload()})">刷新</a>
+            <a id="updateConfirm" href="JavaScript:void(0)" class="easyui-linkbutton" style="display:none;" iconCls="icon-save"
+                onclick="updateConfirm()">确认</a>
+            <a id="updateCancel" href="JavaScript:void(0)" class="easyui-linkbutton" style="display:none;" iconCls="icon-cancel"
+                onclick="$('#update,#remove,#reload').show();$('#updateConfirm,#updateCancel').hide()">取消</a>
+        </div>
+</body>
+<script>
+        $('#datagrid').datagrid()
+</script>
+
+</html>
