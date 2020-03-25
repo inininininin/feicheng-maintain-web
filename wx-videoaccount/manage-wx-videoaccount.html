@@ -52,12 +52,12 @@ img {
                 { field: 'wx', title: '微信', width: 150, align: 'left', halign: 'center' },
                 {
                     field: 'type', title: '类型', width: 100, align: 'left', halign: 'center', formatter: function (value, row, index) {
-                        return value == 0 ? '未认证' :value == 1 ? '个人' :value ==2 ? '达人' :value == 3 ? '企业' : '未知';
+                        return value == 0 ? '未审核' :value == 1 ? '个人' :value ==2 ? '达人' :value == 3 ? '企业' : '未知';
                     }
                 },
                 {
                     field: 'status', title: '状态', width: 100, align: 'left', halign: 'center', formatter: function (value, row, index) {
-                        return value == 0 ? '未认证' :value == 1 ? '认证中' :value ==11 ? '认证成功' :value == 12 ? '认证失败' : '未知';
+                        return value == 0 ? '未审核' :value == 1 ? '审核中' :value ==11 ? '审核成功' :value == 12 ? '审核不通过' : '未知';
                     }
                 },
                 { field: 'area1Id', title: '省', width: 70, align: 'left', sortable: true, halign: 'center' , formatter: function (value, row, index) {
@@ -199,7 +199,7 @@ img {
     <div style="display:inline-block;">
         <input id="queryParam.type" class="easyui-combobox" label="类型:" labelPosition="left" labelAlign="right" style="width:300px" data-options="editable:false,panelHeight:'auto',value:'',data:[
 {
-                             text: '未认证',
+                             text: '未审核',
                              value: '0'
                          },{
                              text: '个人',
@@ -228,16 +228,16 @@ onChange:function(newValue, oldValue){
 <div style="display:inline-block;">
     <input id="queryParam.status" class="easyui-combobox" label="状态:" labelPosition="left" labelAlign="right" style="width:300px" data-options="editable:false,panelHeight:'auto',value:'',data:[
 {
-                         text: '未认证',
+                         text: '未审核',
                          value: '0'
                      },{
-                         text: '认证中',
+                         text: '审核中',
                          value: '1'
                      },{
-                        text: '认证成功',
+                        text: '审核成功',
                         value: '11'
                     },{
-                        text: '认证失败',
+                        text: '审核不通过',
                         value: '12'
                     }],
 iconWidth:20,
