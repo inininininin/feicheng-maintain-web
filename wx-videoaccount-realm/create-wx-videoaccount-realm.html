@@ -3,7 +3,7 @@
 
 <head>
 
-    <title>飞橙-运维-创建用户</title>
+    <title>飞橙-运维-创建领域</title>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
 
@@ -37,7 +37,7 @@
 </head>
 
 <style>
-img {
+    img {
         object-fit:contain;
     }
 </style>
@@ -45,7 +45,8 @@ img {
 <script>
 
     var queryStringObject = common.queryStringObject();
-    var user = {},contentKindEditor
+    var wxVideoaccountRealm = {
+    },contentKindEditor
 
     
 
@@ -56,22 +57,21 @@ img {
 
     $(document).ready(function(){
         debugger
+       
+
         $("#loading").remove();
     })
 
 
 function createConfirm(){
     debugger
-    if(user.password  != user.passwordConfirm){
-        $.messager.alert('提示',"两次密码不一致")
-        return;
-    }
-
-    $.messager.confirm('提示','确认创建吗?',function(){
+    $.messager.confirm('提示','确认创建吗?',function(r){
+if(r){
+     
         $.ajax({
                             type: 'post',
-                            url: '/maintain/user/create-user',
-                            data: user,
+                            url: '/maintain/wx-videoaccount-realm/create-wx-videoaccount-realm',
+                            data: wxVideoaccountRealm,
                             success: function (res) {
                                 debugger
                                 if (res.codeMsg)
@@ -84,6 +84,7 @@ function createConfirm(){
                                 } 
                             }
                         })
+                    }
     })
     
 }
@@ -107,9 +108,9 @@ function createConfirm(){
             </thead>
             <tbody>
                 <tr>
-                    <td>用户名&nbsp;</td>
+                    <td>领域名&nbsp;</td>
                     <td><input id="name" class="easyui-textbox" style="width:100%" data-options="
-                        value:user.name,
+                        value:wxVideoaccountRealm.name,
                         iconWidth:20,
                         icons:[{
                             iconCls:'icon-clear',
@@ -119,76 +120,12 @@ function createConfirm(){
                             }
                         }],
                         onChange:function(newValue, oldValue){
-                            user.name=newValue
+                            wxVideoaccountRealm.name=newValue
                         }" style="width:200px"></td>
                 </tr>
-                <tr>
-                    <td>手机&nbsp;</td>
-                    <td><input id="phone" class="easyui-textbox" style="width:100%" data-options="
-                        value:user.phone,
-                        iconWidth:20,
-                        icons:[{
-                            iconCls:'icon-clear',
-                            handler: function(e){
-                                debugger
-                                $(e.data.target).textbox('setValue','');
-                            }
-                        }],
-                        onChange:function(newValue, oldValue){
-                            user.phone=newValue
-                        }" style="width:200px"></td>
-                </tr>
+            
 
-                <tr>
-                    <td>昵称&nbsp;</td>
-                    <td><input id="nickname" class="easyui-textbox" style="width:100%" data-options="
-                        value:user.nickname,
-                        iconWidth:20,
-                        icons:[{
-                            iconCls:'icon-clear',
-                            handler: function(e){
-                                debugger
-                                $(e.data.target).textbox('setValue','');
-                            }
-                        }],
-                        onChange:function(newValue, oldValue){
-                            user.nickname=newValue
-                        }" style="width:200px"></td>
-                </tr>
                
-               <tr>
-                    <td>密码&nbsp;</td>
-                    <td><input id="password" class="easyui-passwordbox" style="width:100%" data-options="
-                        value:user.password,
-                        iconWidth:20,
-                        icons:[{
-                            iconCls:'icon-clear',
-                            handler: function(e){
-                                debugger
-                                $(e.data.target).textbox('setValue','');
-                            }
-                        }],
-                        onChange:function(newValue, oldValue){
-                            user.password=newValue
-                        }" style="width:200px"></td>
-                </tr>
-               
-                <tr>
-                    <td>确认密码&nbsp;</td>
-                    <td><input id="passwordConfirm" class="easyui-passwordbox" style="width:100%" data-options="
-                        value:user.passwordConfirm,
-                        iconWidth:20,
-                        icons:[{
-                            iconCls:'icon-clear',
-                            handler: function(e){
-                                debugger
-                                $(e.data.target).textbox('setValue','');
-                            }
-                        }],
-                        onChange:function(newValue, oldValue){
-                            user.passwordConfirm=newValue
-                        }" style="width:200px"></td>
-                </tr>
             </tbody>
         </table>
         

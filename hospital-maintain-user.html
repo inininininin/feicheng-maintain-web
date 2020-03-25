@@ -50,7 +50,7 @@
     
     $.ajax({
         type: 'get',
-        url: `/maintain-user/hospital-maintain-user-${queryStringObject.hospitalMaintainUserId}`,
+        url: `/maintain/hospital-maintain-${queryStringObject.hospitalMaintainUserId}`,
         async: false,
         success: function (data) {
             debugger
@@ -96,7 +96,7 @@ function updateConfirm(){
     layer.confirm('确认修改吗?',function(){
         $.ajax({
                             type: 'post',
-                            url: '/maintain-user/update-hospital-maintain-user',
+                            url: '/maintain/update-hospital-maintain',
                             data: hospitalMaintainUser,
                             beforeSend:function(){
                                 this.layerIndex=layer.load(2)
@@ -129,7 +129,7 @@ function remove(){
         
         $.ajax({
                             type: 'post',
-                            url: '/maintain-user/update-hospital-maintain-user',
+                            url: '/maintain/update-hospital-maintain',
                             data: {hospitalMaintainUserId:hospitalMaintainUser.hospitalMaintainUserId,del:1},
                             beforeSend:function(){
                                 this.layerIndex=layer.load(2)
@@ -166,7 +166,7 @@ function remove(){
 
     //         $.ajax({
     //             type: 'get',
-    //             url: `/maintain-user/user-article/${rowPad.param.userArticleId}`,
+    //             url: `/maintain/user-article/${rowPad.param.userArticleId}`,
     //             async: false,
     //             data: { token: rowPad.param.token },
     //             success: function (data) {
@@ -188,7 +188,7 @@ function remove(){
     //     rowAlter: function () {
     //         $.ajax({
     //             type: 'post',
-    //             url: '/maintain-user/user-article-alter',
+    //             url: '/maintain/user-article-alter',
     //             data: Object.assign({ token: rowPad.param.token, userArticleId: rowPad.param.userArticleId, content: rowPad.contentKindEditor.html() }, rowPad.row),
     //             success: function (data) {
     //                 if (data.codeMsg)
@@ -370,7 +370,7 @@ function remove(){
                             param.ps = param.rows;
                             param.pn = param.page;
                             $.ajax({
-                                url: '/maintain-user/hospitals',
+                                url: '/maintain/hospitals',
                                 type: 'get',
                                 data: param,
                                 success: function (data) {

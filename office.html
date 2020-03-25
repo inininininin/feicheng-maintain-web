@@ -50,7 +50,7 @@
     
     $.ajax({
         type: 'get',
-        url: `/maintain-user/office-${queryStringObject.officeId}`,
+        url: `/maintain/office-${queryStringObject.officeId}`,
         async: false,
         success: function (data) {
             debugger
@@ -94,7 +94,7 @@ function updateConfirm(){
        
         $.ajax({
                             type: 'post',
-                            url: '/maintain-user/update-office',
+                            url: '/maintain/update-office',
                             data: office,
                             beforeSend:function(){
                                 this.layerIndex=layer.load(2)
@@ -127,7 +127,7 @@ function remove(){
         
         $.ajax({
                             type: 'post',
-                            url: '/maintain-user/update-office',
+                            url: '/maintain/update-office',
                             data: {officeId:office.officeId,del:1},
                             beforeSend:function(){
                                 this.layerIndex=layer.load(2)
@@ -164,7 +164,7 @@ function remove(){
 
     //         $.ajax({
     //             type: 'get',
-    //             url: `/maintain-user/office-article/${rowPad.param.officeArticleId}`,
+    //             url: `/maintain/office-article/${rowPad.param.officeArticleId}`,
     //             async: false,
     //             data: { token: rowPad.param.token },
     //             success: function (data) {
@@ -186,7 +186,7 @@ function remove(){
     //     rowAlter: function () {
     //         $.ajax({
     //             type: 'post',
-    //             url: '/maintain-user/office-article-alter',
+    //             url: '/maintain/office-article-alter',
     //             data: Object.assign({ token: rowPad.param.token, officeArticleId: rowPad.param.officeArticleId, content: rowPad.contentKindEditor.html() }, rowPad.row),
     //             success: function (data) {
     //                 if (data.codeMsg)
@@ -382,7 +382,7 @@ function remove(){
                             param.ps = param.rows;
                             param.pn = param.page;
                             $.ajax({
-                                url: '/maintain-user/hospitals',
+                                url: '/maintain/hospitals',
                                 type: 'get',
                                 data: param,
                                 success: function (data) {

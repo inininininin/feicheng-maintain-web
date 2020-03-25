@@ -10,9 +10,10 @@
 
     function attrs(self, name) {
         var values = [];
-        self.each(function (index, ele) {
-            values.push($(ele).attr(name))
-        })
+        if(self)
+            self.each(function (index, ele) {
+                values.push($(ele).attr(name))
+            })
         return values
     }
 

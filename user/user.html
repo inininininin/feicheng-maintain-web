@@ -5,68 +5,46 @@
 
     <title>飞橙-运维-用户详情</title>
     <meta charset="UTF-8">
-    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
-
-
-
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
     <script src="https://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://lib.sinaapp.com/js/bootstrap/3.3.7/css/bootstrap.min.css" />
-    <script src="./layui-v2.5.5/layui.all.js"></script>
-    <link rel="stylesheet" href="./layui-v2.5.5/css/layui.css" />
-
-    <script src="./zTree_v3/js/jquery.ztree.all.js"></script>
-    <link rel="stylesheet" href="./zTree_v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
-
-    <link rel="stylesheet" type="text/css" href="./jquery-easyui-1.8.7/themes/default/easyui.css">
-    <link rel="stylesheet" type="text/css" href="./jquery-easyui-1.8.7/themes/icon.css">
-    <link rel="stylesheet" type="text/css" href="./jquery-easyui-1.8.7/demo/demo.css">
-    <script type="text/javascript" src="./jquery-easyui-1.8.7/jquery.easyui.min.js"></script>
-
-    <link rel="stylesheet" href="./jQueryViewer20160329/css/viewer.min.css">
-    <script src="./jQueryViewer20160329/js/viewer.min.js"></script>
-    <script src="./jQueryViewer20160329/js/viewer-jquery.min.js"></script>
-
-
-    <link rel="stylesheet" href="./kindeditor/themes/default/default.css" />
-    <link rel="stylesheet" href="./kindeditor/plugins/code/prettify.css" />
-    <script charset="utf-8" src="./kindeditor/kindeditor-all.js"></script>
-    <script charset="utf-8" src="./kindeditor/lang/zh-CN.js"></script>
-    <script charset="utf-8" src="./kindeditor/plugins/code/prettify.js"></script>
-
-    <script src="./js/moment.js"></script>
-    <script src="./js/common.js"></script>
-
+    <script src="../zTree_v3/js/jquery.ztree.all.js"></script>
+    <link rel="stylesheet" href="../zTree_v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
+    <link rel="stylesheet" type="text/css" href="../jquery-easyui-1.8.7/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../jquery-easyui-1.8.7/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../jquery-easyui-1.8.7/demo/demo.css">
+    <script type="text/javascript" src="../jquery-easyui-1.8.7/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../jquery-easyui-1.8.7/locale/easyui-lang-zh_CN.js"></script>
+    <link rel="stylesheet" href="../jQueryViewer20160329/css/viewer.min.css">
+    <script src="../jQueryViewer20160329/js/viewer.min.js"></script>
+    <script src="../jQueryViewer20160329/js/viewer-jquery.min.js"></script>
+    <link rel="stylesheet" href="../kindeditor/themes/default/default.css" />
+    <link rel="stylesheet" href="../kindeditor/plugins/code/prettify.css" />
+    <script charset="utf-8" src="../kindeditor/kindeditor-all.js"></script>
+    <script charset="utf-8" src="../kindeditor/lang/zh-CN.js"></script>
+    <script charset="utf-8" src="../kindeditor/plugins/code/prettify.js"></script>
+    <script src="../js/moment.js"></script>
+    <script src="../js/common.js"></script>
 </head>
 
 <style>
-
+img {
+        object-fit:contain;
+    }
 </style>
 
 <script>
+
+
 
     var queryStringObject = common.queryStringObject();
     var user = {}
 
     
-    $.ajax({
-        type: 'get',
-        url: `/maintain-user/user-${queryStringObject.userId}`,
-        async: false,
-        success: function (data) {
-            debugger
-            if (data.codeMsg)
-                layer.alert(data.codeMsg);
-            if (data.code == 0) {
-                user = data.data;
-            }
-        }
-    })
+   
 
 
-    // var a = layer.load(2);
-    // setTimeout(function(){
-    //     layer.close(a)
-    // },500)
+
+
 
     $.parser.onComplete = function () {
         debugger
@@ -75,42 +53,27 @@
 
     $(document).ready(function(){
         debugger
-       
-      
-      
         $("#loading").remove();
-
-        if(user.cover)
-            $('#cover .value').attr("src",user.cover).show().parent().viewer({
-                                    url: "src",
-     
-    })
+        
     })
 
 function updateConfirm(){
     debugger
-    layer.confirm('确认修改吗?',function(){
+    $.messager.confirm('提示','确认修改吗?',function(r){
+        if(r)
         $.ajax({
                             type: 'post',
-                            url: '/maintain-user/update-user',
+                            url: '/maintain/user/update-user',
                             data: user,
-                            beforeSend:function(){
-                                this.layerIndex=layer.load(2)
-                            },
                             success: function (res) {
                                 debugger
                                 if (res.codeMsg)
-                                    layer.alert(res.codeMsg)
+                                    $.messager.alert('提示',res.codeMsg);
                                 if (res.code == 0) {
                                     if (!res.codeMsg)
-                                        layer.alert('操作成功',function(){
-                                            location.reload()
-                                        })
+                                          $.messager.alert('提示','操作成功',null,function(){ location.reload()});
                                 } 
-                            },
-                                        complete:function(){
-                                            layer.close(this.layerIndex)
-                                        }
+                            }
                         })
     })
     
@@ -121,29 +84,21 @@ function updateConfirm(){
              
 function remove(){
     debugger
-    layer.confirm('确认删除吗？', function(){
-        
+    $.messager.confirm('提示','确认删除吗？', function(r){
+        if(r)
         $.ajax({
                             type: 'post',
-                            url: '/maintain-user/update-user',
-                            data: {userId:user.userId,del:1},
-                            beforeSend:function(){
-                                this.layerIndex=layer.load(2)
-                            },
+                            url: '/maintain/user/delete-user-list',
+                            data: {userId:user.userId,expectedItemCount:1},
                             success: function (res) {
                                 debugger
                                 if (res.codeMsg)
-                                    layer.alert(res.codeMsg)
+                                    $.messager.alert('提示',res.codeMsg);
                                 if (res.code == 0) {
                                     if (!res.codeMsg)
-                                    layer.alert('操作成功',function(){
-                                            location.reload()
-                                        })
+                                        $.messager.alert('提示','操作成功',null,function(){ location.reload()});
                                 } 
-                            },
-                                        complete:function(){
-                                            layer.close( this.layerIndex)
-                                        }
+                            }
                         })
         });
 
@@ -151,59 +106,6 @@ function remove(){
                          
 }
 
-    // var rowPad = {
-    //     selector: "#rowPad",
-    //     param: { token: null, userArticleId: null },
-    //     row: {
-
-    //     }, contentKindEditor: null,
-    //     beforePage: function () {
-    //         rowPad.param.userArticleId = queryStringObject.userArticleId
-
-    //         $.ajax({
-    //             type: 'get',
-    //             url: `/maintain-user/user-article/${rowPad.param.userArticleId}`,
-    //             async: false,
-    //             data: { token: rowPad.param.token },
-    //             success: function (data) {
-    //                 if (data.codeMsg)
-    //                     alert(data.codeMsg)
-    //                 if (data.code == 0) {
-    //                     rowPad.row = data.data;
-    //                 } else {
-    //                     maintainCommon.breakCodeProcess(data.code, data.codeMsg)
-    //                 }
-    //             }
-    //         })
-    //     },
-    //     afterPage: function () {
-    //         $(rowPad.selector).find('[name=dg]').datagrid()
-
-
-    //     },
-    //     rowAlter: function () {
-    //         $.ajax({
-    //             type: 'post',
-    //             url: '/maintain-user/user-article-alter',
-    //             data: Object.assign({ token: rowPad.param.token, userArticleId: rowPad.param.userArticleId, content: rowPad.contentKindEditor.html() }, rowPad.row),
-    //             success: function (data) {
-    //                 if (data.codeMsg)
-    //                     alert(data.codeMsg)
-    //                 if (data.code == 0) {
-    //                     if (!data.codeMsg)
-    //                         alert('操作成功')
-    //                     location.reload()
-    //                 } else {
-    //                     maintainCommon.breakCodeProcess(data.code, data.codeMsg)
-    //                 }
-    //             }
-    //         })
-    //     }
-    // }
-
-    // rowPad.beforePage()
-
-   
 
 </script>
 
@@ -212,7 +114,21 @@ function remove(){
     width: 100%; height: 100%; background: white; text-align: center;padding:5px 10px">
         <font>loading···</font>
     </div>
-
+    <script>
+         $.ajax({
+        type: 'get',
+        url: `/maintain/user/user?userId=${queryStringObject.userId}`,
+        async: false,
+        success: function (res) {
+            debugger
+            if (res.codeMsg)
+                $.messager.alert('提示',res.codeMsg);
+            if (res.code == 0) {
+                user = res.data;
+            }
+        }
+    })
+    </script>
         <table id="datagrid"  data-options="singleSelect:true,height:'700px'">
             <thead>
                 <tr>
@@ -221,8 +137,16 @@ function remove(){
                 </tr>
             </thead>
             <tbody>
+                 
                 <tr>
-                    <td>用户名称&nbsp;</td>
+                    <td>用户Id&nbsp;</td>
+                    <td><span id="userId"  ></span>
+                        <img src="../image/image-error.png" onload="$('#userId').text(user.userId||'')" style="display:none;"/>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td>用户名&nbsp;</td>
                     <td><input id="name" class="easyui-textbox" style="width:100%" data-options="
                         value:user.name,
                         iconWidth:20,
@@ -254,10 +178,87 @@ function remove(){
                         }" style="width:200px"></td>
                 </tr>
                 <tr>
-                    <td>封面&nbsp;</td>
+                    <td>昵称&nbsp;</td>
+                    <td><input id="nickname" class="easyui-textbox" style="width:100%" data-options="
+                        value:user.nickname,
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                debugger
+                                $(e.data.target).textbox('setValue','');
+                            }
+                        }],
+                        onChange:function(newValue, oldValue){
+                            user.nickname=newValue
+                        }" style="width:200px"></td>
+                </tr>
+                
+                <!-- <tr>
+                    <td>微信视频号&nbsp;</td>
+                    <td><a id="wxVideoaccountName" href="javascript:void(0)" onclick="javascript:common.newTab(`视频号:${user.wxVideoaccountName.substring(0, 10)}...`,`/maintain/user/user.html?wxVideoaccountId=${user.wxVideoaccountId}`)" ></a>
+                        <img src="../image/image-error.png" onload="$('#wxVideoaccountName').text(user.wxVideoaccountName||'')" style="display:none;"/>
+                    </td>
+                </tr> -->
+                <tr>
+                    <td>视频号&nbsp;</td>
+                    <td><input class="easyui-combobox" name="userId" style="width:100%;" data-options="
+                        value:user.wxVideoaccountId,
+                        text:user.wxVideoaccountName,
+                        valueField:'wxVideoaccountId',
+                        textField:'name',
+                        panelHeight:'auto',
+                        mode:'remote',
+                        onShowPanel:function(){
+                            $(this).combobox('reload')
+                        },
+                        loader: function (param, success, error) {
+                            debugger
+                            param.kw=param.q;
+                            param.ps = param.rows;
+                            param.pn = param.page;
+                            $.ajax({
+                                url: '/maintain/wx-videoaccount/wx-videoaccount-list',
+                                type: 'get',
+                                data: param,
+                                success: function (data) {
+                                    if (data.code != 0) {
+                                        return false;
+                                    } else {
+                                        success(data.data);
+                                    }
+                
+                                }
+                            })
+                        },
+                        onChange:function(newValue, oldValue){
+                            user.wxVideoaccountId=newValue
+                        },
+                        loadFilter: function (data) {
+                            debugger
+                            return data.itemList;
+                        },
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-redo',
+                            handler: function(e){
+                                common.newTab(`视频号:${user.wxVideoaccountName.substring(0, 10)}...`,`/maintain/wx-videoaccount/wx-videoaccount.html?wxVideoaccountId=${user.wxVideoaccountId}`)
+                            }
+                        },{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                $(e.data.target).combobox('setValue','');
+                            }
+                        }]
+                        "></td>
+                </tr>
+
+                <tr>
+                    <td>头像&nbsp;</td>
                     <td>
-                        <div id="cover">
-                            <img class="value" style="height:30px;cursor:pointer;vertical-align: baseline;display:none;" onerror='debugger;$(this).attr("src","./image/image-error.png");' />
+                        <div id="logo">
+                            <img style="display:none;" src="../image/image-error.png" onload="$('#logo-value').attr('src',user.logo).show().parent().viewer({url: 'src',})" />
+                            <img id="logo-value" style="width:30px;height:30px;cursor:pointer;vertical-align: baseline;display:none;" onerror='debugger;$(this).attr("src","../image/image-error.png");' />
                             <input type="file" style="display:none;" onchange="
                                 javascript:
                                 var target = this;
@@ -266,213 +267,35 @@ function remove(){
                                     var fd = new FormData()
                                     fd.append('file', file);
                                     $.ajax({
-                                        url: '/upload-static-file?' + $.param({ quality: 0.8 }),
+                                        url: '/upload-file?' + $.param({ quality: 0.8 }),
                                         type: 'POST',
                                         data: fd,
                                         cache: false,
                                         processData: false,
                                         contentType: false,
                                         async: true,
-                                        beforeSend:function(){
-                                            this.layerIndex=layer.load(2)
-                                        },
                                         success: function (res) {
                                             if (res.codeMsg)
-                                                layer.alert(res.codeMsg)
+                                                $.messager.alert('提示',res.codeMsg);
                                             if (res.code == 0) {
-                                                user.cover=res.data.url 
-                                                $(target).prev().attr('src',user.cover).show()
-                                             target.value=null
+                                                user.logo=res.data.url 
+                                                $(target).prev().attr('src',user.logo).show()
+                                                target.value=null
                                             }
-                                        },
-                                        complete:function(){
-                                            layer.close(this.layerIndex)
                                         }
                                     })
                                 }
                             " />
                             <a title="删除" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-clear" plain="true"
                                 style="vertical-align: text-bottom;"
-                                onclick="$(this).prev().prev().attr('src',null).hide();user.cover='';"></a>
+                                onclick="$(this).prev().prev().attr('src',null).hide();user.logo='';"></a>
 
                             <a title="选择" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-choose" plain="true"
                                 style="vertical-align: text-bottom;" onclick="$(this).prev().prev().click()"></a>
                         </div>
                     </td>
                 </tr>
-                <tr>
-                    <td>医院&nbsp;</td>
-                    <td><input id="hospitalId" class="easyui-combobox"  style="width:100%;" data-options="
-                        text:user.hospitalName,
-                        value:user.hospitalId,
-                        valueField:'hospitalId',
-                        textField:'name',
-                        panelHeight:'auto',
-                        mode:'remote',
-                        onShowPanel:function(){
-                            $(this).combobox('reload')
-                        },
-                        loader: function (param, success, error) {
-                            debugger
-                            param.kw=param.q;
-                            param.ps = param.rows;
-                            param.pn = param.page;
-                            $.ajax({
-                                url: '/maintain-user/hospitals',
-                                type: 'get',
-                                data: param,
-                                success: function (data) {
-                                    if (data.code != 0) {
-                                        return false;
-                                    } else {
-                                        success(data.data);
-                                    }
                 
-                                }
-                            })
-                        },
-                        onChange:function(newValue, oldValue){
-                           user.hospitalId=newValue
-                        },
-                        loadFilter: function (data) {
-                            debugger
-                            return data.rows;
-                        },
-                        iconWidth:20,
-                        icons:[{
-                            iconCls:'icon-clear',
-                            handler: function(e){
-                                $(e.data.target).combobox('setValue','');
-                            }
-                        },{
-                            iconCls:'icon-eye',
-                            handler: function(e){
-                                $(e.data.target).combobox('setValue','');
-                            }
-                        }]
-                        "></td>
-                </tr>
-                <tr>
-                    <td>类型&nbsp;</td>
-                    <td><input id="type" class="easyui-combobox" style="width:100%" data-options="
-                                    value:user.type,
-                                    editable:false,panelHeight:'auto',
-                                    data:[
-                                    {
-                                         text: '普通',
-                                         value: '0'
-                                     },{
-                                         text: '医生',
-                                         value: '1'
-                                     },{
-                                        text: '医护',
-                                        value: '2'
-                                    }],
-                                     iconWidth:20,
-                                     icons:[{
-                                         iconCls:'icon-clear',
-                                         handler: function(e){
-                                             $(e.data.target).combobox('setValue','');
-                                         }
-                                     }],
-                                     onChange:function(newValue, oldValue){
-                                        user.type=newValue
-                                     }" /></td>
-                </tr>
-                <tr>
-                    <td>医生&nbsp;</td>
-                    <td><input id="type1DoctorId" class="easyui-combobox"  style="width:100%;" data-options="
-                        text:user.type1DoctorName,
-                        value:user.type1DoctorId,
-                        valueField:'doctorId',
-                        textField:'name',
-                        panelHeight:'auto',
-                        mode:'remote',
-                        onShowPanel:function(){
-                            $(this).combobox('reload')
-                        },
-                        loader: function (param, success, error) {
-                            debugger
-                            param.kw=param.q;
-                            param.ps = param.rows;
-                            param.pn = param.page;
-                            $.ajax({
-                                url: '/maintain-user/doctors',
-                                type: 'get',
-                                data: param,
-                                success: function (data) {
-                                    if (data.code != 0) {
-                                        return false;
-                                    } else {
-                                        success(data.data);
-                                    }
-                
-                                }
-                            })
-                        },
-                        onChange:function(newValue, oldValue){
-                           user.type1DoctorId=newValue
-                        },
-                        loadFilter: function (data) {
-                            debugger
-                            return data.rows;
-                        },
-                        iconWidth:20,
-                        icons:[{
-                            iconCls:'icon-clear',
-                            handler: function(e){
-                                $(e.data.target).combobox('setValue','');
-                            }
-                        }]
-                        "></td>
-                </tr>
-                <tr>
-                    <td>医护&nbsp;</td>
-                    <td><input id="type2NurseId" class="easyui-combobox"  style="width:100%;" data-options="
-                        text:user.type2NurseName,
-                        value:user.type2NurseId,
-                        valueField:'nurseId',
-                        textField:'name',
-                        panelHeight:'auto',
-                        mode:'remote',
-                        onShowPanel:function(){
-                            $(this).combobox('reload')
-                        },
-                        loader: function (param, success, error) {
-                            debugger
-                            param.kw=param.q;
-                            param.ps = param.rows;
-                            param.pn = param.page;
-                            $.ajax({
-                                url: '/maintain-user/nurses',
-                                type: 'get',
-                                data: param,
-                                success: function (data) {
-                                    if (data.code != 0) {
-                                        return false;
-                                    } else {
-                                        success(data.data);
-                                    }
-                
-                                }
-                            })
-                        },
-                        onChange:function(newValue, oldValue){
-                           user.type2NurseId=newValue
-                        },
-                        loadFilter: function (data) {
-                            debugger
-                            return data.rows;
-                        },
-                        iconWidth:20,
-                        icons:[{
-                            iconCls:'icon-clear',
-                            handler: function(e){
-                                $(e.data.target).combobox('setValue','');
-                            }
-                        }]
-                        "></td>
-                </tr>
                 <tr>
                     <td>备注&nbsp;</td>
                     <td><input id="remark" class="easyui-textbox" style="width:100%;height:200px;" data-options="
@@ -549,17 +372,64 @@ function remove(){
             </tbody>
         </table>
         
+
         <div style="margin-left:5px;margin-top:5px;">
             <a id="update" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-edit"
-                onclick="$('#update,#remove,#reload').hide();$('#updateConfirm,#updateCancel').show()">修改</a>
+                onclick="$('#update,#remove,#reload,#updatePasswordPageEntrance').hide();$('#updateConfirm,#updateCancel').show()">修改</a>
+            <a id="updatePasswordPageEntrance" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-edit"
+                onclick="$('#updatePasswordPage').window('open')">修改密码</a>
             <a id="remove" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-remove"
                 onclick="remove()">删除</a>
             <a id="reload" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-reload"
-                onclick="layer.confirm('已编辑的数据将丢失, 确认继续吗?',function(){location.reload()})">刷新</a>
+                onclick="$.messager.confirm('提示','已编辑的数据将丢失, 确认继续吗?',function(r){if(r) location.reload()})">刷新</a>
             <a id="updateConfirm" href="JavaScript:void(0)" class="easyui-linkbutton" style="display:none;" iconCls="icon-save"
                 onclick="updateConfirm()">确认</a>
             <a id="updateCancel" href="JavaScript:void(0)" class="easyui-linkbutton" style="display:none;" iconCls="icon-cancel"
-                onclick="$('#update,#remove,#reload').show();$('#updateConfirm,#updateCancel').hide()">取消</a>
+                onclick="$('#update,#remove,#reload,#updatePasswordPageEntrance').show();$('#updateConfirm,#updateCancel').hide()">取消</a>
+        </div>
+
+
+
+
+        <div id="updatePasswordPage" class="easyui-window" title="修改密码" data-options="iconCls:'icon-save',shadow:true,closed:true,footer:'#updatePasswordPage-footer',
+        onOpen:function(){}" style="width:500px;height:200px;padding:10px;">
+        <form id="updatePasswordPage-form" method="post">
+            <div style="margin-bottom:20px">
+                <input id="updatePasswordPage-newPassword" class="easyui-passwordbox" label="新密码:" labelPosition="left" labelAlign="right" style="width:100%" data-options="
+                icons:[{
+                    iconCls:'icon-clear',
+                    handler: function(e){
+                        $(e.data.target).passwordbox('setValue','');
+                    }
+                }]">
+            </div>
+            <div style="margin-bottom:20px">
+                <input id="updatePasswordPage-newPasswordConfirm" class="easyui-passwordbox" label="密码确认:" labelPosition="left" labelAlign="right" style="width:100%" data-options="
+                icons:[{
+                    iconCls:'icon-clear',
+                    handler: function(e){
+                        $(e.data.target).passwordbox('setValue','');
+                    }
+                }]">
+            </div>
+        </form>
+            <div id="updatePasswordPage-footer" style="text-align:right;padding:5px;">
+                <a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="javascript:updatePasswordPage.confirm()" style="width:80px">确认</a>
+                <a class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="javascript:updatePasswordPage.cancel()" style="width:80px">取消</a>
+            </div>
+            <script>
+                var updatePasswordPage = {
+                    confirm(){
+                        $('#updatePasswordPage').window("close")
+                        $('#updatePasswordPage-form').form('clear');
+                    },
+                    cancel(){
+                        $('#updatePasswordPage').window("close")
+                        $('#updatePasswordPage-form').form('clear');
+                    }
+                }
+
+            </script>
         </div>
 </body>
 <script>

@@ -50,7 +50,7 @@
     
     $.ajax({
         type: 'get',
-        url: `/maintain-user/nurse-${queryStringObject.nurseId}`,
+        url: `/maintain/nurse-${queryStringObject.nurseId}`,
         async: false,
         success: function (data) {
             debugger
@@ -94,7 +94,7 @@ function updateConfirm(){
        
         $.ajax({
                             type: 'post',
-                            url: '/maintain-user/update-nurse',
+                            url: '/maintain/update-nurse',
                             data: nurse,
                             beforeSend:function(){
                                 this.layerIndex=layer.load(2)
@@ -127,7 +127,7 @@ function remove(){
         
         $.ajax({
                             type: 'post',
-                            url: '/maintain-user/update-nurse',
+                            url: '/maintain/update-nurse',
                             data: {nurseId:nurse.nurseId,del:1},
                             beforeSend:function(){
                                 this.layerIndex=layer.load(2)
@@ -164,7 +164,7 @@ function remove(){
 
     //         $.ajax({
     //             type: 'get',
-    //             url: `/maintain-user/nurse-article/${rowPad.param.nurseArticleId}`,
+    //             url: `/maintain/nurse-article/${rowPad.param.nurseArticleId}`,
     //             async: false,
     //             data: { token: rowPad.param.token },
     //             success: function (data) {
@@ -186,7 +186,7 @@ function remove(){
     //     rowAlter: function () {
     //         $.ajax({
     //             type: 'post',
-    //             url: '/maintain-user/nurse-article-alter',
+    //             url: '/maintain/nurse-article-alter',
     //             data: Object.assign({ token: rowPad.param.token, nurseArticleId: rowPad.param.nurseArticleId, content: rowPad.contentKindEditor.html() }, rowPad.row),
     //             success: function (data) {
     //                 if (data.codeMsg)
@@ -382,7 +382,7 @@ function remove(){
                             param.ps = param.rows;
                             param.pn = param.page;
                             $.ajax({
-                                url: '/maintain-user/hospitals',
+                                url: '/maintain/hospitals',
                                 type: 'get',
                                 data: param,
                                 success: function (data) {

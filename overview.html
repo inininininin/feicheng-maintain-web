@@ -33,7 +33,7 @@
 </body>
 
 <script>
-   $.get('/maintain-user/overview',function(data){
+   $.get('/maintain/overview',function(data){
     $('#requestCountOfOneHourRecently').text(data.data.requestCountOfOneHourRecently)
     $('#requestCountOfOneDayRecently').text(data.data.requestCountOfOneDayRecently)
     $('#requestCountOfOneWeekRecently').text(data.data.requestCountOfOneWeekRecently)

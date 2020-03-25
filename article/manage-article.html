@@ -3,7 +3,7 @@
 
 <head>
 
-    <title>飞橙-运维-用户管理</title>
+    <title>飞橙-运维-文章管理</title>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
 
@@ -44,19 +44,23 @@ img {
             $('#datagrid').datagrid({
             columns: [[
                 {
-                    field: 'logo', title: '头像', width: 60, align: 'center', halign: 'center', formatter: function (value, row, index) {
+                    field: 'cover', title: '封面', width: 60, align: 'center', halign: 'center', formatter: function (value, row, index) {
                         return value ? `<span class="image-previewer"><img src='${value}' style='width:50px;cursor:pointer;' data-original='${value}'/></span>` : value
                     }
                 },
-                 { field: 'wxVideoaccountName', title: '视频号', width: 200, align: 'left', halign: 'center' },
-               
-                { field: 'remark', title: '备注', width: 200, align: 'left', halign: 'center' },
+                { field: 'viewCount', title: '浏览量', width: 70, align: 'right', sortable: true, halign: 'center' },
+                { field: 'likeCount', title: '点赞量', width: 70, align: 'right', sortable: true, halign: 'center' },
+                { field: 'articleClassification1Id', title: '分类1', width: 100, align: 'left',sortable: true, halign: 'center' ,formatter:function(value, row, index) {
+                    return row.articleClassification1Name;
+                }},
+                 { field: 'brief', title: '简介', width: 200, align: 'left', halign: 'center' },
+                 { field: 'remark', title: '备注', width: 200, align: 'left', halign: 'center' },
                 {
                     field: 'frozen', title: '冻结', width: 50, align: 'center', halign: 'center', formatter: function (value, row, index) {
                         return value == 1 ? '是' : '否';
                     }
                 },
-                // { field: 'orderNo', title: '排序号', width: 70, align: 'right', sortable: true, halign: 'center' },
+                { field: 'orderNo', title: '排序号', width: 70, align: 'right', sortable: true, halign: 'center' },
                 {
                     field: 'createTime', title: '创建时间', width: 175, align: 'center', sortable: true, halign: 'center', formatter: function (value, row, index) {
                         return value ? moment(value).format('YYYY-MM-DD HH:mm:ss') : value;
@@ -71,15 +75,15 @@ img {
             frozenColumns: [[
                 { field: 'ck', align: 'left', checkbox: true },
                 {
-                    field: 'name', title: '名称', width: 250, align: 'left', halign: 'center', formatter: function (value, row, index) {
+                    field: 'name', title: '文章名', width: 250, align: 'left', halign: 'center', formatter: function (value, row, index) {
                       
-                        return `<a href="JavaScript:void(0)" style="width:100%;display:inline-block;" title="${value || ''}" onclick="common.newTab('用户:${row.name.substring(0, 10) + '...'}','/maintain/user/user.html?userId=${row.userId}')">${value}</a>`;
+                        return `<a href="JavaScript:void(0)" style="width:100%;display:inline-block;" title="${value || ''}" onclick="common.newTab('文章:${row.name.substring(0, 10) + '...'}','/maintain/article/article.html?articleId=${row.articleId}')">${value}</a>`;
                     }, styler: function (value, row, index) {
                         return ``
                     }
                 }
             ]],
-            idField: 'userId',
+            idField: 'articleId',
             toolbar: `#datagridToolBar`,
             footer: `#datagridFoot`,
             pagination: true,
@@ -100,12 +104,12 @@ img {
                 queryParam.pn = param.page;
                 queryParam.sort = param.sort;
                 queryParam.order = param.order;
-                $.get('/maintain/user/user-list', queryParam, function (data) {
+                $.get('/maintain/article/article-list', queryParam, function (data) {
                     if (data.codeMsg)
                         $.messager.alert('提示',data.codeMsg);
                     if (data.code == 0) {
                         currentItemList = data.data.itemList;
-                        $.get('/maintain/user/user-list-sum', queryParam, function (data) {
+                        $.get('/maintain/article/article-list-sum', queryParam, function (data) {
                             if (data.codeMsg)
                                 $.messager.alert('提示',data.codeMsg);
                             if (data.code == 0) {
@@ -150,15 +154,13 @@ img {
    
     <div id="datagridToolBar" style="padding:2px 5px;">
         <div style="margin-top:5px;">
-
         <a href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-search"
         onclick="$('#datagrid').datagrid('load').datagrid('clearChecked');">查询</a>
         <a href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-clear"
         onclick="$('#datagridToolBar-form').form('clear')">清空</a>
-</div>
-        <form id="datagridToolBar-form" style="margin-top:10px;"> 
-            
-        <div style="display:inline-block;">
+    </div>
+        <form id="datagridToolBar-form" style="margin-top:10px;">  
+            <div style="display:inline-block;">
             <input id="queryParam.kw" class="easyui-textbox" label="关键字:" labelPosition="left" labelAlign="right" data-options="
         iconWidth:20,
         icons:[{
@@ -171,6 +173,96 @@ img {
             debugger
             queryParam.kw=newValue
         }" style="width:300px" />
+    </div>
+
+    <div style="display:inline-block;">
+        <input class="easyui-combobox" name="articleClassificationId" label="分类1:" labelPosition="left" labelAlign="right" style="width:300px;" data-options="
+        valueField:'articleClassificationId',
+        textField:'name',
+        panelHeight:'auto',
+        mode:'remote',
+        onShowPanel:function(){
+            $(this).combobox('reload')
+        },
+        loader: function (param, success, error) {
+            debugger
+            param.articleClassificationUpperId=0;
+            param.kw=param.q;
+            param.ps = param.rows;
+            param.pn = param.page;
+            $.ajax({
+                url: '/maintain/article-classification/article-classification-list',
+                type: 'get',
+                data: param,
+                success: function (data) {
+                    if (data.code != 0) {
+                        return false;
+                    } else {
+                        success(data.data);
+                    }
+
+                }
+            })
+        },
+        onChange:function(newValue, oldValue){
+            queryParam.articleClassificationId=newValue
+        },
+        loadFilter: function (data) {
+            debugger
+            return data.itemList;
+        },
+        iconWidth:20,
+        icons:[{
+            iconCls:'icon-clear',
+            handler: function(e){
+                $(e.data.target).combobox('setValue','');
+            }
+        }]
+        ">
+    </div>
+        <div style="display:inline-block;">
+        <input class="easyui-combobox" name="articleTagId" label="标签:" labelPosition="left" labelAlign="right" style="width:300px;" data-options="
+        valueField:'articleTagId',
+        textField:'name',
+        panelHeight:'auto',
+        mode:'remote',
+        onShowPanel:function(){
+            $(this).combobox('reload')
+        },
+        loader: function (param, success, error) {
+            debugger
+            param.kw=param.q;
+            param.ps = param.rows;
+            param.pn = param.page;
+            $.ajax({
+                url: '/maintain/article-tag/article-tag-list',
+                type: 'get',
+                data: param,
+                success: function (data) {
+                    if (data.code != 0) {
+                        return false;
+                    } else {
+                        success(data.data);
+                    }
+
+                }
+            })
+        },
+        onChange:function(newValue, oldValue){
+            queryParam.articleTagId=newValue
+        },
+        loadFilter: function (data) {
+            debugger
+            return data.itemList;
+        },
+        iconWidth:20,
+        icons:[{
+            iconCls:'icon-clear',
+            handler: function(e){
+                $(e.data.target).combobox('setValue','');
+            }
+        }]
+        ">
     </div>
     <div style="display:inline-block;">
         <input id="queryParam.frozen" class="easyui-combobox" label="冻结:" labelPosition="left" labelAlign="right" style="width:300px" data-options="editable:false,panelHeight:'auto',value:'',data:[
@@ -208,7 +300,7 @@ onChange:function(newValue, oldValue){
         queryParam.createTimeFrom=newValue
     }">
 </div>
-    <div style="display:inline-block;">
+<div style="display:inline-block;">
     <input id="queryParam.createTimeTo" class="easyui-datebox" label="To:" labelPosition="left" labelAlign="right" style="width:300px" data-options="
     editable:false,
     icons:[{
@@ -220,8 +312,7 @@ onChange:function(newValue, oldValue){
 onChange:function(newValue, oldValue){
     debugger
     queryParam.createTimeTo=newValue
-}">
-</div>
+}"></div>
 <div style="display:inline-block;">
 <input id="queryParam.updateTimeFrom" class="easyui-datebox" label="更新时间:" labelPosition="left" labelAlign="right" style="width:300px" data-options="
 editable:false,
@@ -253,15 +344,14 @@ queryParam.updateTimeTo=newValue
 
 </form>
 </div>
-
-            <table id="datagrid" class="easyui-datagrid" style="width:100%;min-height:520px">
+            <table id="datagrid" class="easyui-datagrid" style="width:100%;height:520px">
             </table>
             <div id="datagridFoot" style="padding:2px 5px;">
                 <a href="JavaScript:void(0)" class="easyui-linkbutton" title="创建" iconCls="icon-add" plain="true"
-                    onclick=" common.newTab('创建用户','/maintain/user/create-user.html')">创建</a>
+                    onclick=" common.newTab('创建文章','/maintain/article/create-article.html')">创建</a>
                 <a href="JavaScript:void(0)" class="easyui-linkbutton" title="全部删除" iconCls="icon-edit" plain="true"
                     onclick="
-                        var ids = $($('#datagrid').datagrid('getChecked')).oneall('attrs','userId');
+                        var ids = $($('#datagrid').datagrid('getChecked')).oneall('attrs','articleId');
                          ids = ids==null?[]:ids;
                          layer.open({
                         type: 2,
@@ -269,12 +359,12 @@ queryParam.updateTimeTo=newValue
                         shadeClose: false,
                         area:['60%','90%'],
                         shade: 0.5,
-                        content: './update-user-list.html?'+$.param($.extend({},queryParam,{userId:ids.length==0?null:ids.join(),expectedItemCount:ids.length==0?sum.itemCount:ids.length}))
+                        content: './update-article-list.html?'+$.param($.extend({},queryParam,{articleId:ids.length==0?null:ids.join(),expectedItemCount:ids.length==0?sum.itemCount:ids.length}))
                       }); ">批量修改</a>
                 <a href="JavaScript:void(0)" class="easyui-linkbutton" title="删除" iconCls="icon-remove" plain="true"
                     onclick="
                         debugger
-                        var ids = $($('#datagrid').datagrid('getChecked')).oneall('attrs','userId')
+                        var ids = $($('#datagrid').datagrid('getChecked')).oneall('attrs','articleId')
                          ids = ids==null?[]:ids;
                             $.messager.confirm('提示',ids.length==0?'未选择任何记录, 将删除所有已查出的 '+ sum.itemCount +' 条记录, 确认删除吗?':('已选择 '+ids.length+' 条记录, 确认删除吗?'),function(r){
                                 if(r)  {
@@ -282,8 +372,8 @@ queryParam.updateTimeTo=newValue
                                     if(r)
                                         $.ajax({
                                         type: 'post',
-                                        url: '/maintain/user/delete-user-list',
-                                        data: $.extend({},queryParam,{userId:ids.length==0?null:ids.join(),expectedItemCount:ids.length==0?sum.itemCount:ids.length}),
+                                        url: '/maintain/article/delete-article-list',
+                                        data: $.extend({},queryParam,{articleId:ids.length==0?null:ids.join(),expectedItemCount:ids.length==0?sum.itemCount:ids.length}),
                                         success: function (res) {
                                             debugger
                                             if (res.codeMsg)

@@ -81,7 +81,7 @@
                 { field: 'ck', align: 'left', checkbox: true },
                 {
                     field: 'content', title: '内容', width: 250, align: 'left', halign: 'center', formatter: function (value, row, index) {
-                        return `<a href="JavaScript:void(0)" style="width:100%;display:inline-block;" title="${value || ''}" onclick="common.newTab('医生评价:${row.content.substring(0, 10) + '...'}','/maintain-user/doctor-comment.html?doctorCommentId=${row.doctorCommentId}')">${value}</a>`;
+                        return `<a href="JavaScript:void(0)" style="width:100%;display:inline-block;" title="${value || ''}" onclick="common.newTab('医生评价:${row.content.substring(0, 10) + '...'}','/maintain/doctor-comment.html?doctorCommentId=${row.doctorCommentId}')">${value}</a>`;
                     }, styler: function (value, row, index) {
                         return ``
                     }
@@ -107,12 +107,12 @@
                 queryParam.ps = param.rows;
                 queryParam.pn = param.page;
                 $.ajaxSettings.async=false
-                $.get('/maintain-user/doctor-comments', Object.assign(param, queryParam), function (data) {
+                $.get('/maintain/doctor-comments', Object.assign(param, queryParam), function (data) {
                     if (data.codeMsg)
                         layer.alert(data.codeMsg);
                     if (data.code == 0) {
                         currentRows = data.data.rows;
-                        $.get('/maintain-user/doctor-comments-sum', queryParam, function (data) {
+                        $.get('/maintain/doctor-comments-sum', queryParam, function (data) {
                             if (data.codeMsg)
                                 layer.alert(data.codeMsg);
                             if (data.code == 0) {
@@ -187,7 +187,7 @@
             param.ps = param.rows;
             param.pn = param.page;
             $.ajax({
-                url: '/maintain-user/users',
+                url: '/maintain/users',
                 type: 'get',
                 data: param,
                 success: function (data) {
@@ -230,7 +230,7 @@
             param.ps = param.rows;
             param.pn = param.page;
             $.ajax({
-                url: '/maintain-user/hospitals',
+                url: '/maintain/hospitals',
                 type: 'get',
                 data: param,
                 success: function (data) {
@@ -276,7 +276,7 @@
             param.ps = param.rows;
             param.pn = param.page;
             $.ajax({
-                url: '/maintain-user/doctors',
+                url: '/maintain/doctors',
                 type: 'get',
                 data: param,
                 success: function (data) {
@@ -403,7 +403,7 @@ onChange:function(newValue, oldValue){
                             layer.confirm(ids.length==0?'未选择任何记录, 将删除所有已查出的 '+ sum.rowCount +' 条记录, 确认删除吗?':('已选择 '+ids.length+' 条记录, 确认删除吗?'),function(){
                                         $.ajax({
                                     type: 'post',
-                                    url: '/maintain-user/update-doctor-comments',
+                                    url: '/maintain/update-doctor-comments',
                                     data: $.extend({},queryParam,{doctorCommentId:ids.length==0?null:ids.join(),delNew:1,expectedRowCount:ids.length==0?sum.rowCount:ids.length}),
                                     beforeSend:function(){
                                         this.layerIndex=layer.load(2)

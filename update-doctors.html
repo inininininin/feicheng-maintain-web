@@ -75,7 +75,7 @@ function updateConfirm(){
        
                          $.ajax({
                             type: 'post',
-                            url: '/maintain-user/update-doctors',
+                            url: '/maintain/update-doctors',
                             data: $.extend({},doctor,queryStringObject),
                             beforeSend:function(){
                                 this.layerIndex=layer.load(2)

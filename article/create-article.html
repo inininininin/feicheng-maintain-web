@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>飞橙-运维-创建文章</title>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
+
+
+
+    <script src="https://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script>
+
+    <script src="../zTree_v3/js/jquery.ztree.all.js"></script>
+    <link rel="stylesheet" href="../zTree_v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
+
+    <link rel="stylesheet" type="text/css" href="../jquery-easyui-1.8.7/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../jquery-easyui-1.8.7/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../jquery-easyui-1.8.7/demo/demo.css">
+    <script type="text/javascript" src="../jquery-easyui-1.8.7/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../jquery-easyui-1.8.7/locale/easyui-lang-zh_CN.js"></script>
+
+    <link rel="stylesheet" href="../jQueryViewer20160329/css/viewer.min.css">
+    <script src="../jQueryViewer20160329/js/viewer.min.js"></script>
+    <script src="../jQueryViewer20160329/js/viewer-jquery.min.js"></script>
+
+
+    <link rel="stylesheet" href="../kindeditor/themes/default/default.css" />
+    <link rel="stylesheet" href="../kindeditor/plugins/code/prettify.css" />
+    <script charset="utf-8" src="../kindeditor/kindeditor-all.js"></script>
+    <script charset="utf-8" src="../kindeditor/lang/zh-CN.js"></script>
+    <script charset="utf-8" src="../kindeditor/plugins/code/prettify.js"></script>
+
+    <script src="../js/moment.js"></script>
+    <script src="../js/common.js"></script>
+
+</head>
+
+<style>
+    img {
+        object-fit:contain;
+    }
+</style>
+
+<script>
+
+    var queryStringObject = common.queryStringObject();
+    var article = {},contentKindEditor
+
+    
+
+    $.parser.onComplete = function () {
+        debugger
+    }
+
+
+    $(document).ready(function(){
+        debugger
+        contentKindEditor = KindEditor.create('#content', {
+               
+               cssPath: '../kindeditor/plugins/code/prettify.css',
+               uploadJson: '/kindeditor/upload_json.jsp',
+               fileManagerJson: '/kindeditor/file_manager_json.jsp',
+               allowFileManager: true,
+               afterCreate: function () {
+                   var self = this;
+                   KindEditor.ctrl(document, 13, function () {
+                       self.sync();
+                       document.forms['example'].submit();
+                   });
+                   KindEditor.ctrl(self.edit.doc, 13, function () {
+                       self.sync();
+                       document.forms['example'].submit();
+                   });
+
+                   debugger
+                   if (article.content)
+                       $.get(`${article.content}`, function (data) {
+                           self.html(data)
+                       })
+               }
+           })
+
+        $("#loading").remove();
+    })
+
+
+function createConfirm(){
+    debugger
+    $.messager.confirm('提示','确认创建吗?',function(r){
+if(r){
+        $.ajax({
+                type: 'post',
+                contentType:"text/plain",
+                url: '/upload-stream?'+$.param({'originalUrl':article.content,ext:'html'}),
+                async:false,
+                data: contentKindEditor.html(),
+                success: function (res) {
+                    debugger
+                    if (res.codeMsg)
+                        $.messager.alert('提示',res.codeMsg)
+                    if (res.code == 0) {
+                        article.content=res.data.url
+                    } 
+                }
+            })
+
+
+        $.ajax({
+                            type: 'post',
+                            url: '/maintain/article/create-article',
+                            data: article,
+                            success: function (res) {
+                                debugger
+                                if (res.codeMsg)
+                                 $.messager.alert('提示',res.codeMsg)
+                                if (res.code == 0) {
+                                    if (!res.codeMsg)
+                                    $.messager.alert('提示','操作成功',null,function(){
+                                                location.reload()
+                                            })
+                                } 
+                            }
+                        })
+                    }
+    })
+    
+}
+        
+
+
+</script>
+
+<body style="margin:0;padding:0;">
+    <div id="loading" class='' style="position: absolute; z-index: 1000; top: 0px; left: 0px; 
+    width: 100%; height: 100%; background: white; text-align: center;padding:5px 10px">
+        <font>loading···</font>
+    </div>
+
+        <table id="datagrid"  data-options="singleSelect:true,height:'700px'">
+            <thead>
+                <tr>
+                    <th data-options="field:'name',width:200,align:'right'">属性&nbsp;</th>
+                    <th data-options="field:'value',width:500">值</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>文章名&nbsp;</td>
+                    <td><input id="name" class="easyui-textbox" style="width:100%" data-options="
+                        value:article.name,
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                debugger
+                                $(e.data.target).textbox('setValue','');
+                            }
+                        }],
+                        onChange:function(newValue, oldValue){
+                            article.name=newValue
+                        }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>封面&nbsp;</td>
+                    <td>
+                        <div id="cover">
+                            <img style="display:none;" src="../image/image-error.png" onload="$('#cover-value').attr('src',article.cover).parent().viewer({url: 'src',});if(article.cover) $('#cover-value').show();" />
+                            <img id="cover-value" style="width:30px;height:30px;object-fit:contain;cursor:pointer;vertical-align: baseline;display:none;" onerror='debugger;$(this).attr("src","../image/image-error.png");' />
+                            <input type="file" style="display:none;" onchange="
+                                javascript:
+                                var target = this;
+                                if(this.files.length>0){
+                                    var file = this.files[0];
+                                    var fd = new FormData()
+                                    fd.append('file', file);
+                                    $.ajax({
+                                        url: '/upload-file?' + $.param({ quality: 0.8 }),
+                                        type: 'POST',
+                                        data: fd,
+                                        cache: false,
+                                        processData: false,
+                                        contentType: false,
+                                        async: true,
+                                        success: function (res) {
+                                            if (res.codeMsg)
+                                                $.messager.alert('提示',res.codeMsg)
+                                            if (res.code == 0) {
+                                                article.cover=res.data.url 
+                                                $(target).prev().attr('src',article.cover).show()
+                                             target.value=null
+                                            }
+                                        }
+                                    })
+                                }
+                            " />
+                            <a title="删除" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-clear" plain="true"
+                                style="vertical-align: text-bottom;"
+                                onclick="$(this).prev().prev().attr('src',null).hide();article.cover='';"></a>
+
+                            <a title="选择" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-choose" plain="true"
+                                style="vertical-align: text-bottom;" onclick="$(this).prev().prev().click()"></a>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>视频&nbsp;</td>
+                    <td>
+                        <div id="video">
+                            <video id="video-value" style="width: 200px;height: 200px;display:none;" controls="controls" ></video>
+                            <input type="file" style="display:none;" onchange="
+                            javascript:
+                            debugger
+                           
+                            var target = this;
+                                if(this.files.length>0){
+                                    var file = this.files[0];
+                                    var fd = new FormData()
+                                    fd.append('file', file);
+                                    $.ajax({
+                                        url: '/upload-file?' + $.param({ quality: 0.8 }),
+                                        type: 'POST',
+                                        data: fd,
+                                        cache: false,
+                                        processData: false,
+                                        contentType: false,
+                                        async: true,
+                                        success: function (res) {
+                                            if (res.codeMsg)
+                                            $.messager.alert('提示',res.codeMsg)
+                                            if (res.code == 0) {
+                                                article.video=res.data.url 
+                                                $(target).prev().attr('src',article.video).show()
+                                            }
+                                            target.value=null
+                                            
+                                        }
+                                    })
+                                }
+                        " />
+                            <a title="删除" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-clear" plain="true"
+                                style="vertical-align: text-bottom;"
+                                onclick="$(this).prev().prev().attr('src',null).hide();article.video='';"></a>
+
+                            <a title="选择" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-choose" plain="true"
+                                style="vertical-align: text-bottom;" onclick="debugger;$(this).prev().prev().click()"></a>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>视频封面&nbsp;</td>
+                    <td>
+                        <div id="videoCover">
+                            <img style="display:none;" src="../image/image-error.png" onload="$('#videoCover-value').attr('src',article.videoCover).parent().viewer({url: 'src',})" />
+                            <img id="videoCover-value" style="width:30px;height:30px;object-fit:contain;cursor:pointer;vertical-align: baseline;display:none;" onerror='debugger;$(this).attr("src","../image/image-error.png");' />
+                            <input type="file" style="display:none;" onchange="
+                                javascript:
+                                var target = this;
+                                if(this.files.length>0){
+                                    var file = this.files[0];
+                                    var fd = new FormData()
+                                    fd.append('file', file);
+                                    $.ajax({
+                                        url: '/upload-file?' + $.param({ quality: 0.8 }),
+                                        type: 'POST',
+                                        data: fd,
+                                        cache: false,
+                                        processData: false,
+                                        contentType: false,
+                                        async: true,
+                                        success: function (res) {
+                                            if (res.codeMsg)
+                                                $.messager.alert('提示',res.codeMsg)
+                                            if (res.code == 0) {
+                                                article.videoCover=res.data.url 
+                                                $(target).prev().attr('src',article.videoCover).show()
+                                             target.value=null
+                                            }
+                                        }
+                                    })
+                                }
+                            " />
+                            <a title="删除" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-clear" plain="true"
+                                style="vertical-align: text-bottom;"
+                                onclick="$(this).prev().prev().attr('src',null).hide();article.videoCover='';"></a>
+
+                            <a title="选择" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-choose" plain="true"
+                                style="vertical-align: text-bottom;" onclick="$(this).prev().prev().click()"></a>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>简介&nbsp;</td>
+                    <td><input id="brief" class="easyui-textbox" style="width:100%;height:200px;" data-options="
+                            value:article.brief,
+                            multiline:true,
+                            onChange:function(newValue, oldValue){
+                                article.brief=newValue
+                            }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>内容&nbsp;</td>
+                    <td><textarea id="content" style="width: 100%;height:500px;padding:1px 4px"></textarea></td>
+                </tr>
+                <tr>
+                    <td>标签&nbsp;</td>
+                    <td><input class="easyui-combobox" name="articleTagList" style="width:100%;" data-options="
+                        valueField:'articleTagId',
+                        textField:'name',
+                        panelHeight:'auto',
+                        multiple:true,
+                        mode:'remote',
+                        onShowPanel:function(){
+                            $(this).combobox('reload')
+                        },
+                        loader: function (param, success, error) {
+                            debugger
+                            param.kw=param.q;
+                            param.ps = param.rows;
+                            param.pn = param.page;
+                            $.ajax({
+                                url: '/maintain/article-tag/article-tag-list',
+                                type: 'get',
+                                data: param,
+                                success: function (data) {
+                                    if (data.code != 0) {
+                                        return false;
+                                    } else {
+                                        success(data.data);
+                                    }
+                
+                                }
+                            })
+                        },
+                        onChange:function(newValue, oldValue){
+                           article.articleTagIdList=newValue.join(',')
+                        },
+                        loadFilter: function (data) {
+                            debugger
+                            return data.itemList;
+                        },
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                $(e.data.target).combobox('setValue','');
+                            }
+                        }]
+                        "></td>
+                </tr>
+               
+
+               
+                <tr>
+                    <td>分类1&nbsp;</td>
+                    <td><input class="easyui-combobox" name="articleClassification1Id" style="width:100%;" data-options="
+                        value:article.articleClassification1Id,
+                        text:article.articleClassification1Name,
+                        valueField:'articleClassificationId',
+                        textField:'name',
+                        panelHeight:'auto',
+                        mode:'remote',
+                        onShowPanel:function(){
+                            $(this).combobox('reload')
+                        },
+                        loader: function (param, success, error) {
+                            debugger
+                            param.kw=param.q;
+                            param.articleClassificationUpperId=0;
+                            param.ps = param.rows;
+                            param.pn = param.page;
+                            $.ajax({
+                                url: '/maintain/article-classification/article-classification-list',
+                                type: 'get',
+                                data: param,
+                                success: function (data) {
+                                    if (data.code != 0) {
+                                        return false;
+                                    } else {
+                                        success(data.data);
+                                    }
+                
+                                }
+                            })
+                        },
+                        onChange:function(newValue, oldValue){
+                           article.articleClassification1Id=newValue
+                        },
+                        loadFilter: function (data) {
+                            debugger
+                            return data.itemList;
+                        },
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                $(e.data.target).combobox('setValue','');
+                            }
+                        }]
+                        "></td>
+                </tr>
+
+
+                <tr>
+                    <td>分类2&nbsp;</td>
+                    <td><input class="easyui-combobox" name="articleClassification2Id" style="width:100%;" data-options="
+                        value:article.articleClassification2Id,
+                        text:article.articleClassification2Name,
+                        valueField:'articleClassificationId',
+                        textField:'name',
+                        panelHeight:'auto',
+                        mode:'remote',
+                        onShowPanel:function(){
+                            $(this).combobox('reload')
+                        },
+                        loader: function (param, success, error) {
+                            debugger
+                            if(!article.articleClassification1Id)
+                                return;
+                            param.articleClassificationUpperId=article.articleClassification1Id;
+                            param.kw=param.q;
+                            param.ps = param.rows;
+                            param.pn = param.page;
+                            $.ajax({
+                                url: '/maintain/article-classification/article-classification-list',
+                                type: 'get',
+                                data: param,
+                                success: function (data) {
+                                    if (data.code != 0) {
+                                        return false;
+                                    } else {
+                                        success(data.data);
+                                    }
+                
+                                }
+                            })
+                        },
+                        onChange:function(newValue, oldValue){
+                           article.articleClassification2Id=newValue
+                        },
+                        loadFilter: function (data) {
+                            debugger
+                            return data.itemList;
+                        },
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                $(e.data.target).combobox('setValue','');
+                            }
+                        }]
+                        "></td>
+                </tr>
+
+                <tr>
+                    <td>关联&nbsp;</td>
+                    <td><input id="link" class="easyui-combobox" style="width:100%" data-options="
+                                    value:article.link,
+                                    editable:false,panelHeight:'auto',
+                                    data:[
+                                    {
+                                        text: '0-默认',
+                                        value: '0'
+                                    },{
+                                         text: '1-Url',
+                                         value: '1'
+                                     }],
+                                     iconWidth:20,
+                                     icons:[{
+                                         iconCls:'icon-clear',
+                                         handler: function(e){
+                                             $(e.data.target).combobox('setValue','');
+                                         }
+                                     }],
+                                     onChange:function(newValue, oldValue){
+                                        article.link=newValue
+                                     }" /></td>
+                </tr>
+
+                <tr>
+                    <td>关联1-Url&nbsp;</td>
+                    <td><input id="name" class="easyui-textbox" style="width:100%" data-options="
+                        value:article.link1Url,
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                debugger
+                                $(e.data.target).textbox('setValue','');
+                            }
+                        }],
+                        onChange:function(newValue, oldValue){
+                            article.link1Url=newValue
+                        }" style="width:200px"></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div style="margin-left:5px;margin-top:5px;">
+            <a id="createConfirm" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-save"
+                onclick="createConfirm()">确认</a>
+            <a id="reset" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-reload"
+                onclick="$.messager.confirm('提示','已编辑的数据将丢失, 确认继续吗?',function(){location.reload()})">重置</a>
+        </div>
+</body>
+<script>
+        $('#datagrid').datagrid()
+</script>
+
+</html>

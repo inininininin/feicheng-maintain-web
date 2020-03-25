@@ -3,7 +3,7 @@
 
 <head>
 
-    <title>飞橙-运维-创建用户</title>
+    <title>飞橙-运维-创建文章分类</title>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
 
@@ -37,7 +37,7 @@
 </head>
 
 <style>
-img {
+    img {
         object-fit:contain;
     }
 </style>
@@ -45,7 +45,10 @@ img {
 <script>
 
     var queryStringObject = common.queryStringObject();
-    var user = {},contentKindEditor
+    var article = {
+        articleClassificationUpperId:queryStringObject.articleClassificationUpperId,
+        articleClassificationUpperName:queryStringObject.articleClassificationUpperName
+    },contentKindEditor
 
     
 
@@ -56,22 +59,21 @@ img {
 
     $(document).ready(function(){
         debugger
+       
+
         $("#loading").remove();
     })
 
 
 function createConfirm(){
     debugger
-    if(user.password  != user.passwordConfirm){
-        $.messager.alert('提示',"两次密码不一致")
-        return;
-    }
-
-    $.messager.confirm('提示','确认创建吗?',function(){
+    $.messager.confirm('提示','确认创建吗?',function(r){
+if(r){
+     
         $.ajax({
                             type: 'post',
-                            url: '/maintain/user/create-user',
-                            data: user,
+                            url: '/maintain/article-classification/create-article-classification',
+                            data: article,
                             success: function (res) {
                                 debugger
                                 if (res.codeMsg)
@@ -84,6 +86,7 @@ function createConfirm(){
                                 } 
                             }
                         })
+                    }
     })
     
 }
@@ -107,9 +110,9 @@ function createConfirm(){
             </thead>
             <tbody>
                 <tr>
-                    <td>用户名&nbsp;</td>
+                    <td>文章分类名&nbsp;</td>
                     <td><input id="name" class="easyui-textbox" style="width:100%" data-options="
-                        value:user.name,
+                        value:article.name,
                         iconWidth:20,
                         icons:[{
                             iconCls:'icon-clear',
@@ -119,76 +122,62 @@ function createConfirm(){
                             }
                         }],
                         onChange:function(newValue, oldValue){
-                            user.name=newValue
+                            article.name=newValue
                         }" style="width:200px"></td>
                 </tr>
+            
+
+               
                 <tr>
-                    <td>手机&nbsp;</td>
-                    <td><input id="phone" class="easyui-textbox" style="width:100%" data-options="
-                        value:user.phone,
+                    <td>上级&nbsp;</td>
+                    <td><input class="easyui-combobox" name="articleClassificationUpperId" style="width:100%;" data-options="
+                        value:article.articleClassificationUpperId,
+                        text:article.articleClassificationUpperName,
+                        valueField:'articleClassificationId',
+                        textField:'name',
+                        panelHeight:'auto',
+                        mode:'remote',
+                        onShowPanel:function(){
+                            $(this).combobox('reload')
+                        },
+                        loader: function (param, success, error) {
+                            debugger
+                            param.kw=param.q;
+                            param.ps = param.rows;
+                            param.pn = param.page;
+                            $.ajax({
+                                url: '/maintain/article-classification/article-classification-list',
+                                type: 'get',
+                                data: param,
+                                success: function (data) {
+                                    if (data.code != 0) {
+                                        return false;
+                                    } else {
+                                        success(data.data);
+                                    }
+                
+                                }
+                            })
+                        },
+                        onChange:function(newValue, oldValue){
+                           article.articleClassificationUpperId=newValue
+                        },
+                        loadFilter: function (data) {
+                            debugger
+                            return data.itemList;
+                        },
                         iconWidth:20,
                         icons:[{
                             iconCls:'icon-clear',
                             handler: function(e){
-                                debugger
-                                $(e.data.target).textbox('setValue','');
+                                $(e.data.target).combobox('setValue','');
                             }
-                        }],
-                        onChange:function(newValue, oldValue){
-                            user.phone=newValue
-                        }" style="width:200px"></td>
+                        }]
+                        "></td>
                 </tr>
 
-                <tr>
-                    <td>昵称&nbsp;</td>
-                    <td><input id="nickname" class="easyui-textbox" style="width:100%" data-options="
-                        value:user.nickname,
-                        iconWidth:20,
-                        icons:[{
-                            iconCls:'icon-clear',
-                            handler: function(e){
-                                debugger
-                                $(e.data.target).textbox('setValue','');
-                            }
-                        }],
-                        onChange:function(newValue, oldValue){
-                            user.nickname=newValue
-                        }" style="width:200px"></td>
-                </tr>
+
                
-               <tr>
-                    <td>密码&nbsp;</td>
-                    <td><input id="password" class="easyui-passwordbox" style="width:100%" data-options="
-                        value:user.password,
-                        iconWidth:20,
-                        icons:[{
-                            iconCls:'icon-clear',
-                            handler: function(e){
-                                debugger
-                                $(e.data.target).textbox('setValue','');
-                            }
-                        }],
-                        onChange:function(newValue, oldValue){
-                            user.password=newValue
-                        }" style="width:200px"></td>
-                </tr>
-               
-                <tr>
-                    <td>确认密码&nbsp;</td>
-                    <td><input id="passwordConfirm" class="easyui-passwordbox" style="width:100%" data-options="
-                        value:user.passwordConfirm,
-                        iconWidth:20,
-                        icons:[{
-                            iconCls:'icon-clear',
-                            handler: function(e){
-                                debugger
-                                $(e.data.target).textbox('setValue','');
-                            }
-                        }],
-                        onChange:function(newValue, oldValue){
-                            user.passwordConfirm=newValue
-                        }" style="width:200px"></td>
-                </tr>
             </tbody>
         </table>
         

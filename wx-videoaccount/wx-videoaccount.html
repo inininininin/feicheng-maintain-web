@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>飞橙-运维-视频号详情</title>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
+    <script src="https://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script>
+    <script src="../zTree_v3/js/jquery.ztree.all.js"></script>
+    <link rel="stylesheet" href="../zTree_v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
+    <link rel="stylesheet" type="text/css" href="../jquery-easyui-1.8.7/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../jquery-easyui-1.8.7/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../jquery-easyui-1.8.7/demo/demo.css">
+    <script type="text/javascript" src="../jquery-easyui-1.8.7/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../jquery-easyui-1.8.7/locale/easyui-lang-zh_CN.js"></script>
+    <link rel="stylesheet" href="../jQueryViewer20160329/css/viewer.min.css">
+    <script src="../jQueryViewer20160329/js/viewer.min.js"></script>
+    <script src="../jQueryViewer20160329/js/viewer-jquery.min.js"></script>
+    <link rel="stylesheet" href="../kindeditor/themes/default/default.css" />
+    <link rel="stylesheet" href="../kindeditor/plugins/code/prettify.css" />
+    <script charset="utf-8" src="../kindeditor/kindeditor-all.js"></script>
+    <script charset="utf-8" src="../kindeditor/lang/zh-CN.js"></script>
+    <script charset="utf-8" src="../kindeditor/plugins/code/prettify.js"></script>
+    <script src="../js/moment.js"></script>
+    <script src="../js/common.js"></script>
+    <script src="../js/jquery.oneall.js"></script>
+    <script src="../js/area.js"></script>
+</head>
+
+<style>
+img {
+        object-fit:contain;
+    }
+</style>
+
+<script>
+
+
+
+    var queryStringObject = common.queryStringObject();
+    var wxVideoaccount = {}
+
+    
+   
+
+
+
+
+
+    $.parser.onComplete = function () {
+        debugger
+    }
+
+
+    $(document).ready(function(){
+        debugger
+      
+       
+        $("#loading").remove();
+        
+    })
+
+function updateConfirm(){
+    debugger
+    $.messager.confirm('提示','确认修改吗?',function(r){
+        if(r){
+     
+
+            $.ajax({
+                            type: 'post',
+                            url: '/maintain/wx-videoaccount/update-wx-videoaccount',
+                            data: wxVideoaccount,
+                            success: function (res) {
+                                debugger
+                                if (res.codeMsg)
+                                    $.messager.alert('提示',res.codeMsg);
+                                if (res.code == 0) {
+                                    if (!res.codeMsg)
+                                          $.messager.alert('提示','操作成功',null,function(){ location.reload()});
+                                } 
+                            }
+                        })
+        }
+      
+    })
+    
+}
+        
+
+
+             
+function remove(){
+    debugger
+    $.messager.confirm('提示','确认删除吗？', function(r){
+        if(r)
+        $.ajax({
+                            type: 'post',
+                            url: '/maintain/wx-videoaccount/delete-wx-videoaccount-list',
+                            data: {wxVideoaccountId:wxVideoaccount.wxVideoaccountId,expectedItemCount:1},
+                            success: function (res) {
+                                debugger
+                                if (res.codeMsg)
+                                    $.messager.alert('提示',res.codeMsg);
+                                if (res.code == 0) {
+                                    if (!res.codeMsg)
+                                        $.messager.alert('提示','操作成功',null,function(){ location.reload()});
+                                } 
+                            }
+                        })
+        });
+
+
+                         
+}
+
+
+
+             
+function freeze(){
+    debugger
+    $.messager.prompt('提示','请输入冻结原因',function(r){
+            if (r){
+                reason = r;
+                $.messager.confirm('提示','确认冻结吗？', function(r){
+        if(r)
+        $.ajax({
+                            type: 'post',
+                            url: '/maintain/wx-videoaccount/freeze-wx-videoaccount',
+                            data: {wxVideoaccountId:wxVideoaccount.wxVideoaccountId,reason:reason,expectedItemCount:1},
+                            success: function (res) {
+                                debugger
+                                if (res.codeMsg)
+                                    $.messager.alert('提示',res.codeMsg);
+                                if (res.code == 0) {
+                                    if (!res.codeMsg)
+                                        $.messager.alert('提示','操作成功',null,function(){ location.reload()});
+                                } 
+                            }
+                        })
+        });     
+
+            }
+    })
+
+
+         
+}
+
+function unfreeze(){
+    debugger
+    $.messager.confirm('提示','确认解冻吗？', function(r){
+        if(r)
+        $.ajax({
+                            type: 'post',
+                            url: '/maintain/wx-videoaccount/unfreeze-wx-videoaccount',
+                            data: {wxVideoaccountId:wxVideoaccount.wxVideoaccountId,expectedItemCount:1},
+                            success: function (res) {
+                                debugger
+                                if (res.codeMsg)
+                                    $.messager.alert('提示',res.codeMsg);
+                                if (res.code == 0) {
+                                    if (!res.codeMsg)
+                                        $.messager.alert('提示','操作成功',null,function(){ location.reload()});
+                                } 
+                            }
+                        })
+        });          
+}
+
+function status11(){
+    debugger
+    $.messager.confirm('提示','确认审核通过吗？', function(r){
+        if(r)
+        $.ajax({
+                            type: 'post',
+                            url: '/maintain/wx-videoaccount/status11-wx-videoaccount',
+                            data: {wxVideoaccountId:wxVideoaccount.wxVideoaccountId,expectedItemCount:1},
+                            success: function (res) {
+                                debugger
+                                if (res.codeMsg)
+                                    $.messager.alert('提示',res.codeMsg);
+                                if (res.code == 0) {
+                                    if (!res.codeMsg)
+                                        $.messager.alert('提示','操作成功',null,function(){ location.reload()});
+                                } 
+                            }
+                        })
+        });          
+}
+
+function status12(){
+    debugger
+    $.messager.prompt('提示','请输入不通过原因',function(r){
+            if (r){
+                reason = r;
+                $.messager.confirm('提示','确认审核不通过吗？', function(r){
+                    if(r)
+                        $.ajax({
+                                            type: 'post',
+                                            url: '/maintain/wx-videoaccount/status12-wx-videoaccount',
+                                            data: {wxVideoaccountId:wxVideoaccount.wxVideoaccountId,reason:reason,expectedItemCount:1},
+                                            success: function (res) {
+                                                debugger
+                                                if (res.codeMsg)
+                                                    $.messager.alert('提示',res.codeMsg);
+                                                if (res.code == 0) {
+                                                    if (!res.codeMsg)
+                                                        $.messager.alert('提示','操作成功',null,function(){ location.reload()});
+                                                } 
+                                            }
+                                        })
+                    });  
+        }
+    })
+          
+
+
+
+}
+
+
+        
+</script>
+
+<body style="margin:0;padding:0;">
+    <div id="loading" class='' style="position: absolute; z-index: 1000; top: 0px; left: 0px; 
+    width: 100%; height: 100%; background: white; text-align: center;padding:5px 10px">
+        <font>loading···</font>
+    </div>
+    <script>
+         $.ajax({
+        type: 'get',
+        url: `/maintain/wx-videoaccount/wx-videoaccount?wxVideoaccountId=${queryStringObject.wxVideoaccountId}`,
+        async: false,
+        success: function (res) {
+            debugger
+            if (res.codeMsg)
+                $.messager.alert('提示',res.codeMsg);
+            if (res.code == 0) {
+                wxVideoaccount = res.data;
+            }
+        }
+    })
+    </script>
+        <table id="datagrid"  data-options="singleSelect:true,height:'700px'">
+            <thead>
+                <tr>
+                    <th data-options="field:'name',width:200,align:'right'">属性&nbsp;</th>
+                    <th data-options="field:'value',width:500">值</th>
+                </tr>
+            </thead>
+            <tbody>
+                 
+                <tr>
+                    <td>视频号Id&nbsp;</td>
+                    <td><span id="wxVideoaccountId"  ></span>
+                        <img src="../image/image-error.png" onload="$('#wxVideoaccountId').text(wxVideoaccount.wxVideoaccountId||'')" style="display:none;"/>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td>视频号名&nbsp;</td>
+                    <td><input id="name" class="easyui-textbox" style="width:100%" data-options="
+                        value:wxVideoaccount.name,
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                debugger
+                                $(e.data.target).textbox('setValue','');
+                            }
+                        }],
+                        onChange:function(newValue, oldValue){
+                            wxVideoaccount.name=newValue
+                        }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>手机&nbsp;</td>
+                    <td><input id="phone" class="easyui-textbox" style="width:100%" data-options="
+                        value:wxVideoaccount.phone,
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                debugger
+                                $(e.data.target).textbox('setValue','');
+                            }
+                        }],
+                        onChange:function(newValue, oldValue){
+                            wxVideoaccount.phone=newValue
+                        }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>微信&nbsp;</td>
+                    <td><input id="wx" class="easyui-textbox" style="width:100%" data-options="
+                        value:wxVideoaccount.wx,
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                debugger
+                                $(e.data.target).textbox('setValue','');
+                            }
+                        }],
+                        onChange:function(newValue, oldValue){
+                            wxVideoaccount.wx=newValue
+                        }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>头像&nbsp;</td>
+                    <td>
+                        <div id="logo">
+                            <img style="display:none;" src="../image/image-error.png" onload="$('#logo-value').attr('src',wxVideoaccount.logo).parent().viewer({url: 'src',});if(wxVideoaccount.logo) $('#logo-value').show();" />
+                            <img id="logo-value" style="width:30px;height:30px;object-fit:contain;cursor:pointer;vertical-align: baseline;display:none;" onerror='debugger;$(this).attr("src","../image/image-error.png");' />
+                            <input type="file" style="display:none;" onchange="
+                                javascript:
+                                var target = this;
+                                if(this.files.length>0){
+                                    var file = this.files[0];
+                                    var fd = new FormData()
+                                    fd.append('file', file);
+                                    $.ajax({
+                                        url: '/upload-file?' + $.param({ quality: 0.8 }),
+                                        type: 'POST',
+                                        data: fd,
+                                        cache: false,
+                                        processData: false,
+                                        contentType: false,
+                                        async: true,
+                                        success: function (res) {
+                                            if (res.codeMsg)
+                                                $.messager.alert('提示',res.codeMsg)
+                                            if (res.code == 0) {
+                                                wxVideoaccount.logo=res.data.url 
+                                                $(target).prev().attr('src',wxVideoaccount.logo).show()
+                                             target.value=null
+                                            }
+                                        }
+                                    })
+                                }
+                            " />
+                            <a title="删除" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-clear" plain="true"
+                                style="vertical-align: text-bottom;"
+                                onclick="$(this).prev().prev().attr('src',null).hide();wxVideoaccount.logo='';"></a>
+
+                            <a title="选择" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-choose" plain="true"
+                                style="vertical-align: text-bottom;" onclick="$(this).prev().prev().click()"></a>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>截图&nbsp;</td>
+                    <td>
+                        <div id="screenshot">
+                            <img style="display:none;" src="../image/image-error.png" onload="$('#screenshot-value').attr('src',wxVideoaccount.screenshot).parent().viewer({url: 'src',});if(wxVideoaccount.screenshot) $('#screenshot-value').show();" />
+                            <img id="screenshot-value" style="width:30px;height:30px;object-fit:contain;cursor:pointer;vertical-align: baseline;display:none;" onerror='debugger;$(this).attr("src","../image/image-error.png");' />
+                            <input type="file" style="display:none;" onchange="
+                                javascript:
+                                var target = this;
+                                if(this.files.length>0){
+                                    var file = this.files[0];
+                                    var fd = new FormData()
+                                    fd.append('file', file);
+                                    $.ajax({
+                                        url: '/upload-file?' + $.param({ quality: 0.8 }),
+                                        type: 'POST',
+                                        data: fd,
+                                        cache: false,
+                                        processData: false,
+                                        contentType: false,
+                                        async: true,
+                                        success: function (res) {
+                                            if (res.codeMsg)
+                                                $.messager.alert('提示',res.codeMsg)
+                                            if (res.code == 0) {
+                                                wxVideoaccount.screenshot=res.data.url 
+                                                $(target).prev().attr('src',wxVideoaccount.screenshot).show()
+                                             target.value=null
+                                            }
+                                        }
+                                    })
+                                }
+                            " />
+                            <a title="删除" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-clear" plain="true"
+                                style="vertical-align: text-bottom;"
+                                onclick="$(this).prev().prev().attr('src',null).hide();wxVideoaccount.screenshot='';"></a>
+
+                            <a title="选择" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-choose" plain="true"
+                                style="vertical-align: text-bottom;" onclick="$(this).prev().prev().click()"></a>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>简介&nbsp;</td>
+                    <td><input id="brief" class="easyui-textbox" style="width:100%;height:200px;" data-options="
+                            value:wxVideoaccount.brief,
+                            multiline:true,
+                            onChange:function(newValue, oldValue){
+                                wxVideoaccount.brief=newValue
+                            }" style="width:200px"></td>
+                </tr>
+               
+                <tr>
+                    <td>用户&nbsp;</td>
+                    <td><input class="easyui-combobox" name="userId" style="width:100%;" data-options="
+                        value:wxVideoaccount.userId,
+                        text:wxVideoaccount.userNickname,
+                        valueField:'userId',
+                        textField:'name',
+                        panelHeight:'auto',
+                        mode:'remote',
+                        onShowPanel:function(){
+                            $(this).combobox('reload')
+                        },
+                        loader: function (param, success, error) {
+                            debugger
+                            param.kw=param.q;
+                            param.ps = param.rows;
+                            param.pn = param.page;
+                            $.ajax({
+                                url: '/maintain/user/user-list',
+                                type: 'get',
+                                data: param,
+                                success: function (data) {
+                                    if (data.code != 0) {
+                                        return false;
+                                    } else {
+                                        success(data.data);
+                                    }
+                
+                                }
+                            })
+                        },
+                        onChange:function(newValue, oldValue){
+                            wxVideoaccount.userId=newValue
+                        },
+                        loadFilter: function (data) {
+                            debugger
+                            return data.itemList;
+                        },
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-redo',
+                            handler: function(e){
+                                common.newTab(`用户:${wxVideoaccount.userNickname.substring(0, 10)}...`,`/maintain/user/user.html?userId=${wxVideoaccount.userId}`)
+                            }
+                        },{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                $(e.data.target).combobox('setValue','');
+                            }
+                        }]
+                        "></td>
+                </tr>
+
+                <tr>
+                    <td>领域&nbsp;</td>
+                    <td><input class="easyui-combobox" name="wxVideoaccountRealmList" style="width:100%;" data-options="
+                        value:$(wxVideoaccount.wxVideoaccountRealmList).oneall('attrs','wxVideoaccountRealmId'),
+                        text:$(wxVideoaccount.wxVideoaccountRealmList).oneall('attrs','name'),
+                        valueField:'wxVideoaccountRealmId',
+                        textField:'name',
+                        panelHeight:'auto',
+                        multiple:true,
+                        mode:'remote',
+                        onShowPanel:function(){
+                            $(this).combobox('reload')
+                        },
+                        loader: function (param, success, error) {
+                            debugger
+                            param.kw=param.q;
+                            param.ps = param.rows;
+                            param.pn = param.page;
+                            $.ajax({
+                                url: '/maintain/wx-videoaccount-realm/wx-videoaccount-realm-list',
+                                type: 'get',
+                                data: param,
+                                success: function (data) {
+                                    if (data.code != 0) {
+                                        return false;
+                                    } else {
+                                        success(data.data);
+                                    }
+                
+                                }
+                            })
+                        },
+                        onChange:function(newValue, oldValue){
+                           wxVideoaccount.wxVideoaccountRealmIdList=newValue.join(',')
+                        },
+                        loadFilter: function (data) {
+                            debugger
+                            return data.itemList;
+                        },
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                $(e.data.target).combobox('setValue','');
+                            }
+                        }]
+                        "></td>
+                </tr>
+               
+                <tr>
+                    <td>状态&nbsp;</td>
+                    <td><span id="status"  ></span>
+                        <img src="../image/image-error.png" onload="$('#status').text(wxVideoaccount.status==0?'未认证':wxVideoaccount.status==1?'认证中':wxVideoaccount.status==11?'认证成功':wxVideoaccount.status==12?'认证失败':'未知')" style="display:none;"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>审核不通过原因&nbsp;</td>
+                    <td><span id="status12Reason"  ></span>
+                        <img src="../image/image-error.png" onload="$('#status12Reason').text(wxVideoaccount.status12Reason||'')" style="display:none;"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>类型&nbsp;</td>
+                    <td><input id="type" class="easyui-combobox" style="width:100%" data-options="
+                                    value:wxVideoaccount.type,
+                                    editable:false,panelHeight:'auto',
+                                    data:[ {
+                                        text: '未认证',
+                                        value: '0'
+                                    },{
+                                         text: '个人',
+                                         value: '1'
+                                     },{
+                                        text: '达人',
+                                        value: '2'
+                                    },{
+                                        text: '企业',
+                                        value: '3'
+                                    }],
+                                     iconWidth:20,
+                                     icons:[{
+                                         iconCls:'icon-clear',
+                                         handler: function(e){
+                                             $(e.data.target).combobox('setValue','');
+                                         }
+                                     }],
+                                     onChange:function(newValue, oldValue){
+                                        wxVideoaccount.type=newValue
+                                     }" /></td>
+                </tr>
+
+              
+                <tr>
+                    <td>地区&nbsp;</td>
+                    <td><select id='area1'
+                        onchange='area.area1Change($(this).find("option:selected").attr("data-index"),this.value,$(this).find("option:selected").attr("data-name"),function(r){ wxVideoaccount.area1Id=r.area1Id;wxVideoaccount.area1Name=r.area1Name;  });'></select>
+                    <select id='area2'  style="margin-left: 10px;"
+                        onchange='area.area2Change($(this).find("option:selected").attr("data-index"),this.value,$(this).find("option:selected").attr("data-name"),function(r){ wxVideoaccount.area2Id=r.area2Id;wxVideoaccount.area2Name=r.area2Name;  })'></select>
+                    <select id='area3' style="margin-left: 10px;"
+                        onchange='area.area3Change($(this).find("option:selected").attr("data-index"),this.value,$(this).find("option:selected").attr("data-name"),function(r){ wxVideoaccount.area3Id=r.area3Id;wxVideoaccount.area3Name=r.area3Name;  })'></select></td>
+                        <img src="../image/image-error.png" onload="
+                        debugger;
+                        area.areaInit();
+                        $('#area1').val(wxVideoaccount.area1Id).change();
+                        $('#area2').val(wxVideoaccount.area2Id).change();
+                        $('#area3').val(wxVideoaccount.area3Id).change();
+                       " style="display:none;"/>
+                    </tr>
+
+
+                <tr>
+                    <td>粉丝量&nbsp;</td>
+                    <td><input id="fansCount" class="easyui-numberbox" style="width:100%" data-options="
+                                    value:wxVideoaccount.fansCount,
+                                    iconWidth:20,
+                                    icons:[{
+                                        iconCls:'icon-clear',
+                                        handler: function(e){
+                                            $(e.data.target).textbox('setValue','');
+                                        }
+                                    }],
+                                    onChange:function(newValue, oldValue){
+                                        wxVideoaccount.fansCount=newValue
+                                    }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>点赞量&nbsp;</td>
+                    <td><input id="likeCount" class="easyui-numberbox" style="width:100%" data-options="
+                                    value:wxVideoaccount.likeCount,
+                                    iconWidth:20,
+                                    icons:[{
+                                        iconCls:'icon-clear',
+                                        handler: function(e){
+                                            $(e.data.target).textbox('setValue','');
+                                        }
+                                    }],
+                                    onChange:function(newValue, oldValue){
+                                        wxVideoaccount.likeCount=newValue
+                                    }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>视频量&nbsp;</td>
+                    <td><input id="videoCount" class="easyui-numberbox" style="width:100%" data-options="
+                                    value:wxVideoaccount.videoCount,
+                                    iconWidth:20,
+                                    icons:[{
+                                        iconCls:'icon-clear',
+                                        handler: function(e){
+                                            $(e.data.target).textbox('setValue','');
+                                        }
+                                    }],
+                                    onChange:function(newValue, oldValue){
+                                        wxVideoaccount.videoCount=newValue
+                                    }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>曝光量&nbsp;</td>
+                    <td><input id="pv" class="easyui-numberbox" style="width:100%" data-options="
+                                    value:wxVideoaccount.pv,
+                                    iconWidth:20,
+                                    icons:[{
+                                        iconCls:'icon-clear',
+                                        handler: function(e){
+                                            $(e.data.target).textbox('setValue','');
+                                        }
+                                    }],
+                                    onChange:function(newValue, oldValue){
+                                        wxVideoaccount.pv=newValue
+                                    }" style="width:200px"></td>
+                </tr>
+               
+                <tr>
+                    <td>备注&nbsp;</td>
+                    <td><input id="remark" class="easyui-textbox" style="width:100%;height:200px;" data-options="
+                            value:wxVideoaccount.remark,
+                            multiline:true,
+                            onChange:function(newValue, oldValue){
+                                wxVideoaccount.remark=newValue
+                            }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>排序号&nbsp;</td>
+                    <td><input id="orderNo" class="easyui-numberbox" style="width:100%" data-options="
+                                    prompt:'9999',
+                                    value:wxVideoaccount.orderNo,
+                                    precision:2,
+                                    iconWidth:20,
+                                    icons:[{
+                                        iconCls:'icon-clear',
+                                        handler: function(e){
+                                            $(e.data.target).textbox('setValue','');
+                                        }
+                                    }],
+                                    onChange:function(newValue, oldValue){
+                                        wxVideoaccount.orderNo=newValue
+                                    }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>冻结&nbsp;</td>
+                    <td><span id="frozen"></span>
+                        <img src="../image/image-error.png" onload="$('#frozen').text(wxVideoaccount.frozen==0?'未冻结':wxVideoaccount.frozen==1?'已冻结':'未知')" style="display:none;"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>冻结原因&nbsp;</td>
+                    <td><span id="frozenReason"></span>
+                        <img src="../image/image-error.png" onload="$('#frozenReason').text(wxVideoaccount.frozenReason||'')" style="display:none;"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>创建时间&nbsp;</td>
+                    <td><input id="createTime" class="easyui-datetimebox" style="width:100%" data-options="
+                                        value:moment(wxVideoaccount.createTime).format('YYYY-MM-DD H:mm:ss'),
+                                        editable:false,
+                                        icons:[{
+                                            iconCls:'icon-clear',
+                                            handler: function(e){
+                                                $(e.data.target).datetimebox('setValue','');
+                                            }
+                                        }],
+                                        onChange:function(newValue, oldValue){
+                                            wxVideoaccount.createTime=newValue
+                                        }"></td>
+                </tr>
+                <tr>
+                    <td>更新时间&nbsp;</td>
+                    <td><input id="updateTime" class="easyui-datetimebox" style="width:100%" data-options="
+                                            value:moment(wxVideoaccount.updateTime).format('YYYY-MM-DD H:mm:ss'),
+                                            editable:false,
+                                            icons:[{
+                                                iconCls:'icon-clear',
+                                                handler: function(e){
+                                                    $(e.data.target).datetimebox('setValue','');
+                                                }
+                                            }],
+                                            onChange:function(newValue, oldValue){
+                                                wxVideoaccount.updateTime=newValue
+                                            }"></td>
+                </tr>
+
+            </tbody>
+        </table>
+        
+
+        <div style="margin-left:5px;margin-top:5px;">
+            <a id="update" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-edit"
+                onclick="$('#update,#remove,#reload,#updatePasswordPageEntrance,#freeze,#unfreeze').hide();$('#updateConfirm,#updateCancel').show()">修改</a>
+           
+            <a id="remove" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-remove"
+                onclick="remove()">删除</a>
+
+                <a id="reload" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-reload"
+                onclick="$.messager.confirm('提示','已编辑的数据将丢失, 确认继续吗?',function(r){if(r) location.reload()})">刷新</a>
+            <a id="updateConfirm" href="JavaScript:void(0)" class="easyui-linkbutton" style="display:none;" iconCls="icon-save"
+                onclick="updateConfirm()">确认</a>
+            <a id="updateCancel" href="JavaScript:void(0)" class="easyui-linkbutton" style="display:none;" iconCls="icon-cancel"
+                onclick="location.reload()">取消</a>
+
+            <a id="freeze" href="JavaScript:void(0)" class="easyui-linkbutton"  style="display:none;"
+                onclick="freeze()">冻结</a>
+            <img src="../image/image-error.png" onload="if(wxVideoaccount.frozen==0) $('#freeze').show();" style="display:none;"/>
+
+            <a id="unfreeze" href="JavaScript:void(0)" class="easyui-linkbutton"  style="display:none;"
+                onclick="unfreeze()">解冻</a>
+            <img src="../image/image-error.png" onload="if(wxVideoaccount.frozen==1) $('#unfreeze').show();" style="display:none;"/>
+
+            <a id="status11" href="JavaScript:void(0)" class="easyui-linkbutton"  
+                onclick="status11()">审核通过</a>
+
+            <a id="status12" href="JavaScript:void(0)" class="easyui-linkbutton" 
+                onclick="status12()">审核不通过</a>
+
+
+           
+        </div>
+
+
+
+
+        
+</body>
+<script>
+        $('#datagrid').datagrid()
+</script>
+
+</html>

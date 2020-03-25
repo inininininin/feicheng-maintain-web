@@ -2,16 +2,21 @@
 <html lang="en">
 
 <head>
-    <title></title>
+    <title>飞橙-运维-登录</title>
     <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script src="https://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script>
     <link rel="stylesheet" href="https://lib.sinaapp.com/js/bootstrap/3.3.7/css/bootstrap.min.css" />
-    <script src="./layui-v2.5.5/layui.all.js"></script>
-    <link rel="stylesheet" href="./layui-v2.5.5/css/layui.css" />
-
+    <link rel="stylesheet" type="text/css" href="./jquery-easyui-1.8.7/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="./jquery-easyui-1.8.7/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="./jquery-easyui-1.8.7/demo/demo.css">
+    <script type="text/javascript" src="./jquery-easyui-1.8.7/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="./jquery-easyui-1.8.7/locale/easyui-lang-zh_CN.js"></script>
 
     <style>
+        img {
+        object-fit:contain;
+    }
         .logo img {
             width: 41px;
             height: 33px;
@@ -41,7 +46,7 @@
             height: 100%;
             border: 0;
             outline: none;
-            padding-left: 80px;
+            padding-left: 100px;
             padding-right: 10px;
             color: #000;
         }
@@ -114,18 +119,13 @@
 
         $(document).ready(function () {
             debugger
-            $.get('/oss/alive/config.json', function (res) {
-                debugger
-                serverConfig = res;
-                $('#serverConfig-projectName').text((serverConfig.entityName||'')+(serverConfig.projectName||''))
-                $('title').text((serverConfig.entityName||'')+(serverConfig.projectName||'') + ' - 运维 - 登录')
-            })
+        
 
             $.get('./config.json', function (res) {
                 debugger
                 projectConfig = res;
                 $('#version .value').text(projectConfig.version).click(function(){
-                    layer.alert(projectConfig.versionIntro)
+                    $.messager.alert('提示',projectConfig.versionIntro);
                 })
             })
         });
@@ -137,9 +137,9 @@
             }
         });
 
-        $.post('/maintain-user/login-refresh', function (data) {
+        $.post('/maintain/login-refresh', function (data) {
             if (data.code == 0) {
-                layer.msg('已登录, 跳转中...');
+                $.messager.alert('提示','已登录');
                 localStorage.setItem('maintainLogin', data.data)
                 location.href = './index.html';
             }
@@ -156,21 +156,21 @@
     <div class="logo smargin"
         style="text-align: center;margin-top: 1.67rem;margin-bottom: 0.91rem;">
         <div><img src='./favicon.ico'></div>
-        <h2 id="serverConfig-projectName" style="margin-top:10px;"></h2>
+        <h2 style="margin-top:10px;">飞橙</h2>
     </div>
     <h3 style="margin-top:10px;text-align: center;">运维</h3>
 
     <div id="loginPad" style="margin-top:10px;">
         <div class="number phone">
             <input type="text" oninput="javascript:maintainUserName=this.value" />
-            <div>
+            <div style="text-align: right;padding-right:5px;">
                 <img src="./page/login/image/zhanghu.png" alt="" />
-                <span>账户</span>
+                <span>用户名</span>
             </div>
         </div>
         <div class="number password" style="margin-top: 24px">
             <input type="password" oninput="password=this.value" />
-            <div>
+            <div style="text-align: right;padding-right:5px;">
                 <img src="./page/login/image/mima.png" alt="" />
                 <span>密码</span>
             </div>
@@ -183,44 +183,33 @@
             <div class="rt forgetpassword">忘记密码</div>
         </div>
         <div class="loginbtn" style="margin-top:20px;">
-            <button id="enterClick" onclick=" 
+            <button style="font-size: 16px;" id="enterClick" onclick=" 
 
             $.ajax({
-                url:'/maintain-user/login',
+                url:'/maintain/login',
                 type:'post',
                 data:{ name: maintainUserName, password: password },
-                beforeSend:function(){
-                                            this.layerIndex=layer.load(2)
-                                        },
                  success:function(data){
                     if (data.codeMsg)
-                        layer.alert(data.codeMsg);
+                        $.messager.alert('提示',data.codeMsg);
                     if (data.code == 0) {
                         $.ajax(
-                            {url:'/maintain-user/login-refresh',
+                            {url:'/maintain/login-refresh',
                             type:'post',
-                            beforeSend:function(){
-                                            this.layerIndex=layer.load(2)
-                                        },
+                        
                             success:function(data){
                             if(data.codeMsg)
-                                    layer.alert(data.codeMsg);
+                            $.messager.alert('提示',data.codeMsg);
                                 if (data.code == 0) {
-                                    layer.msg('登录成功');
+                                    $.messager.alert('提示','登录成功');
                                     localStorage.setItem('maintainLogin',data.data)
                                     location.href = './index.html';
                                 }
-                            },
-                                complete:function(){
-                                    layer.close(this.layerIndex)
-                                }
+                            }
                     })
                 }
-                },
-                    complete:function(){
-                        layer.close(this.layerIndex)
-                    }
-            })">登录</button>
+                }
+            })">登&nbsp;录</button>
              <div style="text-align: right;">
                 <a href="/entrance.html">选择入口</a>
             </div> 

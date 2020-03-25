@@ -72,7 +72,7 @@
                 {
                     field: 'name', title: '名称', width: 250, align: 'left', halign: 'center', formatter: function (value, row, index) {
                       
-                        return `<a href="JavaScript:void(0)" style="width:100%;display:inline-block;" title="${value || ''}" onclick="common.newTab('用户:${row.name.substring(0, 10) + '...'}','/maintain-user/hospital-maintain-user.html?hospitalMaintainUserId=${row.hospitalMaintainUserId}')">${value}</a>`;
+                        return `<a href="JavaScript:void(0)" style="width:100%;display:inline-block;" title="${value || ''}" onclick="common.newTab('用户:${row.name.substring(0, 10) + '...'}','/maintain/hospital-maintain.html?hospitalMaintainUserId=${row.hospitalMaintainUserId}')">${value}</a>`;
                     }, styler: function (value, row, index) {
                         return ``
                     }
@@ -98,12 +98,12 @@
                 queryParam.ps = param.rows;
                 queryParam.pn = param.page;
                 $.ajaxSettings.async=false
-                $.get('/maintain-user/hospital-maintain-users', queryParam, function (data) {
+                $.get('/maintain/hospital-maintains', queryParam, function (data) {
                     if (data.codeMsg)
                         layer.alert(data.codeMsg);
                     if (data.code == 0) {
                         currentRows = data.data.rows;
-                        $.get('/maintain-user/hospital-maintain-users-sum', queryParam, function (data) {
+                        $.get('/maintain/hospital-maintains-sum', queryParam, function (data) {
                             if (data.codeMsg)
                                 layer.alert(data.codeMsg);
                             if (data.code == 0) {
@@ -178,7 +178,7 @@
             param.ps = param.rows;
             param.pn = param.page;
             $.ajax({
-                url: '/maintain-user/hospitals',
+                url: '/maintain/hospitals',
                 type: 'get',
                 data: param,
                 success: function (data) {
@@ -281,7 +281,7 @@ onChange:function(newValue, oldValue){
             </table>
             <div id="datagridFoot" style="padding:2px 5px;">
                 <a href="JavaScript:void(0)" class="easyui-linkbutton" title="创建" iconCls="icon-add" plain="true"
-                    onclick=" common.newTab('创建用户','create-hospital-maintain-user.html')">创建</a>
+                    onclick=" common.newTab('创建用户','create-hospital-maintain.html')">创建</a>
                 <a href="JavaScript:void(0)" class="easyui-linkbutton" title="全部删除" iconCls="icon-edit" plain="true"
                     onclick="
                         var ids = $($('#datagrid').datagrid('getChecked')).oneall('attrs','hospitalMaintainUserId');
@@ -292,7 +292,7 @@ onChange:function(newValue, oldValue){
                         shadeClose: false,
                         area:['60%','90%'],
                         shade: 0.5,
-                        content: './update-hospital-maintain-users.html?'+$.param($.extend({},queryParam,{hospitalMaintainUserId:ids.length==0?null:ids.join(),expectedRowCount:ids.length==0?sum.rowCount:ids.length}))
+                        content: './update-hospital-maintains.html?'+$.param($.extend({},queryParam,{hospitalMaintainUserId:ids.length==0?null:ids.join(),expectedRowCount:ids.length==0?sum.rowCount:ids.length}))
                       }); ">批量修改</a>
                 <a href="JavaScript:void(0)" class="easyui-linkbutton" title="删除" iconCls="icon-remove" plain="true"
                     onclick="
@@ -302,7 +302,7 @@ onChange:function(newValue, oldValue){
                             layer.confirm(ids.length==0?'未选择任何记录, 将删除所有已查出的 '+ sum.rowCount +' 条记录, 确认删除吗?':('已选择 '+ids.length+' 条记录, 确认删除吗?'),function(){
                                         $.ajax({
                                     type: 'post',
-                                    url: '/maintain-user/update-hospital-maintain-users',
+                                    url: '/maintain/update-hospital-maintains',
                                     data: $.extend({},queryParam,{hospitalMaintainUserId:ids.length==0?null:ids.join(),delNew:1,expectedRowCount:ids.length==0?sum.rowCount:ids.length}),
                                     beforeSend:function(){
                                         this.layerIndex=layer.load(2)

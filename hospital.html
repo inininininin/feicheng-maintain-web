@@ -50,7 +50,7 @@
     
     $.ajax({
         type: 'get',
-        url: `/maintain-user/hospital-${queryStringObject.hospitalId}`,
+        url: `/maintain/hospital-${queryStringObject.hospitalId}`,
         async: false,
         success: function (data) {
             debugger
@@ -134,7 +134,7 @@ function updateConfirm(){
                         hospital.contentUrl=res.data.url
                          $.ajax({
                             type: 'post',
-                            url: '/maintain-user/update-hospital',
+                            url: '/maintain/update-hospital',
                             data: hospital,
                             beforeSend:function(){
                                 this.layerIndex=layer.load(2)
@@ -173,7 +173,7 @@ function remove(){
         
         $.ajax({
                             type: 'post',
-                            url: '/maintain-user/update-hospital',
+                            url: '/maintain/update-hospital',
                             data: {hospitalId:hospital.hospitalId,del:1},
                             beforeSend:function(){
                                 this.layerIndex=layer.load(2)
@@ -210,7 +210,7 @@ function remove(){
 
     //         $.ajax({
     //             type: 'get',
-    //             url: `/maintain-user/hospital-article/${rowPad.param.hospitalArticleId}`,
+    //             url: `/maintain/hospital-article/${rowPad.param.hospitalArticleId}`,
     //             async: false,
     //             data: { token: rowPad.param.token },
     //             success: function (data) {
@@ -232,7 +232,7 @@ function remove(){
     //     rowAlter: function () {
     //         $.ajax({
     //             type: 'post',
-    //             url: '/maintain-user/hospital-article-alter',
+    //             url: '/maintain/hospital-article-alter',
     //             data: Object.assign({ token: rowPad.param.token, hospitalArticleId: rowPad.param.hospitalArticleId, content: rowPad.contentKindEditor.html() }, rowPad.row),
     //             success: function (data) {
     //                 if (data.codeMsg)

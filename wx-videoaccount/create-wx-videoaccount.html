@@ -3,16 +3,13 @@
 
 <head>
 
-    <title>飞橙-运维-医院详情</title>
+    <title>飞橙-运维-创建视频号</title>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
 
 
 
     <script src="https://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://lib.sinaapp.com/js/bootstrap/3.3.7/css/bootstrap.min.css" />
-    <script src="../layui-v2.5.5/layui.all.js"></script>
-    <link rel="stylesheet" href="../layui-v2.5.5/css/layui.css" />
 
     <script src="../zTree_v3/js/jquery.ztree.all.js"></script>
     <link rel="stylesheet" href="../zTree_v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
@@ -48,13 +45,9 @@ img {
 <script>
 
     var queryStringObject = common.queryStringObject();
-    var ids= queryStringObject.userId?queryStringObject.userId.split():[]
-    var user = {}
+    var wxVideoaccount = {},contentKindEditor
 
-    // var a = layer.load(2);
-    // setTimeout(function(){
-    //     layer.close(a)
-    // },500)
+    
 
     $.parser.onComplete = function () {
         debugger
@@ -63,46 +56,35 @@ img {
 
     $(document).ready(function(){
         debugger
-       
-      
-         
         $("#loading").remove();
-
-      
     })
 
 
-function updateConfirm(){
+function createConfirm(){
     debugger
-    layer.confirm(ids.length==0?'未选择任何记录, 将修改所有已查出的 '+ queryStringObject.expectedRowCount +' 条记录, 确认修改吗?':('已选择 '+ids.length+' 条记录, 确认修改吗?'),function(){
-       
-                         $.ajax({
+  
+
+    $.messager.confirm('提示','确认创建吗?',function(){
+        $.ajax({
                             type: 'post',
-                            url: '/maintain/user/update-user-list',
-                            data: $.extend({},user,queryStringObject),
-                            beforeSend:function(){
-                                this.layerIndex=layer.load(2)
-                            },
+                            url: '/maintain/wx-videoaccount/create-wx-videoaccount',
+                            data: wxVideoaccount,
                             success: function (res) {
                                 debugger
                                 if (res.codeMsg)
-                                    layer.alert(res.codeMsg)
+                                 $.messager.alert('提示',res.codeMsg)
                                 if (res.code == 0) {
                                     if (!res.codeMsg)
-                                        layer.alert('操作成功',function(){
-                                            location.reload()
-                                        })
+                                    $.messager.alert('提示','操作成功',null,function(){
+                                                location.reload()
+                                            })
                                 } 
-                            },
-                                        complete:function(){
-                                            layer.close(this.layerIndex)
-                                        }
+                            }
                         })
-                    } 
-    )
+    })
+    
 }
         
-
 
 
 </script>
@@ -113,7 +95,7 @@ function updateConfirm(){
         <font>loading···</font>
     </div>
 
-        <table id="datagrid"  data-options="singleSelect:true">
+        <table id="datagrid"  data-options="singleSelect:true,height:'700px'">
             <thead>
                 <tr>
                     <th data-options="field:'name',width:200,align:'right'">属性&nbsp;</th>
@@ -121,37 +103,30 @@ function updateConfirm(){
                 </tr>
             </thead>
             <tbody>
-               
                 <tr>
-                    <td>冻结&nbsp;</td>
-                    <td><input id="frozenNew" class="easyui-combobox" style="width:100%" data-options="
-                                    editable:false,panelHeight:'auto',
-                                    data:[
-                                    {
-                                         text: '否',
-                                         value: '0'
-                                     },{
-                                         text: '是',
-                                         value: '1'
-                                     }],
-                                     iconWidth:20,
-                                     icons:[{
-                                         iconCls:'icon-clear',
-                                         handler: function(e){
-                                             $(e.data.target).combobox('setValue','');
-                                         }
-                                     }],
-                                     onChange:function(newValue, oldValue){
-                                        user.frozenNew=newValue
-                                     }" /></td>
+                    <td>视频号名&nbsp;</td>
+                    <td><input id="name" class="easyui-textbox" style="width:100%" data-options="
+                        value:wxVideoaccount.name,
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                debugger
+                                $(e.data.target).textbox('setValue','');
+                            }
+                        }],
+                        onChange:function(newValue, oldValue){
+                            wxVideoaccount.name=newValue
+                        }" style="width:200px"></td>
                 </tr>
-               
             </tbody>
         </table>
         
         <div style="margin-left:5px;margin-top:5px;">
-            <a id="updateConfirm" href="JavaScript:void(0)" class="easyui-linkbutton"  iconCls="icon-save"
-                onclick="updateConfirm()">确认</a>
+            <a id="createConfirm" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-save"
+                onclick="createConfirm()">确认</a>
+            <a id="reset" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-reload"
+                onclick="$.messager.confirm('提示','已编辑的数据将丢失, 确认继续吗?',function(){location.reload()})">重置</a>
         </div>
 </body>
 <script>

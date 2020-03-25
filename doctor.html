@@ -50,7 +50,7 @@
     
     $.ajax({
         type: 'get',
-        url: `/maintain-user/doctor-${queryStringObject.doctorId}`,
+        url: `/maintain/doctor-${queryStringObject.doctorId}`,
         async: false,
         success: function (data) {
             debugger
@@ -94,7 +94,7 @@ function updateConfirm(){
        
         $.ajax({
                             type: 'post',
-                            url: '/maintain-user/update-doctor',
+                            url: '/maintain/update-doctor',
                             data: doctor,
                             beforeSend:function(){
                                 this.layerIndex=layer.load(2)
@@ -127,7 +127,7 @@ function remove(){
         
         $.ajax({
                             type: 'post',
-                            url: '/maintain-user/update-doctor',
+                            url: '/maintain/update-doctor',
                             data: {doctorId:doctor.doctorId,del:1},
                             beforeSend:function(){
                                 this.layerIndex=layer.load(2)
@@ -164,7 +164,7 @@ function remove(){
 
     //         $.ajax({
     //             type: 'get',
-    //             url: `/maintain-user/doctor-article/${rowPad.param.doctorArticleId}`,
+    //             url: `/maintain/doctor-article/${rowPad.param.doctorArticleId}`,
     //             async: false,
     //             data: { token: rowPad.param.token },
     //             success: function (data) {
@@ -186,7 +186,7 @@ function remove(){
     //     rowAlter: function () {
     //         $.ajax({
     //             type: 'post',
-    //             url: '/maintain-user/doctor-article-alter',
+    //             url: '/maintain/doctor-article-alter',
     //             data: Object.assign({ token: rowPad.param.token, doctorArticleId: rowPad.param.doctorArticleId, content: rowPad.contentKindEditor.html() }, rowPad.row),
     //             success: function (data) {
     //                 if (data.codeMsg)
@@ -382,7 +382,7 @@ function remove(){
                             param.ps = param.rows;
                             param.pn = param.page;
                             $.ajax({
-                                url: '/maintain-user/hospitals',
+                                url: '/maintain/hospitals',
                                 type: 'get',
                                 data: param,
                                 success: function (data) {
@@ -438,7 +438,7 @@ function remove(){
                             param.ps = param.rows;
                             param.pn = param.page;
                             $.ajax({
-                                url: '/maintain-user/offices',
+                                url: '/maintain/offices',
                                 type: 'get',
                                 data: param,
                                 success: function (data) {
