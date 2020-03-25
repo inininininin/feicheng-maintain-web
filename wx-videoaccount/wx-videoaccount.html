@@ -170,7 +170,7 @@ function unfreeze(){
 
 function status11(){
     debugger
-    $.messager.confirm('提示','确认审核通过吗？', function(r){
+    $.messager.confirm('提示','确认认证通过吗？', function(r){
         if(r)
         $.ajax({
                             type: 'post',
@@ -194,7 +194,7 @@ function status12(){
     $.messager.prompt('提示','请输入不通过原因',function(r){
             if (r){
                 reason = r;
-                $.messager.confirm('提示','确认审核不通过吗？', function(r){
+                $.messager.confirm('提示','确认认证不通过吗？', function(r){
                     if(r)
                         $.ajax({
                                             type: 'post',
@@ -511,7 +511,7 @@ function status12(){
                 </tr>
 
                 <tr>
-                    <td>审核不通过原因&nbsp;</td>
+                    <td>认证不通过原因&nbsp;</td>
                     <td><span id="status12Reason"  ></span>
                         <img src="../image/image-error.png" onload="$('#status12Reason').text(wxVideoaccount.status12Reason||'')" style="display:none;"/>
                     </td>
@@ -723,10 +723,10 @@ function status12(){
             <img src="../image/image-error.png" onload="if(wxVideoaccount.frozen==1) $('#unfreeze').show();" style="display:none;"/>
 
             <a id="status11" href="JavaScript:void(0)" class="easyui-linkbutton"  
-                onclick="status11()">审核通过</a>
+                onclick="status11()">认证通过</a>
 
             <a id="status12" href="JavaScript:void(0)" class="easyui-linkbutton" 
-                onclick="status12()">审核不通过</a>
+                onclick="status12()">认证不通过</a>
 
 
            
