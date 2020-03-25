@@ -168,13 +168,13 @@ function unfreeze(){
         });          
 }
 
-function status11(){
+function audit11(){
     debugger
     $.messager.confirm('提示','确认审核通过吗？', function(r){
         if(r)
         $.ajax({
                             type: 'post',
-                            url: '/maintain/wx-videoaccount/status11-wx-videoaccount',
+                            url: '/maintain/wx-videoaccount/audit11-wx-videoaccount',
                             data: {wxVideoaccountId:wxVideoaccount.wxVideoaccountId,expectedItemCount:1},
                             success: function (res) {
                                 debugger
@@ -189,7 +189,7 @@ function status11(){
         });          
 }
 
-function status12(){
+function audit12(){
     debugger
     $.messager.prompt('提示','请输入不通过原因',function(r){
             if (r){
@@ -198,7 +198,7 @@ function status12(){
                     if(r)
                         $.ajax({
                                             type: 'post',
-                                            url: '/maintain/wx-videoaccount/status12-wx-videoaccount',
+                                            url: '/maintain/wx-videoaccount/audit12-wx-videoaccount',
                                             data: {wxVideoaccountId:wxVideoaccount.wxVideoaccountId,reason:reason,expectedItemCount:1},
                                             success: function (res) {
                                                 debugger
@@ -512,8 +512,8 @@ function status12(){
 
                 <tr>
                     <td>审核不通过原因&nbsp;</td>
-                    <td><span id="status12Reason"  ></span>
-                        <img src="../image/image-error.png" onload="$('#status12Reason').text(wxVideoaccount.status12Reason||'')" style="display:none;"/>
+                    <td><span id="audit12Reason"  ></span>
+                        <img src="../image/image-error.png" onload="$('#audit12Reason').text(wxVideoaccount.audit12Reason||'')" style="display:none;"/>
                     </td>
                 </tr>
 
@@ -754,11 +754,11 @@ function status12(){
                 onclick="unfreeze()">解冻</a>
             <img src="../image/image-error.png" onload="if(wxVideoaccount.frozen==1) $('#unfreeze').show();" style="display:none;"/>
 
-            <a id="status11" href="JavaScript:void(0)" class="easyui-linkbutton"  
-                onclick="status11()">审核通过</a>
+            <a id="audit11" href="JavaScript:void(0)" class="easyui-linkbutton"  
+                onclick="audit11()">审核通过</a>
 
-            <a id="status12" href="JavaScript:void(0)" class="easyui-linkbutton" 
-                onclick="status12()">审核不通过</a>
+            <a id="audit12" href="JavaScript:void(0)" class="easyui-linkbutton" 
+                onclick="audit12()">审核不通过</a>
 
 
            
