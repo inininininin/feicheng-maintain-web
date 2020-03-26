@@ -392,7 +392,7 @@ function audit12(){
                     </td>
                 </tr>
                 <tr>
-                    <td>简介&nbsp;</td>
+                    <td>简要&nbsp;</td>
                     <td><input id="brief" class="easyui-textbox" style="width:100%;height:200px;" data-options="
                             value:wxVideoaccount.brief,
                             multiline:true,
@@ -502,28 +502,13 @@ function audit12(){
                         }]
                         "></td>
                 </tr>
-               
-                <tr>
-                    <td>状态&nbsp;</td>
-                    <td><span id="status"  ></span>
-                        <img src="../image/image-error.png" onload="$('#status').text(wxVideoaccount.status==0?'未审核':wxVideoaccount.status==1?'审核中':wxVideoaccount.status==11?'审核成功':wxVideoaccount.status==12?'审核不通过':'未知')" style="display:none;"/>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>审核不通过原因&nbsp;</td>
-                    <td><span id="audit12Reason"  ></span>
-                        <img src="../image/image-error.png" onload="$('#audit12Reason').text(wxVideoaccount.audit12Reason||'')" style="display:none;"/>
-                    </td>
-                </tr>
-
                 <tr>
                     <td>类型&nbsp;</td>
                     <td><input id="type" class="easyui-combobox" style="width:100%" data-options="
                                     value:wxVideoaccount.type,
                                     editable:false,panelHeight:'auto',
                                     data:[ {
-                                        text: '未审核',
+                                        text: '普通',
                                         value: '0'
                                     },{
                                          text: '个人',
@@ -546,6 +531,21 @@ function audit12(){
                                         wxVideoaccount.type=newValue
                                      }" /></td>
                 </tr>
+                <tr>
+                    <td>状态&nbsp;</td>
+                    <td><span id="audit"  ></span>
+                        <img src="../image/image-error.png" onload="$('#audit').text(wxVideoaccount.audit==0?'未提':wxVideoaccount.audit==1?'未审':wxVideoaccount.audit==11?'过审':wxVideoaccount.audit==12?'拒审':'未知')" style="display:none;"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>拒审原因&nbsp;</td>
+                    <td><span id="audit12Reason"  ></span>
+                        <img src="../image/image-error.png" onload="$('#audit12Reason').text(wxVideoaccount.audit12Reason||'')" style="display:none;"/>
+                    </td>
+                </tr>
+
+               
 
               
                 <tr>
@@ -755,10 +755,10 @@ function audit12(){
             <img src="../image/image-error.png" onload="if(wxVideoaccount.frozen==1) $('#unfreeze').show();" style="display:none;"/>
 
             <a id="audit11" href="JavaScript:void(0)" class="easyui-linkbutton"  
-                onclick="audit11()">审核通过</a>
+                onclick="audit11()">过审</a>
 
             <a id="audit12" href="JavaScript:void(0)" class="easyui-linkbutton" 
-                onclick="audit12()">审核不通过</a>
+                onclick="audit12()">拒审</a>
 
 
            

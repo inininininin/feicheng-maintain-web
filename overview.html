@@ -24,20 +24,21 @@
 
 <body style="margin:0;padding:0;">
     <div style="margin-left:18px;">
-        <span style="font-size:18px;">近1小时的访问量: <span id="requestCountOfOneHourRecently"></span></span> <br/>
-       
-        <span style="font-size:18px;">近1天的访问量: <span id="requestCountOfOneDayRecently"></span></span> <br/>
-        <span style="font-size:18px;">近1星期的访问量: <span id="requestCountOfOneWeekRecently"></span></span> <br/>
-        <span style="font-size:18px;">历史访问量: <span id="requestCountOfHistory"></span></span>
+        <div style="margin-top:10px;font-size:18px;"></div>
+        <span  style="font-size:14px;">以Ip量计算</span><br/>
+        <span style="font-size:18px;">近1小时的访问量: <span id="visitCountOfOneHourRecently"></span></span> <br/>
+        <span style="font-size:18px;">近1天的访问量: <span id="visitCountOfOneDayRecently"></span></span> <br/>
+        <span style="font-size:18px;">近1星期的访问量: <span id="visitCountOfOneWeekRecently"></span></span> <br/>
+        <span style="font-size:18px;">历史访问量: <span id="visitCountOfHistory"></span></span>
     </div>
 </body>
 
 <script>
    $.get('/maintain/overview',function(data){
-    $('#requestCountOfOneHourRecently').text(data.data.requestCountOfOneHourRecently)
-    $('#requestCountOfOneDayRecently').text(data.data.requestCountOfOneDayRecently)
-    $('#requestCountOfOneWeekRecently').text(data.data.requestCountOfOneWeekRecently)
-    $('#requestCountOfHistory').text(data.data.requestCountOfHistory)
+    $('#visitCountOfOneHourRecently').text(data.data.visitCountOfOneHourRecently)
+    $('#visitCountOfOneDayRecently').text(data.data.visitCountOfOneDayRecently)
+    $('#visitCountOfOneWeekRecently').text(data.data.visitCountOfOneWeekRecently)
+    $('#visitCountOfHistory').text(data.data.visitCountOfHistory)
    })
 </script>
 

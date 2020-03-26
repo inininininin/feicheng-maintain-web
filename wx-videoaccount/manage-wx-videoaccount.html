@@ -52,12 +52,12 @@ img {
                 { field: 'wx', title: '微信', width: 150, align: 'left', halign: 'center' },
                 {
                     field: 'type', title: '类型', width: 100, align: 'left', halign: 'center', formatter: function (value, row, index) {
-                        return value == 0 ? '未审核' :value == 1 ? '个人' :value ==2 ? '达人' :value == 3 ? '企业' : '未知';
+                        return value == 0 ? '普通' :value == 1 ? '个人' :value ==2 ? '达人' :value == 3 ? '企业' : '未知';
                     }
                 },
                 {
-                    field: 'status', title: '状态', width: 100, align: 'left', halign: 'center', formatter: function (value, row, index) {
-                        return value == 0 ? '未审核' :value == 1 ? '审核中' :value ==11 ? '审核成功' :value == 12 ? '审核不通过' : '未知';
+                    field: 'audit', title: '审核', width: 100, align: 'left', halign: 'center', formatter: function (value, row, index) {
+                        return value == 0 ? '未提' :value == 1 ? '未审' :value ==11 ? '过审' :value == 12 ? '拒审' : '未知';
                     }
                 },
                 { field: 'area1Id', title: '省', width: 70, align: 'left', sortable: true, halign: 'center' , formatter: function (value, row, index) {
@@ -135,9 +135,9 @@ img {
                                 $.messager.alert('提示',data.codeMsg);
                             if (data.code == 0) {
                                 sum = data.data;
+                                success({rows:currentItemList,total:sum.itemCount});
                             }
                         })
-                        success({rows:currentItemList,total:sum.itemCount});
                     } else {
 
                     }
@@ -199,7 +199,7 @@ img {
     <div style="display:inline-block;">
         <input id="queryParam.type" class="easyui-combobox" label="类型:" labelPosition="left" labelAlign="right" style="width:300px" data-options="editable:false,panelHeight:'auto',value:'',data:[
 {
-                             text: '未审核',
+                             text: '普通',
                              value: '0'
                          },{
                              text: '个人',
@@ -226,18 +226,18 @@ onChange:function(newValue, oldValue){
 </div>
 
 <div style="display:inline-block;">
-    <input id="queryParam.status" class="easyui-combobox" label="状态:" labelPosition="left" labelAlign="right" style="width:300px" data-options="editable:false,panelHeight:'auto',value:'',data:[
+    <input id="queryParam.audit" class="easyui-combobox" label="状态:" labelPosition="left" labelAlign="right" style="width:300px" data-options="editable:false,panelHeight:'auto',value:'',data:[
 {
-                         text: '未审核',
+                         text: '未提',
                          value: '0'
                      },{
-                         text: '审核中',
+                         text: '未审',
                          value: '1'
                      },{
-                        text: '审核成功',
+                        text: '过审',
                         value: '11'
                     },{
-                        text: '审核不通过',
+                        text: '拒审',
                         value: '12'
                     }],
 iconWidth:20,
@@ -250,7 +250,7 @@ handler: function(e){
 onChange:function(newValue, oldValue){
 debugger
 this
-queryParam.status=newValue
+queryParam.audit=newValue
 }" />
 </div>
 

@@ -53,7 +53,7 @@ img {
                 { field: 'articleClassification1Id', title: '分类1', width: 100, align: 'left',sortable: true, halign: 'center' ,formatter:function(value, row, index) {
                     return row.articleClassification1Name;
                 }},
-                 { field: 'brief', title: '简介', width: 200, align: 'left', halign: 'center' },
+                 { field: 'brief', title: '简要', width: 200, align: 'left', halign: 'center' },
                  { field: 'remark', title: '备注', width: 200, align: 'left', halign: 'center' },
                 {
                     field: 'frozen', title: '冻结', width: 50, align: 'center', halign: 'center', formatter: function (value, row, index) {
@@ -114,9 +114,9 @@ img {
                                 $.messager.alert('提示',data.codeMsg);
                             if (data.code == 0) {
                                 sum = data.data;
+                                success({rows:currentItemList,total:sum.itemCount});
                             }
                         })
-                        success({rows:currentItemList,total:sum.itemCount});
                     } else {
 
                     }
@@ -176,7 +176,7 @@ img {
     </div>
 
     <div style="display:inline-block;">
-        <input class="easyui-combobox" name="articleClassificationId" label="分类1:" labelPosition="left" labelAlign="right" style="width:300px;" data-options="
+        <input class="easyui-combobox" name="articleClassification1Id" label="分类1:" labelPosition="left" labelAlign="right" style="width:300px;" data-options="
         valueField:'articleClassificationId',
         textField:'name',
         panelHeight:'auto',
@@ -205,7 +205,7 @@ img {
             })
         },
         onChange:function(newValue, oldValue){
-            queryParam.articleClassificationId=newValue
+            queryParam.articleClassification1Id=newValue
         },
         loadFilter: function (data) {
             debugger

@@ -104,9 +104,9 @@ img {
                                 $.messager.alert('提示',data.codeMsg);
                             if (data.code == 0) {
                                 sum = data.data;
+                                success({rows:currentItemList,total:sum.itemCount});
                             }
                         })
-                        success({rows:currentItemList,total:sum.itemCount});
                     } else {
 
                     }

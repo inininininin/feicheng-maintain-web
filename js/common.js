@@ -29,23 +29,31 @@ common.newTab = function (title, url) {
 
 
 
-common.prettyFileSize = function (size) {
-    if (!size)
-        return "";
+common.sizeInNice = function (b) {
+    if (!b)
+        return b;
 
     var num = 1024.00; //byte
 
-    if (size < num)
-        return size + "B";
-    if (size < Math.pow(num, 2))
-        return (size / num).toFixed(2) + "KB"; //kB
-    if (size < Math.pow(num, 3))
-        return (size / Math.pow(num, 2)).toFixed(2) + "MB"; //M
-    if (size < Math.pow(num, 4))
-        return (size / Math.pow(num, 3)).toFixed(2) + "GB"; //G
-    return (size / Math.pow(num, 4)).toFixed(2) + "TB"; //T
+    if (b < num)
+        return b + "B";
+    if (b < Math.pow(num, 2))
+        return (b / num).toFixed(2) + "KB"; //kB
+    if (b < Math.pow(num, 3))
+        return (b / Math.pow(num, 2)).toFixed(2) + "MB"; //M
+    if (b < Math.pow(num, 4))
+        return (b / Math.pow(num, 3)).toFixed(2) + "GB"; //G
+    return (b / Math.pow(num, 4)).toFixed(2) + "TB"; //T
 }
 
+common.sizeInMb = function (b,scale) {
+    if (!b)
+        return b;
+    if(scale !=0 && !scale)
+        scale = 6
+    var num = 1024.00; //byte
+    return (b / Math.pow(num, 2)).toFixed(scale) + "MB"; //M
+}
 
 common.queryStringObject = function(queryString) {
     if (!queryString)
