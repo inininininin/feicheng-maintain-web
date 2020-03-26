@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>飞橙-运维-创建热搜</title>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
+
+
+
+    <script src="https://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script>
+
+    <script src="../zTree_v3/js/jquery.ztree.all.js"></script>
+    <link rel="stylesheet" href="../zTree_v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
+
+    <link rel="stylesheet" type="text/css" href="../jquery-easyui-1.8.7/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../jquery-easyui-1.8.7/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../jquery-easyui-1.8.7/demo/demo.css">
+    <script type="text/javascript" src="../jquery-easyui-1.8.7/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../jquery-easyui-1.8.7/locale/easyui-lang-zh_CN.js"></script>
+
+    <link rel="stylesheet" href="../jQueryViewer20160329/css/viewer.min.css">
+    <script src="../jQueryViewer20160329/js/viewer.min.js"></script>
+    <script src="../jQueryViewer20160329/js/viewer-jquery.min.js"></script>
+
+
+    <link rel="stylesheet" href="../kindeditor/themes/default/default.css" />
+    <link rel="stylesheet" href="../kindeditor/plugins/code/prettify.css" />
+    <script charset="utf-8" src="../kindeditor/kindeditor-all.js"></script>
+    <script charset="utf-8" src="../kindeditor/lang/zh-CN.js"></script>
+    <script charset="utf-8" src="../kindeditor/plugins/code/prettify.js"></script>
+
+    <script src="../js/moment.js"></script>
+    <script src="../js/common.js"></script>
+
+</head>
+
+<style>
+    img {
+        object-fit:contain;
+    }
+</style>
+
+<script>
+
+    var queryStringObject = common.queryStringObject();
+    var hotsearch = {},contentKindEditor
+
+    
+
+    $.parser.onComplete = function () {
+        debugger
+    }
+
+
+    $(document).ready(function(){
+        debugger
+        contentKindEditor = KindEditor.create('#content', {
+               
+               cssPath: '../kindeditor/plugins/code/prettify.css',
+               uploadJson: '/kindeditor/upload_json.jsp',
+               fileManagerJson: '/kindeditor/file_manager_json.jsp',
+               allowFileManager: true,
+               afterCreate: function () {
+                   var self = this;
+                   KindEditor.ctrl(document, 13, function () {
+                       self.sync();
+                       document.forms['example'].submit();
+                   });
+                   KindEditor.ctrl(self.edit.doc, 13, function () {
+                       self.sync();
+                       document.forms['example'].submit();
+                   });
+
+                   debugger
+                   if (hotsearch.content)
+                       $.get(`${hotsearch.content}`, function (data) {
+                           self.html(data)
+                       })
+               }
+           })
+
+        $("#loading").remove();
+    })
+
+
+function createConfirm(){
+    debugger
+    $.messager.confirm('提示','确认创建吗?',function(r){
+if(r){
+    
+
+        $.ajax({
+                            type: 'post',
+                            url: '/maintain/hotsearch/create-hotsearch',
+                            data: hotsearch,
+                            success: function (res) {
+                                debugger
+                                if (res.codeMsg)
+                                 $.messager.alert('提示',res.codeMsg)
+                                if (res.code == 0) {
+                                    if (!res.codeMsg)
+                                    $.messager.alert('提示','操作成功',null,function(){
+                                                location.reload()
+                                            })
+                                } 
+                            }
+                        })
+                    }
+    })
+    
+}
+        
+
+
+</script>
+
+<body style="margin:0;padding:0;">
+    <div id="loading" class='' style="position: absolute; z-index: 1000; top: 0px; left: 0px; 
+    width: 100%; height: 100%; background: white; text-align: center;padding:5px 10px">
+        <font>loading···</font>
+    </div>
+
+        <table id="datagrid"  data-options="singleSelect:true,height:'700px'">
+            <thead>
+                <tr>
+                    <th data-options="field:'name',width:200,align:'right'">属性&nbsp;</th>
+                    <th data-options="field:'value',width:500">值</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>热搜名&nbsp;</td>
+                    <td><input id="name" class="easyui-textbox" style="width:100%" data-options="
+                        value:hotsearch.name,
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                debugger
+                                $(e.data.target).textbox('setValue','');
+                            }
+                        }],
+                        onChange:function(newValue, oldValue){
+                            hotsearch.name=newValue
+                        }" style="width:200px"></td>
+                </tr>
+                
+                <tr>
+                    <td>类型&nbsp;</td>
+                    <td><input id="type" class="easyui-combobox" style="width:100%" data-options="
+                                    value:hotsearch.type,
+                                    editable:false,panelHeight:'auto',
+                                    data:[
+                                    {
+                                        text: '默认',
+                                        value: '0'
+                                    }],
+                                     iconWidth:20,
+                                     icons:[{
+                                         iconCls:'icon-clear',
+                                         handler: function(e){
+                                             $(e.data.target).combobox('setValue','');
+                                         }
+                                     }],
+                                     onChange:function(newValue, oldValue){
+                                        hotsearch.type=newValue
+                                     }" /></td>
+                </tr>
+
+              
+            </tbody>
+        </table>
+        
+        <div style="margin-left:5px;margin-top:5px;">
+            <a id="createConfirm" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-save"
+                onclick="createConfirm()">确认</a>
+            <a id="reset" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-reload"
+                onclick="$.messager.confirm('提示','已编辑的数据将丢失, 确认继续吗?',function(){location.reload()})">重置</a>
+        </div>
+</body>
+<script>
+        $('#datagrid').datagrid()
+</script>
+
+</html>

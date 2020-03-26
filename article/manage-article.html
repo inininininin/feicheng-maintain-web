@@ -71,6 +71,7 @@ img {
                         return value ? moment(value).format('YYYY-MM-DD HH:mm:ss') : value;
                     }
                 }
+                
             ]],
             frozenColumns: [[
                 { field: 'ck', align: 'left', checkbox: true },
@@ -381,6 +382,7 @@ queryParam.updateTimeTo=newValue
                                             if (res.code == 0) {
                                                 if (!res.codeMsg)
                                                     $.messager.alert('提示','操作成功')
+                                                    $('#datagrid').datagrid('reload');
                                             } 
                                         }
                                     }) 

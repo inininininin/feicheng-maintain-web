@@ -540,30 +540,85 @@ function remove(){
                             article.link1Url=newValue
                         }" style="width:200px"></td>
                 </tr>
+
+
                 <tr>
                     <td>浏览量&nbsp;</td>
-                    <td><span id="viewCount"></span><img src='../image/image-error.png' style="display: none;" onload="$('#viewCount').text(article.viewCount)"/></td>
+                    <td><input id="viewCount" class="easyui-numberbox" style="width:100%" data-options="
+                                    value:article.viewCount,
+                                    iconWidth:20,
+                                    icons:[{
+                                        iconCls:'icon-clear',
+                                        handler: function(e){
+                                            $(e.data.target).textbox('setValue','');
+                                        }
+                                    }],
+                                    onChange:function(newValue, oldValue){
+                                        article.viewCount=newValue
+                                    }" style="width:200px"></td>
                 </tr>
-                
                 <tr>
                     <td>点赞量&nbsp;</td>
-                    <td><span id="likeCount"></span><img src='../image/image-error.png' style="display: none;" onload="$('#likeCount').text(article.likeCount)"/></td>
+                    <td><input id="likeCount" class="easyui-numberbox" style="width:100%" data-options="
+                                    value:article.likeCount,
+                                    iconWidth:20,
+                                    icons:[{
+                                        iconCls:'icon-clear',
+                                        handler: function(e){
+                                            $(e.data.target).textbox('setValue','');
+                                        }
+                                    }],
+                                    onChange:function(newValue, oldValue){
+                                        article.likeCount=newValue
+                                    }" style="width:200px"></td>
                 </tr>
-                
                 <tr>
                     <td>分享量&nbsp;</td>
-                    <td><span id="shareCount"></span><img src='../image/image-error.png' style="display: none;" onload="$('#shareCount').text(article.shareCount)"/></td>
+                    <td><input id="shareCount" class="easyui-numberbox" style="width:100%" data-options="
+                                    value:article.shareCount,
+                                    iconWidth:20,
+                                    icons:[{
+                                        iconCls:'icon-clear',
+                                        handler: function(e){
+                                            $(e.data.target).textbox('setValue','');
+                                        }
+                                    }],
+                                    onChange:function(newValue, oldValue){
+                                        article.shareCount=newValue
+                                    }" style="width:200px"></td>
                 </tr>
-                
                 <tr>
                     <td>转发量&nbsp;</td>
-                    <td><span id="repostCount"></span><img src='../image/image-error.png' style="display: none;" onload="$('#repostCount').text(article.repostCount)"/></td>
+                    <td><input id="repostCount" class="easyui-numberbox" style="width:100%" data-options="
+                                    value:article.repostCount,
+                                    iconWidth:20,
+                                    icons:[{
+                                        iconCls:'icon-clear',
+                                        handler: function(e){
+                                            $(e.data.target).textbox('setValue','');
+                                        }
+                                    }],
+                                    onChange:function(newValue, oldValue){
+                                        article.repostCount=newValue
+                                    }" style="width:200px"></td>
                 </tr>
-                
                 <tr>
                     <td>收藏量&nbsp;</td>
-                    <td><span id="favorCount"></span><img src='../image/image-error.png' style="display: none;" onload="$('#favorCount').text(article.favorCount)"/></td>
+                    <td><input id="favorCount" class="easyui-numberbox" style="width:100%" data-options="
+                                    value:article.favorCount,
+                                    iconWidth:20,
+                                    icons:[{
+                                        iconCls:'icon-clear',
+                                        handler: function(e){
+                                            $(e.data.target).textbox('setValue','');
+                                        }
+                                    }],
+                                    onChange:function(newValue, oldValue){
+                                        article.favorCount=newValue
+                                    }" style="width:200px"></td>
                 </tr>
+
+
                 <tr>
                     <td>基础浏览量&nbsp;</td>
                     <td><input id="viewCountBase" class="easyui-numberbox" style="width:100%" data-options="

@@ -3,7 +3,7 @@
 
 <head>
 
-    <title>飞橙-运维-文章分类管理</title>
+    <title>飞橙-运维-热搜管理</title>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
 
@@ -43,13 +43,17 @@ img {
 
             $('#datagrid').datagrid({
             columns: [[
-            {
-                        field: 'articleClassificationLowerCount', title: '下级数', width: 70, align: 'right', sortable: true, halign: 'center', formatter: function (value, row, index) {
-                            debugger
-
-                            return `<a href="JavaScript:void(0)" style="width:100%;display:inline-block;" title="${value || ''}" onclick="common.newTab('下级文章分类:${row.name.substring(0, 10) + '...'}','/maintain/article-classification/manage-article-classification.html?articleClassificationUpperId=${row.articleClassificationId}&articleClassificationUpperName=${row.name}')">${value}</a>`;
-                        }
-                    },
+                {
+                    field: 'cover', title: '封面', width: 60, align: 'center', halign: 'center', formatter: function (value, row, index) {
+                        return value ? `<span class="image-previewer"><img src='${value}' style='width:50px;cursor:pointer;' data-original='${value}'/></span>` : value
+                    }
+                },
+                { field: 'searchCount', title: '搜索量', width: 70, align: 'right', sortable: true, halign: 'center' },
+                {
+                    field: 'type', title: '类型', width: 50, align: 'center', halign: 'center', formatter: function (value, row, index) {
+                        return value == 0 ? '默认' : '未知';
+                    }
+                },
                  { field: 'remark', title: '备注', width: 200, align: 'left', halign: 'center' },
                 {
                     field: 'frozen', title: '冻结', width: 50, align: 'center', halign: 'center', formatter: function (value, row, index) {
@@ -67,19 +71,20 @@ img {
                         return value ? moment(value).format('YYYY-MM-DD HH:mm:ss') : value;
                     }
                 }
+                
             ]],
             frozenColumns: [[
                 { field: 'ck', align: 'left', checkbox: true },
                 {
-                    field: 'name', title: '文章分类名', width: 250, align: 'left', halign: 'center', formatter: function (value, row, index) {
+                    field: 'name', title: '热搜名', width: 250, align: 'left', halign: 'center', formatter: function (value, row, index) {
                       
-                        return `<a href="JavaScript:void(0)" style="width:100%;display:inline-block;" title="${value || ''}" onclick="common.newTab('文章分类:${row.name.substring(0, 10) + '...'}','/maintain/article-classification/article-classification.html?articleClassificationId=${row.articleClassificationId}')">${value}</a>`;
+                        return `<a href="JavaScript:void(0)" style="width:100%;display:inline-block;" title="${value || ''}" onclick="common.newTab('热搜:${row.name.substring(0, 10) + '...'}','/maintain/hotsearch/hotsearch.html?hotsearchId=${row.hotsearchId}')">${value}</a>`;
                     }, styler: function (value, row, index) {
                         return ``
                     }
                 }
             ]],
-            idField: 'articleClassificationId',
+            idField: 'hotsearchId',
             toolbar: `#datagridToolBar`,
             footer: `#datagridFoot`,
             pagination: true,
@@ -98,15 +103,14 @@ img {
                 debugger
                 queryParam.ps = param.rows;
                 queryParam.pn = param.page;
-                queryParam.articleClassificationUpperId = queryStringObject.articleClassificationUpperId?queryStringObject.articleClassificationUpperId:0;
                 queryParam.sort = param.sort;
                 queryParam.order = param.order;
-                $.get('/maintain/article-classification/article-classification-list', queryParam, function (data) {
+                $.get('/maintain/hotsearch/hotsearch-list', queryParam, function (data) {
                     if (data.codeMsg)
                         $.messager.alert('提示',data.codeMsg);
                     if (data.code == 0) {
                         currentItemList = data.data.itemList;
-                        $.get('/maintain/article-classification/article-classification-list-sum', queryParam, function (data) {
+                        $.get('/maintain/hotsearch/hotsearch-list-sum', queryParam, function (data) {
                             if (data.codeMsg)
                                 $.messager.alert('提示',data.codeMsg);
                             if (data.code == 0) {
@@ -172,6 +176,26 @@ img {
         }" style="width:300px" />
     </div>
     <div style="display:inline-block;">
+        <input id="queryParam.type" class="easyui-combobox" label="类型:" labelPosition="left" labelAlign="right" style="width:300px" data-options="editable:false,panelHeight:'auto',value:'',data:[
+{
+                             text: '默认',
+                             value: '0'
+                         }],
+iconWidth:20,
+icons:[{
+    iconCls:'icon-clear',
+    handler: function(e){
+        $(e.data.target).combobox('setValue','');
+    }
+}],
+onChange:function(newValue, oldValue){
+    debugger
+    this
+    queryParam.type=newValue
+}" />
+</div>
+   
+    <div style="display:inline-block;">
         <input id="queryParam.frozen" class="easyui-combobox" label="冻结:" labelPosition="left" labelAlign="right" style="width:300px" data-options="editable:false,panelHeight:'auto',value:'',data:[
 {
                              text: '否',
@@ -193,17 +217,72 @@ onChange:function(newValue, oldValue){
     queryParam.frozen=newValue
 }" />
 </div>
-    
+        <div style="display:inline-block;">
+            <input id="queryParam.createTimeFrom" class="easyui-datebox" label="创建时间:" labelPosition="left" labelAlign="right" style="width:300px" data-options="
+        editable:false,
+        icons:[{
+            iconCls:'icon-clear',
+            handler: function(e){
+                $(e.data.target).datebox('setValue','');
+            }
+        }],
+    onChange:function(newValue, oldValue){
+        debugger
+        queryParam.createTimeFrom=newValue
+    }">
+</div>
+<div style="display:inline-block;">
+    <input id="queryParam.createTimeTo" class="easyui-datebox" label="To:" labelPosition="left" labelAlign="right" style="width:300px" data-options="
+    editable:false,
+    icons:[{
+        iconCls:'icon-clear',
+        handler: function(e){
+            $(e.data.target).datebox('setValue','');
+        }
+    }],
+onChange:function(newValue, oldValue){
+    debugger
+    queryParam.createTimeTo=newValue
+}"></div>
+<div style="display:inline-block;">
+<input id="queryParam.updateTimeFrom" class="easyui-datebox" label="更新时间:" labelPosition="left" labelAlign="right" style="width:300px" data-options="
+editable:false,
+icons:[{
+    iconCls:'icon-clear',
+    handler: function(e){
+        $(e.data.target).datebox('setValue','');
+    }
+}],
+onChange:function(newValue, oldValue){
+debugger
+queryParam.updateTimeFrom=newValue
+}">
+</div>
+<div style="display:inline-block;">
+<input id="queryParam.updateTimeTo" class="easyui-datebox" label="To:" labelPosition="left" labelAlign="right" style="width:300px" data-options="
+editable:false,
+icons:[{
+iconCls:'icon-clear',
+handler: function(e){
+    $(e.data.target).datebox('setValue','');
+}
+}],
+onChange:function(newValue, oldValue){
+debugger
+queryParam.updateTimeTo=newValue
+}">
+</div>
+
 </form>
 </div>
             <table id="datagrid" class="easyui-datagrid" style="width:100%;height:520px">
             </table>
             <div id="datagridFoot" style="padding:2px 5px;">
                 <a href="JavaScript:void(0)" class="easyui-linkbutton" title="创建" iconCls="icon-add" plain="true"
-                    onclick=" common.newTab('创建文章分类',`/maintain/article-classification/create-article-classification.html?articleClassificationUpperId=${queryStringObject.articleClassificationUpperId||''}&articleClassificationUpperName=${queryStringObject.articleClassificationUpperName||''}`)">创建</a>
+                    onclick=" common.newTab('创建热搜','/maintain/hotsearch/create-hotsearch.html')">创建</a>
                 <a href="JavaScript:void(0)" class="easyui-linkbutton" title="全部删除" iconCls="icon-edit" plain="true"
                     onclick="
-                        var ids = $($('#datagrid').datagrid('getChecked')).oneall('attrs','articleClassificationId');
+                        var ids = $($('#datagrid').datagrid('getChecked')).oneall('attrs','hotsearchId');
                          ids = ids==null?[]:ids;
                          layer.open({
                         type: 2,
@@ -211,12 +290,12 @@ onChange:function(newValue, oldValue){
                         shadeClose: false,
                         area:['60%','90%'],
                         shade: 0.5,
-                        content: './update-article-classification-list.html?'+$.param($.extend({},queryParam,{articleClassificationId:ids.length==0?null:ids.join(),expectedItemCount:ids.length==0?sum.itemCount:ids.length}))
+                        content: './update-hotsearch-list.html?'+$.param($.extend({},queryParam,{hotsearchId:ids.length==0?null:ids.join(),expectedItemCount:ids.length==0?sum.itemCount:ids.length}))
                       }); ">批量修改</a>
                 <a href="JavaScript:void(0)" class="easyui-linkbutton" title="删除" iconCls="icon-remove" plain="true"
                     onclick="
                         debugger
-                        var ids = $($('#datagrid').datagrid('getChecked')).oneall('attrs','articleClassificationId')
+                        var ids = $($('#datagrid').datagrid('getChecked')).oneall('attrs','hotsearchId')
                          ids = ids==null?[]:ids;
                             $.messager.confirm('提示',ids.length==0?'未选择任何记录, 将删除所有已查出的 '+ sum.itemCount +' 条记录, 确认删除吗?':('已选择 '+ids.length+' 条记录, 确认删除吗?'),function(r){
                                 if(r)  {
@@ -224,8 +303,8 @@ onChange:function(newValue, oldValue){
                                     if(r)
                                         $.ajax({
                                         type: 'post',
-                                        url: '/maintain/article-classification/delete-article-classification-list',
-                                        data: $.extend({},queryParam,{articleClassificationId:ids.length==0?null:ids.join(),expectedItemCount:ids.length==0?sum.itemCount:ids.length}),
+                                        url: '/maintain/hotsearch/delete-hotsearch-list',
+                                        data: $.extend({},queryParam,{hotsearchId:ids.length==0?null:ids.join(),expectedItemCount:ids.length==0?sum.itemCount:ids.length}),
                                         success: function (res) {
                                             debugger
                                             if (res.codeMsg)

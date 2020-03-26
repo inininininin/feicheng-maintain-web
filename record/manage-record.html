@@ -255,6 +255,7 @@ queryParam.updateTimeTo=newValue
                                             if (res.code == 0) {
                                                 if (!res.codeMsg)
                                                     $.messager.alert('提示','操作成功')
+                                                    $('#datagrid').datagrid('reload');
                                             } 
                                         }
                                     }) 

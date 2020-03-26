@@ -91,6 +91,11 @@ img {
                     field: 'updateTime', title: '更新时间', width: 175, align: 'center', sortable: true, halign: 'center', formatter: function (value, row, index) {
                         return value ? moment(value).format('YYYY-MM-DD HH:mm:ss') : value;
                     }
+                },
+                {
+                    field: 'wxVideoaccountVideoId', title: '操作', width: 175, align: 'left',  halign: 'center', formatter: function (value, row, index) {
+                        return (row.audit==1?`<a href="javascript:void(0)">过审</a><a href="javascript:void(0)">拒审</a>`:"") + (row.frozen==0?`<a href="javascript:void(0)" style="margin-left:5px;" onclick="freeze('${row.wxVideoaccountId}')" >冻结</a>`:"")+ (row.frozen==1?`<a href="javascript:void(0)" style="margin-left:5px;"  onclick="unfreeze('${row.wxVideoaccountId}')">解冻</a>`:"") ;
+                    }
                 }
             ]],
             frozenColumns: [[
@@ -158,6 +163,61 @@ img {
 
 
 
+
+        function freeze(wxVideoaccountId){
+    debugger
+    $.messager.prompt('提示','请输入冻结原因',function(r){
+            if (r){
+                reason = r;
+                $.messager.confirm('提示','确认冻结吗？', function(r){
+        if(r)
+        $.ajax({
+                            type: 'post',
+                            url: '/maintain/wx-videoaccount/freeze-wx-videoaccount',
+                            data: {wxVideoaccountId:wxVideoaccountId,reason:reason,expectedItemCount:1},
+                            success: function (res) {
+                                debugger
+                                if (res.codeMsg)
+                                    $.messager.alert('提示',res.codeMsg);
+                                if (res.code == 0) {
+                                    if (!res.codeMsg)
+                                        $.messager.alert('提示','操作成功',null,function(){  
+                                            debugger
+                                            $('#datagrid').datagrid('reload');});
+                                } 
+                            }
+                        })
+        });     
+
+            }
+    })
+
+
+         
+}
+
+function unfreeze(wxVideoaccountId){
+    debugger
+    $.messager.confirm('提示','确认解冻吗？', function(r){
+        if(r)
+        $.ajax({
+                            type: 'post',
+                            url: '/maintain/wx-videoaccount/unfreeze-wx-videoaccount',
+                            data: {wxVideoaccountId:wxVideoaccountId,expectedItemCount:1},
+                            success: function (res) {
+                                debugger
+                                if (res.codeMsg)
+                                    $.messager.alert('提示',res.codeMsg);
+                                if (res.code == 0) {
+                                    if (!res.codeMsg)
+                                        $.messager.alert('提示','操作成功',null,function(){  
+                                            debugger
+                                            $('#datagrid').datagrid('reload');});
+                                } 
+                            }
+                        })
+        });          
+}
     </script>
 </head>
 
@@ -226,7 +286,7 @@ onChange:function(newValue, oldValue){
 </div>
 
 <div style="display:inline-block;">
-    <input id="queryParam.audit" class="easyui-combobox" label="状态:" labelPosition="left" labelAlign="right" style="width:300px" data-options="editable:false,panelHeight:'auto',value:'',data:[
+    <input id="queryParam.audit" class="easyui-combobox" label="审核:" labelPosition="left" labelAlign="right" style="width:300px" data-options="editable:false,panelHeight:'auto',value:'',data:[
 {
                          text: '未提',
                          value: '0'
@@ -415,6 +475,7 @@ queryParam.updateTimeTo=newValue
                                             if (res.code == 0) {
                                                 if (!res.codeMsg)
                                                     $.messager.alert('提示','操作成功')
+                                                    $('#datagrid').datagrid('reload');
                                             } 
                                         }
                                     }) 
