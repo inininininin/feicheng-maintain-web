@@ -275,6 +275,7 @@ function audit12(){
                             wxVideoaccountVideo.name=newValue
                         }" style="width:200px"></td>
                 </tr>
+
                 <tr>
                     <td>封面&nbsp;</td>
                     <td>
@@ -382,6 +383,60 @@ function audit12(){
                                         wxVideoaccountVideo.second=newValue
                                     }" style="width:200px"></td>
                 </tr>
+                <tr>
+                    <td>视频号&nbsp;</td>
+                    <td><input class="easyui-combobox" name="userId" style="width:100%;" data-options="
+                        value:wxVideoaccountVideo.wxVideoaccountId,
+                        text:wxVideoaccountVideo.wxVideoaccountName,
+                        valueField:'wxVideoaccountId',
+                        textField:'name',
+                        panelHeight:'auto',
+                        mode:'remote',
+                        onShowPanel:function(){
+                            $(this).combobox('reload')
+                        },
+                        loader: function (param, success, error) {
+                            debugger
+                            param.kw=param.q;
+                            param.ps = param.rows;
+                            param.pn = param.page;
+                            $.ajax({
+                                url: '/maintain/wx-videoaccount/wx-videoaccount-list',
+                                type: 'get',
+                                data: param,
+                                success: function (data) {
+                                    if (data.code != 0) {
+                                        return false;
+                                    } else {
+                                        success(data.data);
+                                    }
+                
+                                }
+                            })
+                        },
+                        onChange:function(newValue, oldValue){
+                            wxVideoaccountVideo.wxVideoaccountId=newValue
+                        },
+                        loadFilter: function (data) {
+                            debugger
+                            return data.itemList;
+                        },
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-redo',
+                            handler: function(e){
+                                common.newTab(`视频号:${wxVideoaccountVideo.wxVideoaccountName.substring(0, 10)}...`,`/maintain/wx-videoaccount/wx-videoaccount.html?wxVideoaccountId=${wxVideoaccountVideo.wxVideoaccountId}`)
+                            }
+                        },{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                $(e.data.target).combobox('setValue','');
+                            }
+                        }]
+                        "></td>
+                </tr>
+
+
                 <tr>
                     <td>简要&nbsp;</td>
                     <td><input id="brief" class="easyui-textbox" style="width:100%;height:200px;" data-options="

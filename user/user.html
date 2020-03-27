@@ -257,7 +257,7 @@ function remove(){
                     <td>头像&nbsp;</td>
                     <td>
                         <div id="logo">
-                            <img style="display:none;" src="../image/image-error.png" onload="$('#logo-value').attr('src',user.logo).show().parent().viewer({url: 'src',})" />
+                            <img style="display:none;" src="../image/image-error.png" onload="$('#logo-value').attr('src',user.logo).parent().viewer({url: 'src',});if(user.logo) $('#logo-value').show();" />
                             <img id="logo-value" style="width:30px;height:30px;cursor:pointer;vertical-align: baseline;display:none;" onerror='debugger;$(this).attr("src","../image/image-error.png");' />
                             <input type="file" style="display:none;" onchange="
                                 javascript:
