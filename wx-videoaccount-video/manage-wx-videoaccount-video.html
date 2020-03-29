@@ -36,8 +36,10 @@ img {
 
     <script>
         var queryStringObject = common.queryStringObject();
-       
-        var queryParam = {}, currentItemList = [], sum = {}
+        
+        var queryParam = {
+            wxVideoaccountId:queryStringObject.wxVideoaccountId
+        }, currentItemList = [], sum = {}
 
         $(document).ready(function () {
 
@@ -189,7 +191,50 @@ img {
     </div>
 
    
+    <div style="display:inline-block;">
+        <input class="easyui-combobox" name="wxVideoaccountId" label="视频号:" labelPosition="left" labelAlign="right" style="width:300px;" data-options="
+        valueField:'wxVideoaccountId',
+        textField:'name',
+        panelHeight:'auto',
+        mode:'remote',
+        onShowPanel:function(){
+            $(this).combobox('reload')
+        },
+        loader: function (param, success, error) {
+            debugger
+            param.kw=param.q;
+            param.ps = param.rows;
+            param.pn = param.page;
+            $.ajax({
+                url: '/maintain/wx-videoaccount/wx-videoaccount-list',
+                type: 'get',
+                data: param,
+                success: function (data) {
+                    if (data.code != 0) {
+                        return false;
+                    } else {
+                        success(data.data);
+                    }
 
+                }
+            })
+        },
+        onChange:function(newValue, oldValue){
+            queryParam.wxVideoaccountId=newValue
+        },
+        loadFilter: function (data) {
+            debugger
+            return data.itemList;
+        },
+        iconWidth:20,
+        icons:[{
+            iconCls:'icon-clear',
+            handler: function(e){
+                $(e.data.target).combobox('setValue','');
+            }
+        }]
+        ">
+    </div>
        
     <div style="display:inline-block;">
         <input id="queryParam.frozen" class="easyui-combobox" label="冻结:" labelPosition="left" labelAlign="right" style="width:300px" data-options="editable:false,panelHeight:'auto',value:'',data:[

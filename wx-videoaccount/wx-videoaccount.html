@@ -428,7 +428,6 @@ function audit12(){
                                     } else {
                                         success(data.data);
                                     }
-                
                                 }
                             })
                         },
@@ -634,6 +633,11 @@ function audit12(){
                                     value:wxVideoaccount.videoCount,
                                     iconWidth:20,
                                     icons:[{
+                                        iconCls:'icon-redo',
+                                        handler: function(e){
+                                            common.newTab(`视频管理:${wxVideoaccount.name.substring(0, 10)}...`,`/maintain/wx-videoaccount-video/manage-wx-videoaccount-video.html?wxVideoaccountId=${wxVideoaccount.wxVideoaccountId}`)
+                                        }
+                                    },{
                                         iconCls:'icon-clear',
                                         handler: function(e){
                                             $(e.data.target).textbox('setValue','');
