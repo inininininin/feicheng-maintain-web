@@ -74,8 +74,8 @@
                    });
 
                    debugger
-                   if (article.content)
-                       $.get(`${article.content}`, function (data) {
+                   if (article.contentUrl)
+                       $.get(`${article.contentUrl}`, function (data) {
                            self.html(data)
                        })
                }
@@ -92,7 +92,7 @@ if(r){
         $.ajax({
                 type: 'post',
                 contentType:"text/plain",
-                url: '/upload-stream?'+$.param({'originalUrl':article.content,ext:'html'}),
+                url: '/upload-stream?'+$.param({'originalUrl':article.contentUrl,ext:'html'}),
                 async:false,
                 data: contentKindEditor.html(),
                 success: function (res) {
@@ -100,7 +100,7 @@ if(r){
                     if (res.codeMsg)
                         $.messager.alert('提示',res.codeMsg)
                     if (res.code == 0) {
-                        article.content=res.data.url
+                        article.contentUrl=res.data.url
                     } 
                 }
             })
