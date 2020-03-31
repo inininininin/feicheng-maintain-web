@@ -295,7 +295,19 @@ function remove(){
                         </div>
                     </td>
                 </tr>
-                
+                <tr>
+                    <td>审核&nbsp;</td>
+                    <td><span id="audit"  ></span>
+                        <img src="../image/image-error.png" onload="$('#audit').text(user.audit==0?'初始':user.audit==1?'未审':user.audit==11?'过审':user.audit==12?'拒审':'未知')" style="display:none;"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>拒审信息&nbsp;</td>
+                    <td><span id="audit12Reason"  ></span>
+                        <img src="../image/image-error.png" onload="$('#audit12Reason').text(user.audit12Reason||'')" style="display:none;"/>
+                    </td>
+                </tr>
                 <tr>
                     <td>备注&nbsp;</td>
                     <td><input id="remark" class="easyui-textbox" style="width:100%;height:200px;" data-options="
@@ -305,39 +317,7 @@ function remove(){
                                 user.remark=newValue
                             }" style="width:200px"></td>
                 </tr>
-                <tr>
-                    <td>冻结&nbsp;</td>
-                    <td><input id="frozen" class="easyui-combobox" style="width:100%" data-options="
-                                    value:user.frozen,
-                                    editable:false,panelHeight:'auto',
-                                    data:[
-                                    {
-                                         text: '否',
-                                         value: '0'
-                                     },{
-                                         text: '是',
-                                         value: '1'
-                                     }],
-                                     iconWidth:20,
-                                     icons:[{
-                                         iconCls:'icon-clear',
-                                         handler: function(e){
-                                             $(e.data.target).combobox('setValue','');
-                                         }
-                                     }],
-                                     onChange:function(newValue, oldValue){
-                                        user.frozen=newValue
-                                     }" /></td>
-                </tr>
-                <tr>
-                    <td>冻结原因&nbsp;</td>
-                    <td><input id="frozenReason" class="easyui-textbox" style="width:100%;height:200px;" data-options="
-                            value:user.frozenReason,
-                            multiline:true,
-                            onChange:function(newValue, oldValue){
-                                user.frozenReason=newValue
-                            }" style="width:200px"></td>
-                </tr>
+               
                 <tr>
                     <td>创建时间&nbsp;</td>
                     <td><input id="createTime" class="easyui-datetimebox" style="width:100%" data-options="
@@ -355,18 +335,9 @@ function remove(){
                 </tr>
                 <tr>
                     <td>更新时间&nbsp;</td>
-                    <td><input id="updateTime" class="easyui-datetimebox" style="width:100%" data-options="
-                                            value:moment(user.updateTime).format('YYYY-MM-DD H:mm:ss'),
-                                            editable:false,
-                                            icons:[{
-                                                iconCls:'icon-clear',
-                                                handler: function(e){
-                                                    $(e.data.target).datetimebox('setValue','');
-                                                }
-                                            }],
-                                            onChange:function(newValue, oldValue){
-                                                user.updateTime=newValue
-                                            }"></td>
+                    <td><span id="updateTime" ></span>
+                        <img src="../image/image-error.png" onload="$('#updateTime').text(user.updateTime?moment(user.updateTime).format('YYYY-MM-DD HH:mm:ss'):'')" style="display:none;"/>
+                        </td>
                 </tr>
 
             </tbody>

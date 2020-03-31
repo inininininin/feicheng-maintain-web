@@ -533,12 +533,12 @@ function audit12(){
                 <tr>
                     <td>审核&nbsp;</td>
                     <td><span id="audit"  ></span>
-                        <img src="../image/image-error.png" onload="$('#audit').text(wxVideoaccount.audit==0?'未提':wxVideoaccount.audit==1?'未审':wxVideoaccount.audit==11?'过审':wxVideoaccount.audit==12?'拒审':'未知')" style="display:none;"/>
+                        <img src="../image/image-error.png" onload="$('#audit').text(wxVideoaccount.audit==0?'初始':wxVideoaccount.audit==1?'未审':wxVideoaccount.audit==11?'过审':wxVideoaccount.audit==12?'拒审':'未知')" style="display:none;"/>
                     </td>
                 </tr>
 
                 <tr>
-                    <td>拒审原因&nbsp;</td>
+                    <td>拒审信息&nbsp;</td>
                     <td><span id="audit12Reason"  ></span>
                         <img src="../image/image-error.png" onload="$('#audit12Reason').text(wxVideoaccount.audit12Reason||'')" style="display:none;"/>
                     </td>
@@ -689,18 +689,7 @@ function audit12(){
                                         wxVideoaccount.orderNo=newValue
                                     }" style="width:200px"></td>
                 </tr>
-                <tr>
-                    <td>冻结&nbsp;</td>
-                    <td><span id="frozen"></span>
-                        <img src="../image/image-error.png" onload="$('#frozen').text(wxVideoaccount.frozen==0?'未冻结':wxVideoaccount.frozen==1?'已冻结':'未知')" style="display:none;"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>冻结原因&nbsp;</td>
-                    <td><span id="frozenReason"></span>
-                        <img src="../image/image-error.png" onload="$('#frozenReason').text(wxVideoaccount.frozenReason||'')" style="display:none;"/>
-                    </td>
-                </tr>
+               
                 <tr>
                     <td>创建时间&nbsp;</td>
                     <td><input id="createTime" class="easyui-datetimebox" style="width:100%" data-options="
@@ -718,18 +707,9 @@ function audit12(){
                 </tr>
                 <tr>
                     <td>更新时间&nbsp;</td>
-                    <td><input id="updateTime" class="easyui-datetimebox" style="width:100%" data-options="
-                                            value:moment(wxVideoaccount.updateTime).format('YYYY-MM-DD H:mm:ss'),
-                                            editable:false,
-                                            icons:[{
-                                                iconCls:'icon-clear',
-                                                handler: function(e){
-                                                    $(e.data.target).datetimebox('setValue','');
-                                                }
-                                            }],
-                                            onChange:function(newValue, oldValue){
-                                                wxVideoaccount.updateTime=newValue
-                                            }"></td>
+                    <td><span id="updateTime" ></span>
+                        <img src="../image/image-error.png" onload="$('#updateTime').text(wxVideoaccount.updateTime?moment(wxVideoaccount.updateTime).format('YYYY-MM-DD HH:mm:ss'):'')" style="display:none;"/>
+                        </td>
                 </tr>
 
             </tbody>

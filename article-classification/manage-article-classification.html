@@ -50,12 +50,13 @@ img {
                             return `<a href="JavaScript:void(0)" style="width:100%;display:inline-block;" title="${value || ''}" onclick="common.newTab('下级文章分类:${row.name.substring(0, 10) + '...'}','/maintain/article-classification/manage-article-classification.html?articleClassificationUpperId=${row.articleClassificationId}&articleClassificationUpperName=${row.name}')">${value}</a>`;
                         }
                     },
-                 { field: 'remark', title: '备注', width: 200, align: 'left', halign: 'center' },
-                {
-                    field: 'frozen', title: '冻结', width: 50, align: 'center', halign: 'center', formatter: function (value, row, index) {
-                        return value == 1 ? '是' : '否';
+                    {
+                    field: 'audit', title: '审核', width: 100, align: 'left', halign: 'center', formatter: function (value, row, index) {
+                        return value == 0 ? '初始' :value == 1 ? '未审' :value ==11 ? '过审' :value == 12 ? '拒审' : '未知';
                     }
                 },
+                 { field: 'remark', title: '备注', width: 200, align: 'left', halign: 'center' },
+               
                 { field: 'orderNo', title: '排序号', width: 70, align: 'right', sortable: true, halign: 'center' },
                 {
                     field: 'createTime', title: '创建时间', width: 175, align: 'center', sortable: true, halign: 'center', formatter: function (value, row, index) {
@@ -174,27 +175,33 @@ img {
         }" style="width:300px" />
     </div>
     <div style="display:inline-block;">
-        <input id="queryParam.frozen" class="easyui-combobox" label="冻结:" labelPosition="left" labelAlign="right" style="width:300px" data-options="editable:false,panelHeight:'auto',value:'',data:[
-{
-                             text: '否',
+        <input id="queryParam.audit" class="easyui-combobox" label="审核:" labelPosition="left" labelAlign="right" style="width:300px" data-options="editable:false,panelHeight:'auto',value:'',data:[
+    {
+                             text: '初始',
                              value: '0'
                          },{
-                             text: '是',
+                             text: '未审',
                              value: '1'
-                         }],
-iconWidth:20,
-icons:[{
+                         },{
+                            text: '过审',
+                            value: '11'
+                        },{
+                            text: '拒审',
+                            value: '12'
+                        }],
+    iconWidth:20,
+    icons:[{
     iconCls:'icon-clear',
     handler: function(e){
         $(e.data.target).combobox('setValue','');
     }
-}],
-onChange:function(newValue, oldValue){
+    }],
+    onChange:function(newValue, oldValue){
     debugger
     this
-    queryParam.frozen=newValue
-}" />
-</div>
+    queryParam.audit=newValue
+    }" />
+    </div>
     
 </form>
 </div>

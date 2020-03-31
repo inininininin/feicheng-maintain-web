@@ -67,6 +67,11 @@ img {
                 }},
                 { field: 'likeCount', title: '点赞量', width: 70, align: 'right', sortable: true, halign: 'center' },
                 { field: 'pv', title: '曝光量', width: 70, align: 'right', sortable: true, halign: 'center' },
+                {
+                    field: 'audit', title: '审核', width: 100, align: 'left', halign: 'center', formatter: function (value, row, index) {
+                        return value == 0 ? '初始' :value == 1 ? '未审' :value ==11 ? '过审' :value == 12 ? '拒审' : '未知';
+                    }
+                },
                 { field: 'remark', title: '备注', width: 200, align: 'left', halign: 'center' },
                 {
                     field: 'frozen', title: '冻结', width: 50, align: 'center', halign: 'center', formatter: function (value, row, index) {
@@ -237,27 +242,33 @@ img {
     </div>
        
     <div style="display:inline-block;">
-        <input id="queryParam.frozen" class="easyui-combobox" label="冻结:" labelPosition="left" labelAlign="right" style="width:300px" data-options="editable:false,panelHeight:'auto',value:'',data:[
-{
-                             text: '否',
+        <input id="queryParam.audit" class="easyui-combobox" label="审核:" labelPosition="left" labelAlign="right" style="width:300px" data-options="editable:false,panelHeight:'auto',value:'',data:[
+    {
+                             text: '初始',
                              value: '0'
                          },{
-                             text: '是',
+                             text: '未审',
                              value: '1'
-                         }],
-iconWidth:20,
-icons:[{
+                         },{
+                            text: '过审',
+                            value: '11'
+                        },{
+                            text: '拒审',
+                            value: '12'
+                        }],
+    iconWidth:20,
+    icons:[{
     iconCls:'icon-clear',
     handler: function(e){
         $(e.data.target).combobox('setValue','');
     }
-}],
-onChange:function(newValue, oldValue){
+    }],
+    onChange:function(newValue, oldValue){
     debugger
     this
-    queryParam.frozen=newValue
-}" />
-</div>
+    queryParam.audit=newValue
+    }" />
+    </div>
         <div style="display:inline-block;">
             <input id="queryParam.createTimeFrom" class="easyui-datebox" label="创建时间:" labelPosition="left" labelAlign="right" style="width:300px" data-options="
         editable:false,

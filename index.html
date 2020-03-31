@@ -95,20 +95,20 @@
             common.newTab('概览', './overview.html')
 
 
-        $.post('/maintain/login-refresh', function (res) {
-            if (res.code == 0) {
-                login=res.data
-                $('.login-account-dom').text(login.maintainUserNickname)
-                if (login.cover)
-                    $('.login-cover-dom').attr('src', login.cover)
-                localStorage.setItem('maintainLogin', login)
-            } else {
-                $.messager.confirm('提示','未登录，是否去登录?', function (r) {
-                    if(r)
-                        location.href = "./login.html"
-                });
-            }
-        })
+            $.post('/maintain/login-refresh', function (res) {
+                if (res.code == 0) {
+                    login=res.data
+                    $('.login-account-dom').text(login.maintainUserNickname)
+                    if (login.cover)
+                        $('.login-cover-dom').attr('src', login.cover)
+                    localStorage.setItem('maintainLogin', login)
+                } else {
+                    $.messager.confirm('提示','未登录，是否去登录?', function (r) {
+                        if(r)
+                            location.href = "./login.html"
+                    });
+                }
+            })
         });
     </script>
 </head>
