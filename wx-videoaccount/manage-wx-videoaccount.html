@@ -73,7 +73,7 @@ img {
                 },
                 {
                     field: 'audit', title: '审核', width: 100, align: 'left', halign: 'center', formatter: function (value, row, index) {
-                        return value == 0 ? '初始' :value == 1 ? '未审' :value ==11 ? '过审' :value == 12 ? '拒审' : '未知';
+                        return value == 0 ? '未审' :value ==11 ? '过审' :value == 12 ? '拒审' : '未知';
                     }
                 },
                 { field: 'remark', title: '备注', width: 200, align: 'left', halign: 'center' },
@@ -287,11 +287,9 @@ onChange:function(newValue, oldValue){
 <div style="display:inline-block;">
     <input id="queryParam.audit" class="easyui-combobox" label="审核:" labelPosition="left" labelAlign="right" style="width:300px" data-options="editable:false,panelHeight:'auto',value:'',data:[
 {
-                         text: '初始',
-                         value: '0'
-                     },{
+                     {
                          text: '未审',
-                         value: '1'
+                         value: '0'
                      },{
                         text: '过审',
                         value: '11'
