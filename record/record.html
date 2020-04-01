@@ -151,33 +151,16 @@ function remove(){
                         <img src="../image/image-error.png" onload="$('#recordId').text(record.recordId||'')" style="display:none;"/>
                     </td>
                 </tr>
-                
-                <tr>
-                    <td>记录名&nbsp;</td>
-                    <td><input id="name" class="easyui-textbox" style="width:100%" data-options="
-                        value:record.name,
-                        disabled:true,
-                        iconWidth:20,
-                        icons:[{
-                            iconCls:'icon-clear',
-                            handler: function(e){
-                                debugger
-                                $(e.data.target).textbox('setValue','');
-                            }
-                        }],
-                        onChange:function(newValue, oldValue){
-                            record.name=newValue
-                        }" style="width:200px"></td>
-                </tr>
+               
                
                 <tr>
-                    <td>简要&nbsp;</td>
-                    <td><input id="brief" class="easyui-textbox" style="width:100%;height:200px;" data-options="
+                    <td>记录名&nbsp;</td>
+                    <td><input id="name" class="easyui-textbox" style="width:100%;height:200px;" data-options="
                             value:record.brief,
                             disabled:true,
                             multiline:true,
                             onChange:function(newValue, oldValue){
-                                record.brief=newValue
+                                record.name=newValue
                             }" style="width:200px"></td>
                 </tr>
                 

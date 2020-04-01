@@ -43,7 +43,6 @@ img {
 
             $('#datagrid').datagrid({
             columns: [[
-                 { field: 'brief', title: '简要', width: 250, align: 'left', halign: 'center' },
                  { field: 'remark', title: '备注', width: 250, align: 'left', halign: 'center' },
                 {
                     field: 'createTime', title: '创建时间', width: 175, align: 'center', sortable: true, halign: 'center', formatter: function (value, row, index) {
@@ -60,7 +59,6 @@ img {
                 { field: 'ck', align: 'left', checkbox: true },
                 {
                     field: 'name', title: '记录名', width: 250, align: 'left', halign: 'center', formatter: function (value, row, index) {
-                      
                         return `<a href="JavaScript:void(0)" style="width:100%;display:inline-block;" title="${value || ''}" onclick="common.newTab('记录:${row.name.substring(0, 10) + '...'}','/maintain/record/record.html?recordId=${row.recordId}')">${value}</a>`;
                     }, styler: function (value, row, index) {
                         return ``
