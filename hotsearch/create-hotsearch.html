@@ -25,11 +25,7 @@
     <script src="../jQueryViewer20160329/js/viewer-jquery.min.js"></script>
 
 
-    <link rel="stylesheet" href="../kindeditor/themes/default/default.css" />
-    <link rel="stylesheet" href="../kindeditor/plugins/code/prettify.css" />
-    <script charset="utf-8" src="../kindeditor/kindeditor-all.js"></script>
-    <script charset="utf-8" src="../kindeditor/lang/zh-CN.js"></script>
-    <script charset="utf-8" src="../kindeditor/plugins/code/prettify.js"></script>
+
 
     <script src="../js/moment.js"></script>
     <script src="../js/common.js"></script>
@@ -45,7 +41,7 @@
 <script>
 
     var queryStringObject = common.queryStringObject();
-    var hotsearch = {},contentKindEditor
+    var hotsearch = {},
 
     
 
@@ -56,30 +52,7 @@
 
     $(document).ready(function(){
         debugger
-        contentKindEditor = KindEditor.create('#content', {
-               
-               cssPath: '../kindeditor/plugins/code/prettify.css',
-               uploadJson: '/kindeditor/upload_json.jsp',
-               fileManagerJson: '/kindeditor/file_manager_json.jsp',
-               allowFileManager: true,
-               afterCreate: function () {
-                   var self = this;
-                   KindEditor.ctrl(document, 13, function () {
-                       self.sync();
-                       document.forms['example'].submit();
-                   });
-                   KindEditor.ctrl(self.edit.doc, 13, function () {
-                       self.sync();
-                       document.forms['example'].submit();
-                   });
 
-                   debugger
-                   if (hotsearch.content)
-                       $.get(`${hotsearch.content}`, function (data) {
-                           self.html(data)
-                       })
-               }
-           })
 
         $("#loading").remove();
     })

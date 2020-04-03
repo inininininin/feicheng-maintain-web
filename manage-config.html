@@ -17,11 +17,8 @@
     <link rel="stylesheet" href="./jQueryViewer20160329/css/viewer.min.css">
     <script src="./jQueryViewer20160329/js/viewer.min.js"></script>
     <script src="./jQueryViewer20160329/js/viewer-jquery.min.js"></script>
-    <link rel="stylesheet" href="./kindeditor/themes/default/default.css" />
-    <link rel="stylesheet" href="./kindeditor/plugins/code/prettify.css" />
-    <script charset="utf-8" src="./kindeditor/kindeditor-all.js"></script>
-    <script charset="utf-8" src="./kindeditor/lang/zh-CN.js"></script>
-    <script charset="utf-8" src="./kindeditor/plugins/code/prettify.js"></script>
+    <script charset="utf-8" src="./tinymce/tinymce.min.js"></script>
+
     <script src="./js/moment.js"></script>
     <script src="./js/common.js"></script>
     <script src="./js/jquery.oneall.js"></script>
@@ -38,7 +35,7 @@ img {
 
 
     var queryStringObject = common.queryStringObject();
-    var config = {},userProtocolKindEditor
+    var config = {},userProtocolEditor
 
     
    
@@ -54,30 +51,74 @@ img {
 
     $(document).ready(function(){
         debugger
-        userProtocolKindEditor = KindEditor.create('#userProtocol', {
-               
-               cssPath: './kindeditor/plugins/code/prettify.css',
-               uploadJson: '/kindeditor/upload_json.jsp',
-               fileManagerJson: '/kindeditor/file_manager_json.jsp',
-               allowFileManager: true,
-               afterCreate: function () {
-                   var self = this;
-                   KindEditor.ctrl(document, 13, function () {
-                       self.sync();
-                       document.forms['example'].submit();
-                   });
-                   KindEditor.ctrl(self.edit.doc, 13, function () {
-                       self.sync();
-                       document.forms['example'].submit();
-                   });
+        userProtocolEditor=  tinymce.init({
+    selector: '#userProtocol',
+    plugins : 'advlist autolink link image lists charmap print preview media paste save imagetools template pagebreak hr autosave fullpage fullscreen table textcolor textpattern wordcount insertdatetime legacyoutput pageembed code bdmap',
+    automatic_uploads: false,
+    images_upload_url: 'postAcceptor.php',
+    language: "zh_CN",
+    init_instance_callback : function(editor) {
+        debugger;
+        $.get(config.userProtocol,function(res){
+            editor.setContent(res)
+        })
+    },
+    file_picker_callback:function(callback,value,meta){
+        debugger
+        $(`<input type='file'>`).change(function(){
+            var target = this;
+                                if(this.files.length>0){
+                                    var file = this.files[0];
+                                    var fd = new FormData()
+                                    fd.append('file', file);
+                                    $.ajax({
+                                        url: '/upload-file?' + $.param({ quality: 0.8 }),
+                                        type: 'POST',
+                                        data: fd,
+                                        cache: false,
+                                        processData: false,
+                                        contentType: false,
+                                        async: true,
+                                        success: function (res) {
+                                            if (res.codeMsg)
+                                                $.messager.alert('提示',res.codeMsg)
+                                            if (res.code == 0) {
+                                                callback(res.data.url)
+                                                target.value=null
+                                                $(target).remove()
+                                            }
+                                        }
+                                    })
+                                }
+        }).click()
+       
+    },
+    images_upload_handler: function (blobInfo, success, failure) {
+        debugger
+        var xhr, formData;
 
-                   debugger
-                   if (config.userProtocol)
-                       $.get(`${config.userProtocol}`, function (data) {
-                           self.html(data)
-                       })
-               }
-           })
+        xhr = new XMLHttpRequest();
+        xhr.withCredentials = false;
+        xhr.open('POST', 'postAcceptor.php');
+
+        xhr.onload = function() {
+            var json;
+            if (xhr.status != 200) {
+                failure('HTTP Error: ' + xhr.status);
+                return;
+            }
+            json = JSON.parse(xhr.responseText);
+            if (!json || typeof json.location != 'string') {
+                failure('Invalid JSON: ' + xhr.responseText);
+                return;
+            }
+            success(json.location);
+        };
+        formData = new FormData();
+        formData.append('file', blobInfo.blob(), blobInfo.filename());
+        xhr.send(formData);
+    }
+  });
 
         $("#loading").remove();
         
@@ -93,7 +134,7 @@ function updateConfirm(){
                 contentType:"text/plain",
                 url: '/upload-stream?'+$.param({'originalUrl':config.userProtocol,ext:'html'}),
                 async:false,
-                data: userProtocolKindEditor.html(),
+                data: tinyMCE.editors[0].getContent(),
                 success: function (res) {
                     debugger
                     if (res.codeMsg)
