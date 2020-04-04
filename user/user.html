@@ -294,7 +294,7 @@ function remove(){
                 <tr>
                     <td>审核&nbsp;</td>
                     <td><span id="audit"  ></span>
-                        <img src="../image/image-error.png" onload="$('#audit').text(user.audit==0?'未审':user.audit==11?'过审':user.audit==12?'拒审':'未知')" style="display:none;"/>
+                        <img src="../image/image-error.png" onload="$('#audit').text(user.audit==0?'初始':user.audit==1?'未审':user.audit==11?'过审':user.audit==12?'拒审':'未知')" style="display:none;"/>
                     </td>
                 </tr>
 
