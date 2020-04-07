@@ -21,7 +21,6 @@
     <script src="../js/moment.js"></script>
     <script src="../js/common.js"></script>
     <script src="../js/jquery.oneall.js"></script>
-    <script src="../js/area.js"></script>
 </head>
 
 <style>
@@ -388,6 +387,48 @@ function audit12(){
                     </td>
                 </tr>
                 <tr>
+                    <td>二维码&nbsp;</td>
+                    <td>
+                        <div id="qrcode">
+                            <img style="display:none;" src="../image/image-error.png" onload="$('#qrcode-value').attr('src',wxVideoaccount.qrcode).parent().viewer({url: 'src',});if(wxVideoaccount.qrcode) $('#qrcode-value').show();" />
+                            <img id="qrcode-value" style="width:30px;height:30px;object-fit:contain;cursor:pointer;vertical-align: baseline;display:none;" onerror='debugger;$(this).attr("src","../image/image-error.png");' />
+                            <input type="file" style="display:none;" onchange="
+                                javascript:
+                                var target = this;
+                                if(this.files.length>0){
+                                    var file = this.files[0];
+                                    var fd = new FormData()
+                                    fd.append('file', file);
+                                    $.ajax({
+                                        url: '/upload-file?' + $.param({ quality: 0.8 }),
+                                        type: 'POST',
+                                        data: fd,
+                                        cache: false,
+                                        processData: false,
+                                        contentType: false,
+                                        async: true,
+                                        success: function (res) {
+                                            if (res.codeMsg)
+                                                $.messager.alert('提示',res.codeMsg)
+                                            if (res.code == 0) {
+                                                wxVideoaccount.qrcode=res.data.url 
+                                                $(target).prev().attr('src',wxVideoaccount.qrcode).show()
+                                             target.value=null
+                                            }
+                                        }
+                                    })
+                                }
+                            " />
+                            <a title="删除" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-clear" plain="true"
+                                style="vertical-align: text-bottom;"
+                                onclick="$(this).prev().prev().attr('src',null).hide();wxVideoaccount.qrcode='';"></a>
+
+                            <a title="选择" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-choose" plain="true"
+                                style="vertical-align: text-bottom;" onclick="$(this).prev().prev().click()"></a>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
                     <td>简要&nbsp;</td>
                     <td><input id="brief" class="easyui-textbox" style="width:100%;height:200px;" data-options="
                             value:wxVideoaccount.brief,
@@ -403,7 +444,7 @@ function audit12(){
                         value:wxVideoaccount.userId,
                         text:wxVideoaccount.userNickname,
                         valueField:'userId',
-                        textField:'name',
+                        textField:'nickname',
                         panelHeight:'auto',
                         mode:'remote',
                         onShowPanel:function(){
@@ -543,7 +584,7 @@ function audit12(){
                
 
               
-                <tr>
+                <!-- <tr>
                     <td>地区&nbsp;</td>
                     <td><select id='area1'
                         onchange='area.area1Change($(this).find("option:selected").attr("data-index"),this.value,$(this).find("option:selected").attr("data-name"),function(r){ wxVideoaccount.area1Id=r.area1Id;wxVideoaccount.area1Name=r.area1Name;  });'></select>
@@ -551,14 +592,180 @@ function audit12(){
                         onchange='area.area2Change($(this).find("option:selected").attr("data-index"),this.value,$(this).find("option:selected").attr("data-name"),function(r){ wxVideoaccount.area2Id=r.area2Id;wxVideoaccount.area2Name=r.area2Name;  })'></select>
                     <select id='area3' style="margin-left: 10px;"
                         onchange='area.area3Change($(this).find("option:selected").attr("data-index"),this.value,$(this).find("option:selected").attr("data-name"),function(r){ wxVideoaccount.area3Id=r.area3Id;wxVideoaccount.area3Name=r.area3Name;  })'></select></td>
-                        <img src="../image/image-error.png" onload="
+                    <img src="../image/image-error.png" onload="
                         debugger;
                         area.areaInit();
                         $('#area1').val(wxVideoaccount.area1Id).change();
                         $('#area2').val(wxVideoaccount.area2Id).change();
                         $('#area3').val(wxVideoaccount.area3Id).change();
                        " style="display:none;"/>
-                    </tr>
+                </tr> -->
+
+
+                <tr>
+                    <td>地区</td>
+                    <td><input id="area1Id" class="easyui-combobox" style="width:130px;" data-options="
+                        value:wxVideoaccount.area1Id,
+                        text:wxVideoaccount.area1Name,
+                        valueField:'code',
+                        textField:'name',
+                        mode:'remote',
+                        onShowPanel:function(){
+                            $(this).combobox('reload')
+                        },
+                        loader: function (param, success, error) {
+                            debugger
+                            $.ajax({
+                                url: '../js/area.json',
+                                type: 'get',
+                                data: {},
+                                success: function (data) {
+                                    debugger
+                                    
+                                    for(var i=0;i<data.length;i++){
+                                        $('#area1Id')[0]['area'+data[i].code]=data[i].children
+                                    }
+                                    $('#area2Id').combobox('reload')
+
+                                    success({rows:data});
+                                }
+                            })
+                        },
+                        onChange:function(newValue, oldValue){
+                            debugger
+                            wxVideoaccount.area1Id=newValue
+                            wxVideoaccount.area1Name= $('#area1Id').combobox('getText')
+
+                            wxVideoaccount.area2Id=null;
+                            wxVideoaccount.area2Name=null;
+                            $('#area2Id').combobox('setText',null)
+                            $('#area2Id').combobox('setValue',null)
+
+                            wxVideoaccount.area3Id=null;
+                            wxVideoaccount.area3Name=null;
+                            $('#area3Id').combobox('setText',null)
+                            $('#area3Id').combobox('setValue',null)
+
+
+                        },
+                        loadFilter: function (data) {
+                            debugger
+                            return data.rows;
+                        },
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                $(e.data.target).combobox('setValue','');
+                                wxVideoaccount.area1Id=null;
+                                wxVideoaccount.area1Name=null;
+                                $('#area1Id').combobox('setText',null)
+                                $('#area1Id').combobox('setValue',null)
+
+                                wxVideoaccount.area2Id=null;
+                                wxVideoaccount.area2Name=null;
+                                $('#area2Id').combobox('setText',null)
+                                $('#area2Id').combobox('setValue',null)
+
+                                wxVideoaccount.area3Id=null;
+                                wxVideoaccount.area3Name=null;
+                                $('#area3Id').combobox('setText',null)
+                                $('#area3Id').combobox('setValue',null)
+
+                            }
+                        }]
+                        ">
+                        <input id="area2Id" class="easyui-combobox" style="width:130px;" data-options="
+                        value:wxVideoaccount.area2Id,
+                        text:wxVideoaccount.area2Name,
+                        valueField:'code',
+                        textField:'name',
+                        mode:'remote',
+                        onShowPanel:function(){
+                            $(this).combobox('reload')
+                        },
+
+                        loader: function (param, success, error) {
+                            debugger
+                            var ss = $('#area1Id')[0]['area'+wxVideoaccount.area1Id];
+                            for(var i=0;ss && i<ss.length;i++){
+                                debugger
+                                $('#area2Id')[0]['area'+ss[i].code]=ss[i].children
+                            }
+                            success({rows:ss?ss:[]});
+                        },
+                        onChange:function(newValue, oldValue){
+                            debugger
+                            wxVideoaccount.area2Id=newValue
+                            wxVideoaccount.area2Name= $('#area2Id').combobox('getText')
+
+                            wxVideoaccount.area3Id=null;
+                            wxVideoaccount.area3Name=null;
+                            $('#area3Id').combobox('setText',null)
+                            $('#area3Id').combobox('setValue',null)
+
+                        },
+                        loadFilter: function (data) {
+                            debugger
+                            return data.rows;
+                        },
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                $(e.data.target).combobox('setValue','');
+                                wxVideoaccount.area2Id=null;
+                                wxVideoaccount.area2Name=null;
+                                $('#area2Id').combobox('setText',null)
+                                $('#area2Id').combobox('setValue',null)
+
+                                wxVideoaccount.area3Id=null;
+                                wxVideoaccount.area3Name=null;
+                                $('#area3Id').combobox('setText',null)
+                                $('#area3Id').combobox('setValue',null)
+                            }
+                        }]
+                        ">
+                        <input id="area3Id" class="easyui-combobox" style="width:130px;" data-options="
+                        value:wxVideoaccount.area3Id,
+                        text:wxVideoaccount.area3Name,
+                        valueField:'code',
+                        textField:'name',
+                        mode:'remote',
+                        onShowPanel:function(){
+                            $(this).combobox('reload')
+                        },
+                        loader: function (param, success, error) {
+                            debugger
+                            var ss = $('#area2Id')[0]['area'+wxVideoaccount.area2Id];
+                            
+                            success({rows:ss?ss:[]});
+                        },
+                        onChange:function(newValue, oldValue){
+                            debugger
+                            wxVideoaccount.area3Id=newValue
+                            wxVideoaccount.area3Name= $('#area2Id').combobox('getText')
+
+                           
+                            
+                        },
+                        loadFilter: function (data) {
+                            debugger
+                            return data.rows;
+                        },
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                $(e.data.target).combobox('setValue','');
+                                wxVideoaccount.area3Id=null;
+                                wxVideoaccount.area3Name=null;
+                                $('#area3Id').combobox('setText',null)
+                                $('#area3Id').combobox('setValue',null)
+                            }
+                        }]
+                        "></td>
+                </tr>
 
                     <tr>
                         <td>经度&nbsp;</td>
