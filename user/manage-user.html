@@ -44,7 +44,7 @@ img {
             $('#datagrid').datagrid({
             columns: [[
                 {
-                    field: 'logo', title: '头像', width: 60, align: 'center', halign: 'center', formatter: function (value, row, index) {
+                    field: 'logo', title: 'logo', width: 60, align: 'center', halign: 'center', formatter: function (value, row, index) {
                         return value ? `<span class="image-previewer"><img src='${value}' style='width:50px;cursor:pointer;' data-original='${value}'/></span>` : value
                     }
                 },
