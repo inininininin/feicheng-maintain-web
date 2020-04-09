@@ -35,7 +35,7 @@ img {
 
 
     var queryStringObject = common.queryStringObject();
-    var config = {},userProtocolEditor
+    var config = {},userProtocolEditor,ruZhuGuideEditor
 
     
    
@@ -51,8 +51,11 @@ img {
 
     $(document).ready(function(){
         debugger
+        
+       
         userProtocolEditor=  tinymce.init({
     selector: '#userProtocol',
+    mode : "textareas",
     plugins : 'advlist autolink link image lists charmap print preview media paste save imagetools template pagebreak hr autosave fullpage fullscreen table textcolor textpattern wordcount insertdatetime legacyoutput pageembed code bdmap',
     automatic_uploads: false,
     images_upload_url: 'postAcceptor.php',
@@ -120,6 +123,75 @@ img {
     }
   });
 
+  ruZhuGuideEditor=  tinymce.init({
+    selector: '#ruZhuGuide',
+    mode : "textareas",
+    plugins : 'advlist autolink link image lists charmap print preview media paste save imagetools template pagebreak hr autosave fullpage fullscreen table textcolor textpattern wordcount insertdatetime legacyoutput pageembed code bdmap',
+    automatic_uploads: false,
+    images_upload_url: 'postAcceptor.php',
+    language: "zh_CN",
+    init_instance_callback : function(editor) {
+        debugger;
+        $.get(config.ruZhuGuide,function(res){
+            editor.setContent(res)
+        })
+    },
+    file_picker_callback:function(callback,value,meta){
+        debugger
+        $(`<input type='file'>`).change(function(){
+            var target = this;
+                                if(this.files.length>0){
+                                    var file = this.files[0];
+                                    var fd = new FormData()
+                                    fd.append('file', file);
+                                    $.ajax({
+                                        url: '/upload-file?' + $.param({ quality: 0.8 }),
+                                        type: 'POST',
+                                        data: fd,
+                                        cache: false,
+                                        processData: false,
+                                        contentType: false,
+                                        async: true,
+                                        success: function (res) {
+                                            if (res.codeMsg)
+                                                $.messager.alert('提示',res.codeMsg)
+                                            if (res.code == 0) {
+                                                callback(res.data.url)
+                                                target.value=null
+                                                $(target).remove()
+                                            }
+                                        }
+                                    })
+                                }
+        }).click()
+       
+    },
+    images_upload_handler: function (blobInfo, success, failure) {
+        debugger
+        var xhr, formData;
+
+        xhr = new XMLHttpRequest();
+        xhr.withCredentials = false;
+        xhr.open('POST', 'postAcceptor.php');
+
+        xhr.onload = function() {
+            var json;
+            if (xhr.status != 200) {
+                failure('HTTP Error: ' + xhr.status);
+                return;
+            }
+            json = JSON.parse(xhr.responseText);
+            if (!json || typeof json.location != 'string') {
+                failure('Invalid JSON: ' + xhr.responseText);
+                return;
+            }
+            success(json.location);
+        };
+        formData = new FormData();
+        formData.append('file', blobInfo.blob(), blobInfo.filename());
+        xhr.send(formData);
+    }
+  });
         $("#loading").remove();
         
     })
@@ -128,7 +200,7 @@ function updateConfirm(){
     debugger
     $.messager.confirm('提示','确认修改吗?',function(r){
         if(r){
-         
+            if(!config.userProtocolUrl){
             $.ajax({
                 type: 'post',
                 contentType:"text/plain",
@@ -144,7 +216,29 @@ function updateConfirm(){
                     } 
                 }
             })
-
+        }else{
+            config.userProtocol=config.userProtocolUrl
+        }
+        if(!config.ruZhuGuideUrl){
+            $.ajax({
+                type: 'post',
+                contentType:"text/plain",
+                url: '/upload-stream?'+$.param({'originalUrl':config.ruZhuGuide,ext:'html'}),
+                async:false,
+                data: tinyMCE.editors[1].getContent(),
+                success: function (res) {
+                    debugger
+                    if (res.codeMsg)
+                        $.messager.alert('提示',res.codeMsg)
+                    if (res.code == 0) {
+                        config.ruZhuGuide=res.data.url
+                    } 
+                }
+            })
+        }else{
+            config.ruZhuGuide=config.ruZhuGuideUrl
+        }
+            
             $.ajax({
                             type: 'post',
                             url: '/maintain/config/update-config',
@@ -530,7 +624,22 @@ function updateConfirm(){
                         </div>
                     </td>
                 </tr>
-
+                <tr>
+                    <td>用户协议Url&nbsp;</td>
+                    <td><input id="userProtocolUrl" class="easyui-textbox" style="width:100%" data-options="
+                        value:config.userProtocol,
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                debugger
+                                $(e.data.target).textbox('setValue','');
+                            }
+                        }],
+                        onChange:function(newValue, oldValue){
+                            config.userProtocolUrl=newValue
+                        }" style="width:200px"></td>
+                </tr>
                 <tr>
                     <td>用户协议&nbsp;</td>
                     <td><textarea id="userProtocol" style="width: 100%;height:500px;padding:1px 4px" placeholder="
@@ -539,6 +648,89 @@ function updateConfirm(){
                         大换行: enter
                         小换行: shift + enter
                         若有不明处，请联系管理员。"></textarea></td>
+                </tr>
+                <tr>
+                    <td>入驻指南Url&nbsp;</td>
+                    <td><input id="ruZhuGuideUrl" class="easyui-textbox" style="width:100%" data-options="
+                        value:config.ruZhuGuide,
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                debugger
+                                $(e.data.target).textbox('setValue','');
+                            }
+                        }],
+                        onChange:function(newValue, oldValue){
+                            config.ruZhuGuideUrl=newValue
+                        }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>入驻指南&nbsp;</td>
+                    <td><textarea id="ruZhuGuide" style="width: 100%;height:500px;padding:1px 4px" placeholder="
+                        必读: 您可以插入图片/音频/视频/优酷等网站视频。
+                        当插入的资源宽度设为'100%'时，为保证比例，请不要设置高度。
+                        大换行: enter
+                        小换行: shift + enter
+                        若有不明处，请联系管理员。"></textarea></td>
+                </tr>
+                <tr>
+                    <td>个人微信&nbsp;</td>
+                    <td><input id="personalWx" class="easyui-textbox" style="width:100%" data-options="
+                        value:config.personalWx,
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                debugger
+                                $(e.data.target).textbox('setValue','');
+                            }
+                        }],
+                        onChange:function(newValue, oldValue){
+                            config.personalWx=newValue
+                        }" style="width:200px"></td>
+                </tr>
+                <tr>
+                    <td>个人微信二维码&nbsp;</td>
+                    <td>
+                        <div id="personalWxQrcode">
+                            <img style="display:none;" src="./image/image-error.png" onload="$('#personalWxQrcode-value').attr('src',config.personalWxQrcode).parent().viewer({url: 'src',});if(config.personalWxQrcode) $('#personalWxQrcode-value').show();" />
+                            <img id="personalWxQrcode-value" style="width:30px;height:30px;object-fit:contain;cursor:pointer;vertical-align: baseline;display:none;" onerror='debugger;$(this).attr("src","./image/image-error.png");' />
+                            <input type="file" style="display:none;" onchange="
+                                javascript:
+                                var target = this;
+                                if(this.files.length>0){
+                                    var file = this.files[0];
+                                    var fd = new FormData()
+                                    fd.append('file', file);
+                                    $.ajax({
+                                        url: '/upload-file?' + $.param({ quality: 0.8 }),
+                                        type: 'POST',
+                                        data: fd,
+                                        cache: false,
+                                        processData: false,
+                                        contentType: false,
+                                        async: true,
+                                        success: function (res) {
+                                            if (res.codeMsg)
+                                                $.messager.alert('提示',res.codeMsg)
+                                            if (res.code == 0) {
+                                                config.personalWxQrcode=res.data.url 
+                                                $(target).prev().attr('src',config.personalWxQrcode).show()
+                                             target.value=null
+                                            }
+                                        }
+                                    })
+                                }
+                            " />
+                            <a title="删除" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-clear" plain="true"
+                                style="vertical-align: text-bottom;"
+                                onclick="$(this).prev().prev().attr('src',null).hide();config.personalWxQrcode='';"></a>
+
+                            <a title="选择" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-choose" plain="true"
+                                style="vertical-align: text-bottom;" onclick="$(this).prev().prev().click()"></a>
+                        </div>
+                    </td>
                 </tr>
             </tbody>
         </table>
