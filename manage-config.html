@@ -732,6 +732,17 @@ function updateConfirm(){
                         </div>
                     </td>
                 </tr>
+
+               
+                <tr>
+                    <td>微信公众号菜单&nbsp;</td>
+                    <td><input id="wxofficialMenu" class="easyui-textbox" style="width:100%;height:200px;" data-options="
+                            value:config.wxofficialMenu,
+                            multiline:true,
+                            onChange:function(newValue, oldValue){
+                                config.wxofficialMenu=newValue
+                            }" style="width:200px"></td>
+                </tr>
             </tbody>
         </table>
         
@@ -745,6 +756,16 @@ function updateConfirm(){
                 onclick="updateConfirm()">确认</a>
             <a id="updateCancel" href="JavaScript:void(0)" class="easyui-linkbutton" style="display:none;" iconCls="icon-cancel"
                 onclick="$('#update,#remove,#reload,#updatePasswordPageEntrance').show();$('#updateConfirm,#updateCancel').hide()">取消</a>
+            <a id="setWxofficialMenu" href="JavaScript:void(0)" class="easyui-linkbutton" 
+               onclick="$.get('/maintain/set-wxofficial-menu',function(res){
+                   debugger
+                   if(res.codeMsg)
+                        $.messager.alert('提示',res.codeMsg)
+                    if(res.code==0){
+                        if(!res.codeMsg)
+                            $.messager.alert('提示','操作成功')
+                    }
+               })">设置微信公众号菜单</a>
         </div>
 
 </body>
