@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>飞橙-运维-视频号管理</title>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
+
+    <script src="https://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script>
+
+    <script src="../zTree_v3/js/jquery.ztree.all.js"></script>
+    <link rel="stylesheet" href="../zTree_v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
+
+    <link rel="stylesheet" type="text/css" href="../jquery-easyui-1.8.7/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../jquery-easyui-1.8.7/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../jquery-easyui-1.8.7/demo/demo.css">
+    <script type="text/javascript" src="../jquery-easyui-1.8.7/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../jquery-easyui-1.8.7/locale/easyui-lang-zh_CN.js"></script>
+
+    <link rel="stylesheet" href="../jQueryViewer20160329/css/viewer.min.css">
+    <script src="../jQueryViewer20160329/js/viewer.min.js"></script>
+    <script src="../jQueryViewer20160329/js/viewer-jquery.min.js"></script>
+
+    <script src="../js/moment.js"></script>
+    <script src="../js/common.js"></script>
+    <script src="../js/jquery.oneall.js"></script>
+
+
+
+    <style>
+img {
+        object-fit:contain;
+    }
+    </style>
+
+    <script>
+        var queryStringObject = common.queryStringObject();
+       
+        var queryParam = {}, currentItemList = [], sum = {}
+
+        $(document).ready(function () {
+
+            $('#datagrid').datagrid({
+            columns: [[
+              
+                {
+                    field: 'update_time', title: '更新时间', width: 175, align: 'center', sortable: true, halign: 'center', formatter: function (value, row, index) {
+                        return value ? moment(value*1000).format('YYYY-MM-DD HH:mm:ss') : value;
+                    }
+                },
+                {
+                    field: ' ', title: '操作', width: 175, align: 'left',  halign: 'center', formatter: function (value, row, index) {
+                        debugger
+                        return `<a href="javascript:void(0)" onclick="$.messager.alert('提示','${row.content.news_item[0].title} : ${row.media_id}')">查看Id</a>` ;
+                    }
+                }
+            ]],
+            frozenColumns: [[
+                { field: 'ck', align: 'left', checkbox: true },
+                {
+                    field: 'title', title: '素材名', width: 250, align: 'left', halign: 'center', formatter: function (value, row, index) {
+                        return row.content.news_item[0].title;
+                    }
+                }
+            ]],
+            idField: 'media_id',
+            toolbar: `#datagridToolBar`,
+            footer: `#datagridFoot`,
+            pagination: true,
+            rownumbers: true,
+            emptyMsg: '无数据',
+            singleSelect: false,
+            pageSize: 15,
+            pageList:[10,15,20],
+            ctrlSelect: true,
+            checkOnSelect: true,
+            selectOnCheck: true,
+            multiSort: true,
+            autoRowHeight: false,
+            rowStyler: function (index, row) {
+
+            },
+            loader: function (param, success, error) {
+                debugger
+                queryParam.ps = param.rows;
+                queryParam.pn = param.page;
+                queryParam.sort = param.sort;
+                queryParam.order = param.order;
+                queryParam.type = 'news';
+                $.get('/maintain/wxofficial-material/wxofficial-material-list', queryParam, function (data) {
+                    if (data.codeMsg)
+                        $.messager.alert('提示',data.codeMsg);
+                    if (data.code == 0) {
+                        currentItemList = data.data.itemList;
+                        $.get('/maintain/wxofficial-material/wxofficial-material-list-sum', queryParam, function (data) {
+                            if (data.codeMsg)
+                                $.messager.alert('提示',data.codeMsg);
+                            if (data.code == 0) {
+                                sum = data.data;
+                                success({rows:currentItemList,total:sum.itemCount});
+                            }
+                        })
+                    } else {
+
+                    }
+                })
+            }, onLoadSuccess: function () {
+                $('.image-previewer').viewer({
+                    url: 'data-original',
+                })
+            }
+        });
+        });
+
+
+
+        $.parser.onComplete = function () {
+            $("#loading").remove();
+        }
+
+
+
+
+     
+    </script>
+</head>
+
+<style>
+
+</style>
+
+<body style="margin:0;padding:0;">
+    <div id="loading" class='' style="position: absolute; z-index: 1000; top: 0px; left: 0px; 
+    width: 100%; height: 100%; background: white; text-align: center;padding:5px 10px">
+        <font>loading···</font>
+    </div>
+
+
+   
+    <div id="datagridToolBar" style="padding:2px 5px;">
+        <div style="margin-top:5px;">
+        <a href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-search"
+        onclick="$('#datagrid').datagrid('load').datagrid('clearChecked');">查询</a>
+     
+    </div>
+        <form id="datagridToolBar-form" style="margin-top:10px;">  
+           
+</form>
+</div>
+            <table id="datagrid" class="easyui-datagrid" style="width:100%;height:710px">
+            </table>
+            <div id="datagridFoot" style="padding:2px 5px;">
+                
+            </div>
+</body>
+
+
+</html>
