@@ -58,6 +58,8 @@ img {
     mode : "textareas",
     plugins : 'advlist autolink link image lists charmap print preview media paste save imagetools template pagebreak hr autosave fullpage fullscreen table textcolor textpattern wordcount insertdatetime legacyoutput pageembed code bdmap',
     automatic_uploads: false,
+    forced_root_block: '',
+    force_p_newlines: false,
     images_upload_url: 'postAcceptor.php',
     language: "zh_CN",
     init_instance_callback : function(editor) {
@@ -128,6 +130,8 @@ img {
     mode : "textareas",
     plugins : 'advlist autolink link image lists charmap print preview media paste save imagetools template pagebreak hr autosave fullpage fullscreen table textcolor textpattern wordcount insertdatetime legacyoutput pageembed code bdmap',
     automatic_uploads: false,
+    forced_root_block: '',
+    force_p_newlines: false,
     images_upload_url: 'postAcceptor.php',
     language: "zh_CN",
     init_instance_callback : function(editor) {
@@ -645,8 +649,6 @@ function updateConfirm(){
                     <td><textarea id="userProtocol" style="width: 100%;height:500px;padding:1px 4px" placeholder="
                         必读: 您可以插入图片/音频/视频/优酷等网站视频。
                         当插入的资源宽度设为'100%'时，为保证比例，请不要设置高度。
-                        大换行: enter
-                        小换行: shift + enter
                         若有不明处，请联系管理员。"></textarea></td>
                 </tr>
                 <tr>
@@ -670,8 +672,6 @@ function updateConfirm(){
                     <td><textarea id="ruZhuGuide" style="width: 100%;height:500px;padding:1px 4px" placeholder="
                         必读: 您可以插入图片/音频/视频/优酷等网站视频。
                         当插入的资源宽度设为'100%'时，为保证比例，请不要设置高度。
-                        大换行: enter
-                        小换行: shift + enter
                         若有不明处，请联系管理员。"></textarea></td>
                 </tr>
                 <tr>
@@ -738,10 +738,12 @@ function updateConfirm(){
                     <td>微信公众号菜单&nbsp;</td>
                     <td><input id="wxofficialMenu" class="easyui-textbox" style="width:100%;height:200px;" data-options="
                             value:config.wxofficialMenu,
+                            resizable:true,
                             multiline:true,
                             onChange:function(newValue, oldValue){
                                 config.wxofficialMenu=newValue
-                            }" style="width:200px"></td>
+                            }" style="width:200px">
+                        <div><a href="https://developers.weixin.qq.com/doc/offiaccount/Custom_Menus/Creating_Custom-Defined_Menu.html" target="_blank">格式说明</a></div></td>
                 </tr>
             </tbody>
         </table>
