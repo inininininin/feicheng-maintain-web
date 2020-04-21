@@ -48,8 +48,8 @@ img {
                         return value ? `<span class="image-previewer"><img src='${value}' style='width:50px;cursor:pointer;' data-original='${value}'/></span>` : value
                     }
                 },
-                { field: 'viewCount', title: '浏览量', width: 70, align: 'right', sortable: true, halign: 'center' },
-                { field: 'likeCount', title: '点赞量', width: 70, align: 'right', sortable: true, halign: 'center' },
+                { field: 'viewCount', title: '浏览量', width: 100, align: 'right', sortable: true, halign: 'center' },
+                { field: 'likeCount', title: '点赞量', width: 100, align: 'right', sortable: true, halign: 'center' },
                 { field: 'articleClassification1Id', title: '分类1', width: 100, align: 'left',sortable: true, halign: 'center' ,formatter:function(value, row, index) {
                     return row.articleClassification1Name;
                 }},

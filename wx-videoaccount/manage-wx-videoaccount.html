@@ -63,10 +63,11 @@ img {
                 { field: 'area2Id', title: '市', width: 70, align: 'left', sortable: true, halign: 'center' , formatter: function (value, row, index) {
                     return row.area2Name
                 }},
-                { field: 'fansCount', title: '粉丝量', width: 70, align: 'right', sortable: true, halign: 'center' },
-                { field: 'likeCount', title: '点赞量', width: 70, align: 'right', sortable: true, halign: 'center' },
-                { field: 'videoCount', title: '视频量', width: 70, align: 'right', sortable: true, halign: 'center' },
-                { field: 'pv', title: '曝光量', width: 70, align: 'right', sortable: true, halign: 'center' },
+                { field: 'fansCount', title: '粉丝量', width: 100, align: 'right', sortable: true, halign: 'center' },
+                { field: 'likeCount', title: '点赞量', width: 100, align: 'right', sortable: true, halign: 'center' },
+                { field: 'videoCount', title: '视频量', width: 100, align: 'right', sortable: true, halign: 'center' },
+                { field: 'pv', title: '曝光量', width: 100, align: 'right', sortable: true, halign: 'center' },
+                { field: 'indexNum', title: '指数', width: 100, align: 'right', sortable: true, halign: 'center' },
                 {
                     field: 'screenshot', title: '截图', width: 60, align: 'center', halign: 'center', formatter: function (value, row, index) {
                         return value ? `<span class="image-previewer"><img src='${value}' style='width:50px;cursor:pointer;' data-original='${value}'/></span>` : value
