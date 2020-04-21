@@ -95,7 +95,7 @@ if(r){
         <font>loading···</font>
     </div>
 
-        <table id="datagrid"  data-options="singleSelect:true,height:'700px'">
+        <table id="datagrid"  data-options="singleSelect:true, footer: '#datagridFoot',title:'创建热搜'">
             <thead>
                 <tr>
                     <th data-options="field:'name',width:200,align:'right'">属性&nbsp;</th>
@@ -146,10 +146,10 @@ if(r){
             </tbody>
         </table>
         
-        <div style="margin-left:5px;margin-top:5px;">
-            <a id="createConfirm" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-save"
+        <div id="datagridFoot" style="padding:2px 5px;">
+            <a id="createConfirm" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-save"   plain="true" title="确认"
                 onclick="createConfirm()">确认</a>
-            <a id="reset" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-reload"
+            <a id="reset" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-reload"   plain="true" title="重置"
                 onclick="$.messager.confirm('提示','已编辑的数据将丢失, 确认继续吗?',function(){location.reload()})">重置</a>
         </div>
 </body>

@@ -125,7 +125,7 @@ function remove(){
         }
     })
     </script>
-        <table id="datagrid"  data-options="singleSelect:true,height:'700px'">
+        <table id="datagrid"  data-options="singleSelect:true, footer: '#datagridFoot',title:'用户详情'">
             <thead>
                 <tr>
                     <th data-options="field:'name',width:200,align:'right'">属性&nbsp;</th>
@@ -340,18 +340,18 @@ function remove(){
         </table>
         
 
-        <div style="margin-left:5px;margin-top:5px;">
-            <a id="update" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-edit"
+        <div id="datagridFoot" style="padding:2px 5px;">
+            <a id="update" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" title="修改"
                 onclick="$('#update,#remove,#reload,#updatePasswordPageEntrance').hide();$('#updateConfirm,#updateCancel').show()">修改</a>
-            <a id="updatePasswordPageEntrance" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-edit"
+            <a id="updatePasswordPageEntrance" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" title="修改密码"
                 onclick="$('#updatePasswordPage').window('open')">修改密码</a>
-            <a id="remove" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-remove"
+            <a id="remove" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" title="删除"
                 onclick="remove()">删除</a>
-            <a id="reload" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-reload"
+            <a id="reload" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" title="刷新"
                 onclick="$.messager.confirm('提示','已编辑的数据将丢失, 确认继续吗?',function(r){if(r) location.reload()})">刷新</a>
-            <a id="updateConfirm" href="JavaScript:void(0)" class="easyui-linkbutton" style="display:none;" iconCls="icon-save"
+            <a id="updateConfirm" href="JavaScript:void(0)" class="easyui-linkbutton" style="display:none;" iconCls="icon-save" plain="true" title="确认"
                 onclick="updateConfirm()">确认</a>
-            <a id="updateCancel" href="JavaScript:void(0)" class="easyui-linkbutton" style="display:none;" iconCls="icon-cancel"
+            <a id="updateCancel" href="JavaScript:void(0)" class="easyui-linkbutton" style="display:none;" iconCls="icon-cancel" plain="true" title="取消"
                 onclick="$('#update,#remove,#reload,#updatePasswordPageEntrance').show();$('#updateConfirm,#updateCancel').hide()">取消</a>
         </div>
 

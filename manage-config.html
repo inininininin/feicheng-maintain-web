@@ -289,7 +289,7 @@ function updateConfirm(){
         }
     })
     </script>
-        <table id="datagrid"  data-options="singleSelect:true,height:'700px'">
+        <table id="datagrid"  data-options="singleSelect:true, footer: '#datagridFoot',title:'配置管理'">
             <thead>
                 <tr>
                     <th data-options="field:'name',width:200,align:'right'">属性&nbsp;</th>
@@ -749,16 +749,16 @@ function updateConfirm(){
         </table>
         
 
-        <div style="margin-left:5px;margin-top:5px;">
-            <a id="update" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-edit"
+        <div id="datagridFoot" style="padding:2px 5px;">
+            <a id="update" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" title="修改" 
                 onclick="$('#update,#remove,#reload,#updatePasswordPageEntrance').hide();$('#updateConfirm,#updateCancel').show()">修改</a>
-            <a id="reload" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-reload"
+            <a id="reload" href="JavaScript:void(0)" class="easyui-linkbutton" iconCls="icon-reload"  plain="true" title="刷新"
                 onclick="$.messager.confirm('提示','已编辑的数据将丢失, 确认继续吗?',function(r){if(r) location.reload()})">刷新</a>
-            <a id="updateConfirm" href="JavaScript:void(0)" class="easyui-linkbutton" style="display:none;" iconCls="icon-save"
+            <a id="updateConfirm" href="JavaScript:void(0)" class="easyui-linkbutton" style="display:none;" iconCls="icon-save"  plain="true" title="确认"
                 onclick="updateConfirm()">确认</a>
-            <a id="updateCancel" href="JavaScript:void(0)" class="easyui-linkbutton" style="display:none;" iconCls="icon-cancel"
+            <a id="updateCancel" href="JavaScript:void(0)" class="easyui-linkbutton" style="display:none;" iconCls="icon-cancel"  plain="true" title="取消"
                 onclick="$('#update,#remove,#reload,#updatePasswordPageEntrance').show();$('#updateConfirm,#updateCancel').hide()">取消</a>
-            <a id="setWxofficialMenu" href="JavaScript:void(0)" class="easyui-linkbutton" 
+            <a id="setWxofficialMenu" href="JavaScript:void(0)" class="easyui-linkbutton"   plain="true" title="设置微信公众号菜单"
                onclick="$.get('/maintain/set-wxofficial-menu',function(res){
                    debugger
                    if(res.codeMsg)
