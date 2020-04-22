@@ -75,6 +75,7 @@ img {
                 {
                     field: 'updateTime', title: '更新时间', width: 175, align: 'center', sortable: true, halign: 'center', formatter: function (value, row, index) {
                         return value ? moment(value).format('YYYY-MM-DD HH:mm:ss') : value;
+                        
                     }
                 }
                 
@@ -82,11 +83,11 @@ img {
             frozenColumns: [[
                 { field: 'ck', align: 'left', checkbox: true },
                 {
-                    field: 'name', title: '文章名', width: 250, align: 'left', halign: 'center', formatter: function (value, row, index) {
+                    field: 'name', title: '文章名', width: 350, align: 'left', halign: 'center', formatter: function (value, row, index) {
                       
-                        return `<a href="JavaScript:void(0)" style="width:100%;display:inline-block;" title="${value || ''}" onclick="common.newTab('文章:${row.name.substring(0, 10) + '...'}','/maintain/article/article.html?articleId=${row.articleId}')">${value}</a>`;
+                        return `<a href="JavaScript:void(0)" style="overflow: hidden;text-overflow:ellipsis;width:100%;display:inline-block;" title="${value || ''}" onclick="common.newTab('文章:${row.name.substring(0, 10) + '...'}','/maintain/article/article.html?articleId=${row.articleId}')">${value}</a>`;
                     }, styler: function (value, row, index) {
-                        return ``
+                        return ""
                     }
                 }
             ]],
@@ -366,8 +367,8 @@ queryParam.updateTimeTo=newValue
             <table id="datagrid" class="easyui-datagrid" style="width:100%;min-height:50px">
             </table>
             <div id="datagridFoot" style="padding:2px 5px;">
-                <a href="JavaScript:void(0)" class="easyui-linkbutton" title="创建" iconCls="icon-add" plain="true"
-                    onclick=" common.newTab('创建文章','/maintain/article/create-article.html')">创建</a>
+                <a href="#" class="easyui-linkbutton" title="创建" iconCls="icon-add" plain="true"
+                    onclick="javascript:common.newTab('创建文章','/maintain/article/create-article.html'); return false;">创建</a>
                 <a href="JavaScript:void(0)" class="easyui-linkbutton" title="全部删除" iconCls="icon-edit" plain="true"
                     onclick="
                         var ids = $($('#datagrid').datagrid('getChecked')).oneall('attrs','articleId');

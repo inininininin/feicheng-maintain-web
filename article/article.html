@@ -51,7 +51,7 @@ img {
     $(document).ready(function(){
         debugger
         contentEditor =  tinymce.init({
-    selector: '#contentContent',
+    selector: '#contentUrl',
     plugins : 'advlist autolink link image lists charmap print preview media paste save imagetools template pagebreak hr autosave fullpage fullscreen table textcolor textpattern wordcount insertdatetime legacyoutput pageembed code bdmap',
     automatic_uploads: false,
     forced_root_block: '',
@@ -61,9 +61,10 @@ img {
     init_instance_callback : function(editor) {
         debugger;
         if(article.contentUrl)
-        $.get(article.contentUrl,function(res){
-            editor.setContent(res)
-        })
+            $.get(article.contentUrl,function(res){
+                editor.contentSrc=res
+                editor.setContent(res)
+            })
     },
     file_picker_callback:function(callback,value,meta){
         debugger
@@ -130,7 +131,7 @@ function updateConfirm(){
     debugger
     $.messager.confirm('提示','确认修改吗?',function(r){
         if(r){
-            if(!article.contentUrl)
+            if(tinyMCE.editors[0].contentSrc!=tinyMCE.editors[0].getContent())
             $.ajax({
                 type: 'post',
                 contentType:"text/plain",
@@ -388,25 +389,10 @@ function remove(){
                                 article.brief=newValue
                             }" style="width:200px"></td>
                 </tr>
-                <tr>
-                    <td>内容Url&nbsp;</td>
-                    <td><input id="contentUrl" class="easyui-textbox" style="width:100%" data-options="
-                        value:article.contentUrl,
-                        iconWidth:20,
-                        icons:[{
-                            iconCls:'icon-clear',
-                            handler: function(e){
-                                debugger
-                                $(e.data.target).textbox('setValue','');
-                            }
-                        }],
-                        onChange:function(newValue, oldValue){
-                            article.contentUrl=newValue
-                        }" style="width:200px"></td>
-                </tr>
+               
                 <tr>
                     <td>内容&nbsp;</td>
-                    <td><textarea id="contentContent" style="width: 100%;height:500px;padding:1px 4px" placeholder="
+                    <td><textarea id="contentUrl" style="width: 100%;height:500px;padding:1px 4px" placeholder="
                         必读: 您可以插入图片/音频/视频/优酷等网站视频。
                         当插入的资源宽度设为'100%'时，为保证比例，请不要设置高度。
                         若有不明处，请联系管理员。"></textarea>
