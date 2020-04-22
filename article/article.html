@@ -51,7 +51,7 @@ img {
     $(document).ready(function(){
         debugger
         contentEditor =  tinymce.init({
-    selector: '#content',
+    selector: '#contentContent',
     plugins : 'advlist autolink link image lists charmap print preview media paste save imagetools template pagebreak hr autosave fullpage fullscreen table textcolor textpattern wordcount insertdatetime legacyoutput pageembed code bdmap',
     automatic_uploads: false,
     forced_root_block: '',
@@ -60,6 +60,7 @@ img {
     language: "zh_CN",
     init_instance_callback : function(editor) {
         debugger;
+        if(article.contentUrl)
         $.get(article.contentUrl,function(res){
             editor.setContent(res)
         })
@@ -129,6 +130,7 @@ function updateConfirm(){
     debugger
     $.messager.confirm('提示','确认修改吗?',function(r){
         if(r){
+            if(!article.contentUrl)
             $.ajax({
                 type: 'post',
                 contentType:"text/plain",
@@ -387,8 +389,24 @@ function remove(){
                             }" style="width:200px"></td>
                 </tr>
                 <tr>
+                    <td>内容Url&nbsp;</td>
+                    <td><input id="contentUrl" class="easyui-textbox" style="width:100%" data-options="
+                        value:article.contentUrl,
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                debugger
+                                $(e.data.target).textbox('setValue','');
+                            }
+                        }],
+                        onChange:function(newValue, oldValue){
+                            article.contentUrl=newValue
+                        }" style="width:200px"></td>
+                </tr>
+                <tr>
                     <td>内容&nbsp;</td>
-                    <td><textarea id="content" style="width: 100%;height:500px;padding:1px 4px" placeholder="
+                    <td><textarea id="contentContent" style="width: 100%;height:500px;padding:1px 4px" placeholder="
                         必读: 您可以插入图片/音频/视频/优酷等网站视频。
                         当插入的资源宽度设为'100%'时，为保证比例，请不要设置高度。
                         若有不明处，请联系管理员。"></textarea>
@@ -666,7 +684,7 @@ function remove(){
 
 
                 <tr>
-                    <td>基础浏览量&nbsp;</td>
+                    <td>浏览量基数&nbsp;</td>
                     <td><input id="viewCountBase" class="easyui-numberbox" style="width:100%" data-options="
                                     value:article.viewCountBase,
                                     iconWidth:20,
@@ -681,7 +699,7 @@ function remove(){
                                     }" style="width:200px"></td>
                 </tr>
                 <tr>
-                    <td>基础点赞量&nbsp;</td>
+                    <td>点赞量基数&nbsp;</td>
                     <td><input id="likeCountBase" class="easyui-numberbox" style="width:100%" data-options="
                                     value:article.likeCountBase,
                                     iconWidth:20,
@@ -696,7 +714,7 @@ function remove(){
                                     }" style="width:200px"></td>
                 </tr>
                 <tr>
-                    <td>基础分享量&nbsp;</td>
+                    <td>分享量基数&nbsp;</td>
                     <td><input id="shareCountBase" class="easyui-numberbox" style="width:100%" data-options="
                                     value:article.shareCountBase,
                                     iconWidth:20,
@@ -711,7 +729,7 @@ function remove(){
                                     }" style="width:200px"></td>
                 </tr>
                 <tr>
-                    <td>基础转发量&nbsp;</td>
+                    <td>转发量基数&nbsp;</td>
                     <td><input id="repostCountBase" class="easyui-numberbox" style="width:100%" data-options="
                                     value:article.repostCountBase,
                                     iconWidth:20,
@@ -726,7 +744,7 @@ function remove(){
                                     }" style="width:200px"></td>
                 </tr>
                 <tr>
-                    <td>基础收藏量&nbsp;</td>
+                    <td>收藏量基数&nbsp;</td>
                     <td><input id="favorCountBase" class="easyui-numberbox" style="width:100%" data-options="
                                     value:article.favorCountBase,
                                     iconWidth:20,

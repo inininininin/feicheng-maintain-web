@@ -1,45 +1,194 @@
+
 <!DOCTYPE html>
-<html>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8">
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div id="container" style="height: 100%"></div>
+       <script src="https://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script>
+       <script src="./js/moment.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat/dist/ecStat.min.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/dataTool.min.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/bmap.min.js"></script>
+       <script type="text/javascript">
+//0小时 1日 2月 3季度 4年
 
-<head lang="en">
+       
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+option = null;
+option = {
+    title: {
+        text: '数据走势'
+    },
+    tooltip: {
+        trigger: 'axis'
+    },
+    legend: {
+        data: ['视频号', '视频' ,'用户']
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+    toolbox: {
+        feature: {
+            saveAsImage: {}
+        }
+    },
+    xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+    },
+    yAxis: {
+        type: 'value'
+    },
+    series: [
+        {
+            name: '视频号',
+            type: 'line',
+            data: []
+        },
+       
+        {
+            name: '视频',
+            type: 'line',
+            data: []
+        },
+        {
+            name: '用户',
+            type: 'line',
+            data: []
+        }
+    ]
+};
 
-    <meta charset="UTF-8">
-    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
-    <title>飞橙-运维-概览</title>
-    <script src="https://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://lib.sinaapp.com/js/bootstrap/3.3.7/css/bootstrap.min.css" />
-    <script src="./layui-v2.5.5/layui.all.js"></script>
-    <link rel="stylesheet" href="./layui-v2.5.5/css/layui.css" />
+if (option && typeof option === "object") {
+    debugger
+    if(moment(moment().subtract(moment().format('E')-1, 'days').format('YYYY-MM-DD')).valueOf()<moment().valueOf()){
+        $.get('/maintain/wx-videoaccount/wx-videoaccount-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-1, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-2, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
+        option.series[0].data[0]=res.data.itemCount
+        myChart.setOption(option, true);
+        })
 
-    <link rel="stylesheet" type="text/css" href="./jquery-easyui-1.8.7/themes/default/easyui.css">
-    <link rel="stylesheet" type="text/css" href="./jquery-easyui-1.8.7/themes/icon.css">
-    <link rel="stylesheet" type="text/css" href="./jquery-easyui-1.8.7/demo/demo.css">
-    <script type="text/javascript" src="./jquery-easyui-1.8.7/jquery.easyui.min.js"></script>
-</head>
-<style>
+        $.get('/maintain/wx-videoaccount-video/wx-videoaccount-video-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-1, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-2, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
+        option.series[1].data[0]=res.data.itemCount
+        myChart.setOption(option, true);
+        })
 
-</style>
+        $.get('/maintain/user/user-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-1, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-2, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
+        option.series[2].data[0]=res.data.itemCount
+        myChart.setOption(option, true);
+        })
+    }
+    if(moment(moment().subtract(moment().format('E')-2, 'days').format('YYYY-MM-DD')).valueOf()<moment().valueOf()){
+        $.get('/maintain/wx-videoaccount/wx-videoaccount-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-2, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-3, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
+        option.series[0].data[1]=res.data.itemCount
+        myChart.setOption(option, true);
+        })
 
-<body style="margin:0;padding:0;">
-    <div style="margin-left:18px;">
-        <div style="margin-top:10px;font-size:18px;"></div>
-        <span  style="font-size:14px;">以Ip量计算</span><br/>
-        <span style="font-size:18px;">近1小时的访问量: <span id="visitCountOfOneHourRecently"></span></span> <br/>
-        <span style="font-size:18px;">近1天的访问量: <span id="visitCountOfOneDayRecently"></span></span> <br/>
-        <span style="font-size:18px;">近1星期的访问量: <span id="visitCountOfOneWeekRecently"></span></span> <br/>
-        <span style="font-size:18px;">历史访问量: <span id="visitCountOfHistory"></span></span>
-    </div>
-</body>
+        $.get('/maintain/wx-videoaccount-video/wx-videoaccount-video-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-2, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-3, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
+        option.series[1].data[1]=res.data.itemCount
+        myChart.setOption(option, true);
+        })
 
-<script>
-   $.get('/maintain/overview',function(data){
-    $('#visitCountOfOneHourRecently').text(data.data.visitCountOfOneHourRecently)
-    $('#visitCountOfOneDayRecently').text(data.data.visitCountOfOneDayRecently)
-    $('#visitCountOfOneWeekRecently').text(data.data.visitCountOfOneWeekRecently)
-    $('#visitCountOfHistory').text(data.data.visitCountOfHistory)
-   })
-</script>
+        $.get('/maintain/user/user-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-2, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-3, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
+        option.series[2].data[1]=res.data.itemCount
+        myChart.setOption(option, true);
+        })
+    }
 
+        if(moment(moment().subtract(moment().format('E')-3, 'days').format('YYYY-MM-DD')).valueOf()<moment().valueOf()){
+    $.get('/maintain/wx-videoaccount/wx-videoaccount-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-3, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-4, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
+       option.series[0].data[2]=res.data.itemCount
+       myChart.setOption(option, true);
+    })
+
+    $.get('/maintain/wx-videoaccount-video/wx-videoaccount-video-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-3, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-4, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
+        option.series[1].data[2]=res.data.itemCount
+        myChart.setOption(option, true);
+        })
+
+        $.get('/maintain/user/user-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-3, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-4, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
+        option.series[2].data[2]=res.data.itemCount
+        myChart.setOption(option, true);
+        })
+}
+
+    if(moment(moment().subtract(moment().format('E')-4, 'days').format('YYYY-MM-DD')).valueOf()<moment().valueOf()){
+    $.get('/maintain/wx-videoaccount/wx-videoaccount-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-4, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-5, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
+       option.series[0].data[3]=res.data.itemCount
+       myChart.setOption(option, true);
+    })
+
+    $.get('/maintain/wx-videoaccount-video/wx-videoaccount-video-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-4, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-5, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
+        option.series[1].data[3]=res.data.itemCount
+        myChart.setOption(option, true);
+        })
+
+        $.get('/maintain/user/user-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-4, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-5, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
+        option.series[2].data[3]=res.data.itemCount
+        myChart.setOption(option, true);
+        })
+}
+
+    if(moment(moment().subtract(moment().format('E')-5, 'days').format('YYYY-MM-DD')).valueOf()<moment().valueOf()){
+    $.get('/maintain/wx-videoaccount/wx-videoaccount-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-5, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-6, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
+       option.series[0].data[4]=res.data.itemCount
+       myChart.setOption(option, true);
+    })
+
+    $.get('/maintain/wx-videoaccount-video/wx-videoaccount-video-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-5, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-6, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
+        option.series[1].data[4]=res.data.itemCount
+        myChart.setOption(option, true);
+        })
+
+        $.get('/maintain/user/user-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-5, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-6, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
+        option.series[2].data[4]=res.data.itemCount
+        myChart.setOption(option, true);
+        })
+}
+    if(moment(moment().subtract(moment().format('E')-6, 'days').format('YYYY-MM-DD')).valueOf()<moment().valueOf()){
+    $.get('/maintain/wx-videoaccount/wx-videoaccount-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-6, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-7, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
+       option.series[0].data[5]=res.data.itemCount
+       myChart.setOption(option, true);
+    })
+
+    $.get('/maintain/wx-videoaccount-video/wx-videoaccount-video-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-6, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-7, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
+        option.series[1].data[5]=res.data.itemCount
+        myChart.setOption(option, true);
+        })
+
+        $.get('/maintain/user/user-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-6, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-7, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
+        option.series[2].data[5]=res.data.itemCount
+        myChart.setOption(option, true);
+        })
+}
+    if(moment(moment().subtract(moment().format('E')-7, 'days').format('YYYY-MM-DD')).valueOf()<moment().valueOf()){
+    $.get('/maintain/wx-videoaccount/wx-videoaccount-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-7, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-8, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
+       option.series[0].data[6]=res.data.itemCount
+       myChart.setOption(option, true);
+    })
+
+    $.get('/maintain/wx-videoaccount-video/wx-videoaccount-video-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-7, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-2, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
+        option.series[1].data[6]=res.data.itemCount
+        myChart.setOption(option, true);
+        })
+
+        $.get('/maintain/user/user-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-7, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-2, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
+        option.series[2].data[6]=res.data.itemCount
+        myChart.setOption(option, true);
+        })
+}
+}
+       </script>
+   </body>
 </html>

@@ -22,7 +22,7 @@
     <script src="./js/jquery.oneall.js"></script>
     <style>
         img {
-        object-fit:contain;
+        object-fit:cover;
     }
         .ztree li a.curSelectedNode {
             height: 18px !important;
@@ -77,8 +77,9 @@
                 callback: {
                     onClick: function (e, treeId, treeNode) {
                         if (treeNode.name == '退出登录') {
-                            $.post('/maintain/logout')
-                            location.href = './login.html';
+                            $.post('/maintain/logout',function(res){
+                                location.href = './login.html';
+                            })
                             return;
                         }
                         if (treeNode._url)
@@ -122,8 +123,8 @@
 </head>
 
 
-<body style="margin:0;padding:0;">
-    <div class="easyui-layout" style="width:100%;position:absolute;top:0;bottom:0;">
+<body style="margin:0;padding:0;position:absolute;left:0;right:0;top:0;bottom:0;">
+    <div class="easyui-layout" style="width:100%;height:100%">
         <div data-options="region:'north'" style="height:80px">
             <div style="margin-top:18px;">
                 <span style="padding-left:10px;font-size: 26px;font-weight: 700;">飞橙</span>

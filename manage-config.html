@@ -54,7 +54,7 @@ img {
         
        
         userProtocolEditor=  tinymce.init({
-    selector: '#userProtocol',
+    selector: '#userProtocolContent',
     mode : "textareas",
     plugins : 'advlist autolink link image lists charmap print preview media paste save imagetools template pagebreak hr autosave fullpage fullscreen table textcolor textpattern wordcount insertdatetime legacyoutput pageembed code bdmap',
     automatic_uploads: false,
@@ -64,6 +64,7 @@ img {
     language: "zh_CN",
     init_instance_callback : function(editor) {
         debugger;
+        if(config.userProtocol)
         $.get(config.userProtocol,function(res){
             editor.setContent(res)
         })
@@ -126,7 +127,7 @@ img {
   });
 
   ruZhuGuideEditor=  tinymce.init({
-    selector: '#ruZhuGuide',
+    selector: '#ruZhuGuideContent',
     mode : "textareas",
     plugins : 'advlist autolink link image lists charmap print preview media paste save imagetools template pagebreak hr autosave fullpage fullscreen table textcolor textpattern wordcount insertdatetime legacyoutput pageembed code bdmap',
     automatic_uploads: false,
@@ -136,9 +137,10 @@ img {
     language: "zh_CN",
     init_instance_callback : function(editor) {
         debugger;
-        $.get(config.ruZhuGuide,function(res){
-            editor.setContent(res)
-        })
+        if(config.ruZhuGuide)
+            $.get(config.ruZhuGuide,function(res){
+                editor.setContent(res)
+            })
     },
     file_picker_callback:function(callback,value,meta){
         debugger
@@ -204,7 +206,7 @@ function updateConfirm(){
     debugger
     $.messager.confirm('提示','确认修改吗?',function(r){
         if(r){
-            if(!config.userProtocolUrl){
+            if(!config.userProtocol){
             $.ajax({
                 type: 'post',
                 contentType:"text/plain",
@@ -220,10 +222,8 @@ function updateConfirm(){
                     } 
                 }
             })
-        }else{
-            config.userProtocol=config.userProtocolUrl
         }
-        if(!config.ruZhuGuideUrl){
+        if(!config.ruZhuGuide){
             $.ajax({
                 type: 'post',
                 contentType:"text/plain",
@@ -239,8 +239,6 @@ function updateConfirm(){
                     } 
                 }
             })
-        }else{
-            config.ruZhuGuide=config.ruZhuGuideUrl
         }
             
             $.ajax({
@@ -630,7 +628,7 @@ function updateConfirm(){
                 </tr>
                 <tr>
                     <td>用户协议Url&nbsp;</td>
-                    <td><input id="userProtocolUrl" class="easyui-textbox" style="width:100%" data-options="
+                    <td><input id="userProtocol" class="easyui-textbox" style="width:100%" data-options="
                         value:config.userProtocol,
                         iconWidth:20,
                         icons:[{
@@ -641,19 +639,19 @@ function updateConfirm(){
                             }
                         }],
                         onChange:function(newValue, oldValue){
-                            config.userProtocolUrl=newValue
+                            config.userProtocol=newValue
                         }" style="width:200px"></td>
                 </tr>
                 <tr>
                     <td>用户协议&nbsp;</td>
-                    <td><textarea id="userProtocol" style="width: 100%;height:500px;padding:1px 4px" placeholder="
+                    <td><textarea id="userProtocolContent" style="width: 100%;height:500px;padding:1px 4px" placeholder="
                         必读: 您可以插入图片/音频/视频/优酷等网站视频。
                         当插入的资源宽度设为'100%'时，为保证比例，请不要设置高度。
                         若有不明处，请联系管理员。"></textarea></td>
                 </tr>
                 <tr>
                     <td>入驻指南Url&nbsp;</td>
-                    <td><input id="ruZhuGuideUrl" class="easyui-textbox" style="width:100%" data-options="
+                    <td><input id="ruZhuGuide" class="easyui-textbox" style="width:100%" data-options="
                         value:config.ruZhuGuide,
                         iconWidth:20,
                         icons:[{
@@ -664,12 +662,12 @@ function updateConfirm(){
                             }
                         }],
                         onChange:function(newValue, oldValue){
-                            config.ruZhuGuideUrl=newValue
+                            config.ruZhuGuide=newValue
                         }" style="width:200px"></td>
                 </tr>
                 <tr>
                     <td>入驻指南&nbsp;</td>
-                    <td><textarea id="ruZhuGuide" style="width: 100%;height:500px;padding:1px 4px" placeholder="
+                    <td><textarea id="ruZhuGuideContent" style="width: 100%;height:500px;padding:1px 4px" placeholder="
                         必读: 您可以插入图片/音频/视频/优酷等网站视频。
                         当插入的资源宽度设为'100%'时，为保证比例，请不要设置高度。
                         若有不明处，请联系管理员。"></textarea></td>
@@ -744,6 +742,88 @@ function updateConfirm(){
                                 config.wxofficialMenu=newValue
                             }" style="width:200px">
                         <div><a href="https://developers.weixin.qq.com/doc/offiaccount/Custom_Menus/Creating_Custom-Defined_Menu.html" target="_blank">格式说明</a></div></td>
+                </tr>
+
+                <tr>
+                    <td>seo title&nbsp;</td>
+                    <td><input id="seoTitle" class="easyui-textbox" style="width:100%" data-options="
+                        value:config.seoTitle,
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                debugger
+                                $(e.data.target).textbox('setValue','');
+                            }
+                        }],
+                        onChange:function(newValue, oldValue){
+                            config.seoTitle=newValue
+                        }" style="width:200px"></td>
+                </tr>
+
+                <tr>
+                    <td>seo keywords&nbsp;</td>
+                    <td><input id="seoKeywords" class="easyui-textbox" style="width:100%" data-options="
+                        value:config.seoKeywords,
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                debugger
+                                $(e.data.target).textbox('setValue','');
+                            }
+                        }],
+                        onChange:function(newValue, oldValue){
+                            config.seoKeywords=newValue
+                        }" style="width:200px"></td>
+                </tr>
+
+                <tr>
+                    <td>seo description&nbsp;</td>
+                    <td><input id="seoDescription" class="easyui-textbox" style="width:100%" data-options="
+                        value:config.seoDescription,
+                        iconWidth:20,
+                        icons:[{
+                            iconCls:'icon-clear',
+                            handler: function(e){
+                                debugger
+                                $(e.data.target).textbox('setValue','');
+                            }
+                        }],
+                        onChange:function(newValue, oldValue){
+                            config.seoDescription=newValue
+                        }" style="width:200px"></td>
+                </tr>
+
+                <tr>
+                    <td>飞橙指数计算时间&nbsp;</td>
+                    <td><input id="videoaccountIndexNumCalculateTimeFrom" class="easyui-datetimebox" style="width:100%" data-options="
+                                        value:config.videoaccountIndexNumCalculateTimeFrom?moment(config.videoaccountIndexNumCalculateTimeFrom).format('YYYY-MM-DD H:mm:ss'):'',
+                                        editable:false,
+                                        icons:[{
+                                            iconCls:'icon-clear',
+                                            handler: function(e){
+                                                $(e.data.target).datetimebox('setValue','');
+                                            }
+                                        }],
+                                        onChange:function(newValue, oldValue){
+                                            config.videoaccountIndexNumCalculateTimeFrom=newValue
+                                        }"></td>
+                </tr>
+                <tr>
+                    <td>To&nbsp;</td>
+                    <td><input id="videoaccountIndexNumCalculateTimeTo" class="easyui-datetimebox" style="width:100%" data-options="
+                                        value:config.videoaccountIndexNumCalculateTimeTo?moment(config.videoaccountIndexNumCalculateTimeTo).format('YYYY-MM-DD H:mm:ss'):'',
+                                        editable:false,
+                                        icons:[{
+                                            iconCls:'icon-clear',
+                                            handler: function(e){
+                                                $(e.data.target).datetimebox('setValue','');
+                                            }
+                                        }],
+                                        onChange:function(newValue, oldValue){
+                                            config.videoaccountIndexNumCalculateTimeTo=newValue
+                                        }"></td>
                 </tr>
             </tbody>
         </table>

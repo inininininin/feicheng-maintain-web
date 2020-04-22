@@ -10,7 +10,7 @@ common.newTab = function (title, url) {
         title: title,
         closable: true,
         width: '100%',
-        content: `<iframe src="${url}" style="width:100%;height:100%;border:none;"/>`,
+        content: `<iframe src="${url}" style="width:100%;height:99%;border:none;"/>`,
         tools: [{
             iconCls: 'icon-mini-refresh',
             handler: function () {

@@ -43,6 +43,11 @@ img {
 
             $('#datagrid').datagrid({
             columns: [[
+            {
+                    field: 'articleId', title: '预览', width: 100, align: 'center', halign: 'center', formatter: function (value, row, index) {
+                        return value ? `<a target="_blank" href="/#/article?data=${value}">点击查看</a>` : value
+                    }
+                },
                 {
                     field: 'cover', title: '封面', width: 60, align: 'center', halign: 'center', formatter: function (value, row, index) {
                         return value ? `<span class="image-previewer"><img src='${value}' style='width:50px;cursor:pointer;' data-original='${value}'/></span>` : value
