@@ -178,12 +178,12 @@ if (option && typeof option === "object") {
        myChart.setOption(option, true);
     })
 
-    $.get('/maintain/wx-videoaccount-video/wx-videoaccount-video-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-7, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-2, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
+    $.get('/maintain/wx-videoaccount-video/wx-videoaccount-video-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-7, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-8, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
         option.series[1].data[6]=res.data.itemCount
         myChart.setOption(option, true);
         })
 
-        $.get('/maintain/user/user-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-7, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-2, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
+        $.get('/maintain/user/user-list-sum',{createTimeFrom:moment().subtract(moment().format('E')-7, 'days').format('YYYY-MM-DD'),createTimeTo:moment().subtract(moment().format('E')-8, 'days').format('YYYY-MM-DD'),createTimeFrom:null},function(res){
         option.series[2].data[6]=res.data.itemCount
         myChart.setOption(option, true);
         })
