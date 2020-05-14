@@ -107,7 +107,7 @@
             $.post('/maintain/login-refresh', function (res) {
                 if (res.code == 0) {
                     login=res.data
-                    $('.login-account-dom').text(login.maintainUserNickname)
+                    $('.login-account-dom').text(login.nickname)
                     if (login.cover)
                         $('.login-cover-dom').attr('src', login.cover)
                     localStorage.setItem('maintainLogin', login)
